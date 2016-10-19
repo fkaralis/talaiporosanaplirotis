@@ -1,7 +1,9 @@
+# missing πίνακες zero Προϋπηρεσίας με ίδιο όνομα
+
 import requests
 from bs4 import BeautifulSoup
 import json
-import os.path
+import os, os.path
 
 def create_url(url, href):
     if url.endswith('/index.html'):
@@ -13,7 +15,7 @@ def parse_link(url, tag):
     filetypes = ['.xls', '.xlsx', '.csv']
     
     if any(url.endswith(x) for x in filetypes):
-        print('Found xcel:', url, tag.contents)
+        print('--xcel:', url, tag.contents)
         
         filename = url.rsplit('/', 1)[1]
         if not os.path.isfile(filename):
@@ -24,15 +26,13 @@ def parse_link(url, tag):
         else: 
             print('Already there')
         
-    elif url.endswith('html'):
-        print('Found html', url, tag.contents)
-        reply = input('Follow link? (y/n) ')
-        if reply == 'y':
-            parse_url(url)
+    elif url.endswith('index.html'):
+        print('--index.html', url, tag.contents)
+        parse_url(url)
         
         
     else:
-        print('Found neither xcel nor html', url, tag.contents)
+        print('--Not xcel nor index.html', url, tag.contents)
 '''        
         reply = input('Download file? (y/n) ')
         if reply == 'y':
@@ -56,6 +56,9 @@ def parse_url(url):
     
 if __name__ == "__main__":
     url = 'http://e-aitisi.sch.gr'
+    global path 
+    path = '2015-2026'
+    os.makedirs(path)
     parse_url(url)
     
         
