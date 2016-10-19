@@ -1,32 +1,48 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import os.path
 
 def create_url(url, href):
+    if url.endswith('/index.html'):
+        url = url[:-11]
     return url + '/' + href
 
-def parse_link(url, text):
+def parse_link(url, tag):
     
     filetypes = ['.xls', '.xlsx', '.csv']
     
     if any(url.endswith(x) for x in filetypes):
-        print('Found xcel:', url, text)
-        response = requests.get(url)
-        filename = url.rsplit('/', 1)[1]
+        print('Found xcel:', url, tag.contents)
         
-        with open(filename, 'wb') as output:
-            output.write(response.content)
-        print('Downloaded')
+        filename = url.rsplit('/', 1)[1]
+        if not os.path.isfile(filename):
+            response = requests.get(url)
+            with open(filename, 'wb') as output:
+                output.write(response.content)
+            print('Downloaded')
+        else: 
+            print('Already there')
         
     elif url.endswith('html'):
-        print('Found html', url, text)
+        print('Found html', url, tag.contents)
+        reply = input('Follow link? (y/n) ')
+        if reply == 'y':
+            parse_url(url)
+        
         
     else:
-        print('Found neither xcel nor html', url, text)
+        print('Found neither xcel nor html', url, tag.contents)
+'''        
+        reply = input('Download file? (y/n) ')
+        if reply == 'y':
+            with open(filename, 'wb') as output:
+                output.write(response.content)
+            print('Downloaded')
+'''
 
 
-if __name__ == "__main__":
-    url = 'http://e-aitisi.sch.gr'
+def parse_url(url):
     html = requests.get(url)
     html.encoding = 'ISO-8859-7'
     soup = BeautifulSoup(html.content, 'html.parser')
@@ -36,8 +52,12 @@ if __name__ == "__main__":
     for tag in tags:
         link_url = create_url(url, tag.get('href'))
         text = tag.get_string
-
-        parse_link(link_url, text)       
+        parse_link(link_url, tag) 
+    
+if __name__ == "__main__":
+    url = 'http://e-aitisi.sch.gr'
+    parse_url(url)
+    
         
 ''' VERSION 1 build links list (created before 'for') & json 
      
