@@ -1,4 +1,7 @@
-# finding links and tables in http://e-aitisi.sch.gr
+# finds links and tables in http://e-aitisi.sch.gr
+# input: year (eg 2003 for 2003-2004)
+# out: folder & log
+# checked from 2003-2004 up to 2009-2010
 
 import requests
 from bs4 import BeautifulSoup
@@ -75,7 +78,7 @@ def parse_url(url):
         list = url.split(splitter)
         url = ''.join(list)
     if '-index.html' in url:
-        splitter = re.search('/\D+\d?\D*-index.html', url).group(0)
+        splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
 
