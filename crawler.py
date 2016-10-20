@@ -1,45 +1,59 @@
-# missing πίνακες zero Προϋπηρεσίας με ίδιο όνομα
+# finding links and tables in http://e-aitisi.sch.gr
 
 import requests
 from bs4 import BeautifulSoup
-import json
 import os, os.path
+import re
+from apport import log
+
+def parse_link(url, tag):
+    result = ''
+    filename = ''
+    global links_count
+    global tables_count
+    
+    filetypes = ['.xls', '.xlsx', '.csv']
+
+    # fix url second // (entirely useless)
+    url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
+    
+    if any(url.endswith(x) for x in filetypes):
+        filename = url.rsplit('/')[-1]
+        result = 'Found excel table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        tables_count += 1
+        log.write(result)
+    
+    
+    elif url.endswith('gz'):
+        filename = url.rsplit('/')[-1]
+        result = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        tables_count += 1
+        log.write(result)
+    
+        
+    elif url.endswith('.html') and 'index' not in url:
+        filename = url.rsplit('/')[-1]
+        result = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        tables_count += 1
+        log.write(result)
+
+            
+    elif ('index' in url and 'old' not in url) or url.endswith('/'):
+        result = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
+        log.write(result)
+        links_count = links_count + 1
+        parse_url(url)
+        
+        
+    else:
+        result = '--Not xls, html, or gz ' + url + ' ' + str(tag.contents) + '\n'
+        log.write(result)
+
 
 def create_url(url, href):
     if url.endswith('/index.html'):
         url = url[:-11]
     return url + '/' + href
-
-def parse_link(url, tag):
-    
-    filetypes = ['.xls', '.xlsx', '.csv']
-    
-    if any(url.endswith(x) for x in filetypes):
-        print('--xcel:', url, tag.contents)
-        
-        filename = url.rsplit('/', 1)[1]
-        if not os.path.isfile(filename):
-            response = requests.get(url)
-            with open(filename, 'wb') as output:
-                output.write(response.content)
-            print('Downloaded')
-        else: 
-            print('Already there')
-        
-    elif url.endswith('index.html'):
-        print('--index.html', url, tag.contents)
-        parse_url(url)
-        
-        
-    else:
-        print('--Not xcel nor index.html', url, tag.contents)
-'''        
-        reply = input('Download file? (y/n) ')
-        if reply == 'y':
-            with open(filename, 'wb') as output:
-                output.write(response.content)
-            print('Downloaded')
-'''
 
 
 def parse_url(url):
@@ -47,43 +61,64 @@ def parse_url(url):
     html.encoding = 'ISO-8859-7'
     soup = BeautifulSoup(html.content, 'html.parser')
     
+    # fix url index.html
+    if suffix in url:
+        list = url.split(suffix)
+        url = ''.join(list)
+        
+        
+    # suffix particularities    
+    rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html', 
+                           '/indexABg.html', '/indexCg.html', '/indexGg.html']
+    if any(x in url for x in rogue_suffixes):
+        splitter = re.search('/index.+?\.html', url).group(0)
+        list = url.split(splitter)
+        url = ''.join(list)
+    if '-index.html' in url:
+        splitter = re.search('/\D+\d?\D*-index.html', url).group(0)
+        list = url.split(splitter)
+        url = ''.join(list)
+
+    
     tags = soup('a')
-    count = 0
     for tag in tags:
         link_url = create_url(url, tag.get('href'))
-        text = tag.get_string
+        text = tag.get_string  
         parse_link(link_url, tag) 
+        
     
 if __name__ == "__main__":
+    
+    global suffix, log, links_count, tables_count
+        
+    year = input('Enter year: ')
+    school_year = year + '-' + str(int(year) + 1)
+    suffix = '/index' + year + '.html'
+  
+    # create folder
+    if not os.path.exists(school_year):
+        try:
+            os.makedirs(school_year)
+        except OSError as exc: # Guard against race condition (me: ??)
+            if exc.errno != errno.EEXIST:
+                raise   
+    
+    # create log file
+    log_filename = school_year + '/log ' + school_year + '.txt'
+    log = open(log_filename, 'w') 
+    print('Crawling through school year ' + school_year)
+    log.write('Crawling through school year ' + school_year + '\n')
+    
+    links_count = 0
+    tables_count = 0
+
+    # parse url
     url = 'http://e-aitisi.sch.gr'
-    global path 
-    path = '2015-2026'
-    os.makedirs(path)
+    if year != '2016':
+        url += suffix
     parse_url(url)
     
-        
-''' VERSION 1 build links list (created before 'for') & json 
-     
-        
-        href = tag.get('href')
-        
-        #create dict for link
-        link = {
-            'link_url': url + '/' + href,
-            'text' : tag.string,
-        }
-        
-        # add link to links list 
-        links.append(link)
-    
-    print(links)
-    print(json.dumps(links, sort_keys=True, indent=4))
-
-
-    d = {"name":"links",
-         "children": links}
-    j = json.dumps(d, sort_keys=True, indent=4)
-    with open('links.json', 'w') as fp:
-        json.dump(j, fp)
-'''   
+    parse_result = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
+    log.write(parse_result)
+    print(parse_result)
     
