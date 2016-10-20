@@ -7,7 +7,6 @@ import requests
 from bs4 import BeautifulSoup
 import os, os.path
 import re
-from apport import log
 
 def parse_link(url, tag):
     result = ''
@@ -17,7 +16,7 @@ def parse_link(url, tag):
     
     filetypes = ['.xls', '.xlsx', '.csv']
 
-    # fix url second // (entirely useless)
+    # (entirely useless) fix // in middle of url 
     url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
     
     if any(url.endswith(x) for x in filetypes):
@@ -64,13 +63,12 @@ def parse_url(url):
     html.encoding = 'ISO-8859-7'
     soup = BeautifulSoup(html.content, 'html.parser')
     
-    # fix url index.html
+    # fix 'index.html' in middle of url
     if suffix in url:
         list = url.split(suffix)
-        url = ''.join(list)
+        url = ''.join(list)        
         
-        
-    # suffix particularities    
+    # fix suffix particularities    
     rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html', 
                            '/indexABg.html', '/indexCg.html', '/indexGg.html']
     if any(x in url for x in rogue_suffixes):
@@ -82,7 +80,7 @@ def parse_url(url):
         list = url.split(splitter)
         url = ''.join(list)
 
-    
+
     tags = soup('a')
     for tag in tags:
         link_url = create_url(url, tag.get('href'))
@@ -112,6 +110,7 @@ if __name__ == "__main__":
     print('Crawling through school year ' + school_year)
     log.write('Crawling through school year ' + school_year + '\n')
     
+    #counts
     links_count = 0
     tables_count = 0
 
@@ -121,6 +120,7 @@ if __name__ == "__main__":
         url += suffix
     parse_url(url)
     
+    # end output
     parse_result = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
     log.write(parse_result)
     print(parse_result)
