@@ -1,5 +1,5 @@
 # finds links and tables in http://e-aitisi.sch.gr
-# input: year (eg 2003 for 2003-2004)
+# exec: python crawler.py year (eg 2003 for 2003-2004)
 # out: folder & log
 # checked from 2003-2004 up to 2009-2010
 
@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 import os, os.path
 import re
+import sys
 
 def parse_link(url, tag):
     result = ''
@@ -92,7 +93,7 @@ if __name__ == "__main__":
     
     global suffix, log, links_count, tables_count
         
-    year = input('Enter year: ')
+    year = str(sys.argv[1])
     school_year = year + '-' + str(int(year) + 1)
     suffix = '/index' + year + '.html'
   
