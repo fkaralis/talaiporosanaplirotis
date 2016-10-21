@@ -67,19 +67,18 @@ def parse_url(url):
     html.encoding = 'ISO-8859-7'
     soup = BeautifulSoup(html.content, 'html.parser')
     
-    # fix 'index.html' in middle of url
-    if suffix in url:
+    # fix suffixes in middle of url    
+    if suffix in url:       # initial index,html
         list = url.split(suffix)
         url = ''.join(list)        
-        
-    # fix suffix particularities    
+
     rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html', 
                            '/indexABg.html', '/indexCg.html', '/indexGg.html']
     if any(x in url for x in rogue_suffixes):       # 2003-4
         splitter = re.search('/index.+?\.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
-    if '-index.html' in url:        
+    if '-index.html' in url:        # ~2010 tadmon(TAD/ETAD)
         splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
