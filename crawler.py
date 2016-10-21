@@ -44,8 +44,11 @@ def parse_link(url, tag):
     elif ('index' in url and 'old' not in url) or url.endswith('/'):
         result = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
         log.write(result)
-        links_count = links_count + 1
-        parse_url(url)
+        links_count += 1
+        if url != 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':   # 2011 link to 2013 index (!)
+            parse_url(url)
+        else:
+            log.write('Crazy 2011 link to 2013-2014 index\n')
         
         
     else:
@@ -72,20 +75,22 @@ def parse_url(url):
     # fix suffix particularities    
     rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html', 
                            '/indexABg.html', '/indexCg.html', '/indexGg.html']
-    if any(x in url for x in rogue_suffixes):
+    if any(x in url for x in rogue_suffixes):       # 2003-4
         splitter = re.search('/index.+?\.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
-    if '-index.html' in url:
+    if '-index.html' in url:        
         splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
-
+    if '_13/indexdior.html' in url:     # 2013
+        splitter = re.search('/indexdior.html', url).group(0)
+        list = url.split(splitter)
+        url = ''.join(list)
 
     tags = soup('a')
     for tag in tags:
         link_url = create_url(url, tag.get('href'))
-        text = tag.get_string  
         parse_link(link_url, tag) 
         
     
@@ -122,7 +127,7 @@ if __name__ == "__main__":
     parse_url(url)
     
     # end output
-    parse_result = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
-    log.write(parse_result)
-    print(parse_result)
+    crawl_result = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
+    log.write(crawl_result)
+    print(crawl_result)
     
