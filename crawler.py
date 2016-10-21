@@ -1,7 +1,7 @@
 # finds links and tables in http://e-aitisi.sch.gr
 # exec: python crawler.py year (eg 2003 for 2003-2004)
 # out: folder & log
-# checked from 2003-2004 up to 2009-2010
+# checked for all years
 
 import requests
 from bs4 import BeautifulSoup
@@ -89,8 +89,10 @@ def parse_url(url):
 
     tags = soup('a')
     for tag in tags:
-        link_url = create_url(url, tag.get('href'))
-        parse_link(link_url, tag) 
+        href = tag.get('href')
+        if not re.match('index\d+\.html', href):        # end 2016
+            link_url = create_url(url, href)
+            parse_link(link_url, tag) 
         
     
 if __name__ == "__main__":
