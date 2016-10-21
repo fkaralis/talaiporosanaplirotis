@@ -10,10 +10,7 @@ import re
 import sys
 
 def parse_link(url, tag):
-    result = ''
-    filename = ''
-    global links_count
-    global tables_count
+    global links_count, tables_count
     
     filetypes = ['.xls', '.xlsx', '.csv']
 
@@ -22,28 +19,28 @@ def parse_link(url, tag):
     
     if any(url.endswith(x) for x in filetypes):
         filename = url.rsplit('/')[-1]
-        result = 'Found excel table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        msg = 'Found excel table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
         tables_count += 1
-        log.write(result)
+        log.write(msg)
     
     
     elif url.endswith('gz'):
         filename = url.rsplit('/')[-1]
-        result = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        msg = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
         tables_count += 1
-        log.write(result)
+        log.write(msg)
     
         
     elif url.endswith('.html') and 'index' not in url:
         filename = url.rsplit('/')[-1]
-        result = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+        msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
         tables_count += 1
-        log.write(result)
+        log.write(msg)
 
             
     elif ('index' in url and 'old' not in url) or url.endswith('/'):
-        result = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
-        log.write(result)
+        msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
+        log.write(msg)
         links_count += 1
         if url != 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':   # 2011 link to 2013 index (!)
             parse_url(url)
@@ -52,8 +49,8 @@ def parse_link(url, tag):
         
         
     else:
-        result = '--Not xls, html, or gz ' + url + ' ' + str(tag.contents) + '\n'
-        log.write(result)
+        msg = '--Not xls, html, or gz ' + url + ' ' + str(tag.contents) + '\n'
+        log.write(msg)
 
 
 def create_url(url, href):
@@ -62,12 +59,7 @@ def create_url(url, href):
     return url + '/' + href
 
 
-def parse_url(url):
-    html = requests.get(url)
-    html.encoding = 'ISO-8859-7'
-    soup = BeautifulSoup(html.content, 'html.parser')
-    
-    # fix suffixes in middle of url    
+def fix_url(url, suffix):  
     if suffix in url:       # initial index,html
         list = url.split(suffix)
         url = ''.join(list)        
@@ -86,6 +78,17 @@ def parse_url(url):
         splitter = re.search('/indexdior.html', url).group(0)
         list = url.split(splitter)
         url = ''.join(list)
+    
+    return url
+
+
+def parse_url(url):
+    html = requests.get(url)
+    html.encoding = 'ISO-8859-7'
+    soup = BeautifulSoup(html.content, 'html.parser')
+    
+    # fix .html suffixes in middle of url  
+    url = fix_url(url, suffix)
 
     tags = soup('a')
     for tag in tags:
@@ -113,22 +116,23 @@ if __name__ == "__main__":
     
     # create log file
     log_filename = school_year + '/log ' + school_year + '.txt'
-    log = open(log_filename, 'w') 
-    print('Crawling through school year ' + school_year)
-    log.write('Crawling through school year ' + school_year + '\n')
+    log = open(log_filename, 'w')
+    msg = 'Crawling through school year ' + school_year + '\n'
+    print(msg.rstrip())
+    log.write(msg)
     
     #counts
     links_count = 0
     tables_count = 0
 
-    # parse url
+    # parse initial url
     url = 'http://e-aitisi.sch.gr'
     if year != '2016':
         url += suffix
     parse_url(url)
     
     # end output
-    crawl_result = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
-    log.write(crawl_result)
-    print(crawl_result)
+    msg = '\nDone\n\nFound ' + str(links_count) + ' links and ' + str(tables_count) + ' tables'
+    log.write(msg)
+    print(msg)
     
