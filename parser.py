@@ -36,10 +36,10 @@ def parse_link(url, tag):
         msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
         globalvars.log.write(msg)
         globalvars.links_count += 1
-        if url != 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':   # 2011 link to 2013 index (!)
+        if url != 'http://e-aitisi.sch.gr/triantamino_07/index.html' or url != 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':   # 2007 link to 20016 index and 2011 link to 2013 index (!)
             parse_url(url)
         else:
-            globalvars.log.write('Crazy 2011 link to 2013-2014 index\n')
+            globalvars.log.write('Crazy 2007/2011 link to 2016/2013 index\n')
         
         
     else:
