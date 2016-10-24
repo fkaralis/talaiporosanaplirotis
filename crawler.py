@@ -5,7 +5,8 @@
 # out: folder & log
 # checked for all years
 
-import os, os.path
+import os
+import os.path
 import sys
 
 import globalvars
