@@ -46,4 +46,7 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: 'python crawler.py XXXX' where XXXX is an integer representing a year (e.g. 2014).")
+        sys.exit(1)
     year = str(sys.argv[1])
