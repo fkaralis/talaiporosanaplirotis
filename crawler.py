@@ -12,9 +12,7 @@ import sys
 import globalvars
 from parser import *
 
-if __name__ == "__main__":
-        
-    year = str(sys.argv[1])
+def main(year):
     school_year = year + '-' + str(int(year) + 1)
     globalvars.suffix = '/index' + year + '.html'
 
@@ -50,3 +48,4 @@ if __name__ == "__main__":
         print("Usage: 'python crawler.py XXXX' where XXXX is an integer representing a year (e.g. 2014).")
         sys.exit(1)
     year = str(sys.argv[1])
+    main(year)
