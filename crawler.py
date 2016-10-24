@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # finds links and tables in http://e-aitisi.sch.gr
 # exec: python crawler.py year (eg 2003 for 2003-2004)
 # out: folder & log
