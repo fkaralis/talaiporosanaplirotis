@@ -90,3 +90,7 @@ ENV/
 .ropeproject
 
 scripts/
+proxeiro/
+.project
+.pydevproject
+.settings

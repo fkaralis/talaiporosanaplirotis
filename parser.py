@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import re
 from bs4 import BeautifulSoup
 import requests
 
-import globalvars
+links = {}
+tables = {}
+suffix = ''
+log = None
 
 def parse_link(url, tag):
 
@@ -16,37 +19,39 @@ def parse_link(url, tag):
     if any(url.endswith(x) for x in filetypes):
         filename = url.rsplit('/')[-1]
         msg = 'Found excel table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-        globalvars.tables_count += 1
-        globalvars.log.write(msg)
+        tables[len(tables)+1] = url
+        log.write(msg)
 
 
     elif url.endswith('gz'):
         filename = url.rsplit('/')[-1]
         msg = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-        globalvars.tables_count += 1
-        globalvars.log.write(msg)
+        tables[len(tables)+1] = url
+        log.write(msg)
 
 
     elif url.endswith('.html') and 'index' not in url:
         filename = url.rsplit('/')[-1]
         msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-        globalvars.tables_count += 1
-        globalvars.log.write(msg)
+        tables[len(tables)+1] = url
+        log.write(msg)
 
 
     elif ('index' in url and 'old' not in url) or url.endswith('/'):
         msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
-        globalvars.log.write(msg)
-        globalvars.links_count += 1
-        if url != 'http://e-aitisi.sch.gr/triantamino_07/index.html' or url != 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':   # 2007 link to 20016 index and 2011 link to 2013 index (!)
-            parse_url(url)
+        log.write(msg)
+        links[len(links)+1] = url
+        if url == 'http://e-aitisi.sch.gr/triantamino_07/index.html':
+            log.write('Crazy 2007 link to 2016 index\n')
+        elif url == 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':
+            log.write('Crazy 2011 link to 2013 index\n')
         else:
-            globalvars.log.write('Crazy 2007/2011 link to 2016/2013 index\n')
+            parse_url(url)
 
 
     else:
         msg = '--Not xls, html, or gz ' + url + ' ' + str(tag.contents) + '\n'
-        globalvars.log.write(msg)
+        log.write(msg)
 
 
 def create_url(url, href):
@@ -84,7 +89,7 @@ def parse_url(url):
     soup = BeautifulSoup(html.content, 'html.parser')
 
     # fix .html suffixes in middle of url
-    url = fix_url(url, globalvars.suffix)
+    url = fix_url(url, suffix)
 
     tags = soup('a')
     for tag in tags:
