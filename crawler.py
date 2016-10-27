@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # finds links and tables in http://e-aitisi.sch.gr
-# exec: python crawler.py year (eg 2003 for 2003-2004)
+# exec: python3 crawler.py YYYY (2003-2016)
 # out: folder & log
 # checked for all years
 
@@ -44,8 +44,13 @@ def main(year):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2 or not isinstance(sys.argv[1], int):
         print("Usage: 'python crawler.py XXXX' where XXXX is an integer representing a year from 2003 to 2016 (e.g. \'2014\').")
         sys.exit(1)
+        
     year = str(sys.argv[1])
+    
+    if int(year) > 2016 or int(year) < 2003:
+        print("Year min 2003, max 2016")
+        sys.exit(1)
     main(year)
