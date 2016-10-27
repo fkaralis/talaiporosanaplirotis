@@ -95,3 +95,4 @@ proxeiro/
 .pydevproject
 .settings
 log.txt
+__pycache__/
