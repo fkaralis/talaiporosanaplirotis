@@ -14,7 +14,7 @@ from parser import *
 
 def main(year):
     school_year = year + '-' + str(int(year) + 1)
-    parser.suffix = '/index' + year + '.html'
+    suffix = '/index' + year + '.html'
 
     # create folder
     if not os.path.exists(school_year):
@@ -34,8 +34,8 @@ def main(year):
     # parse initial url
     url = 'http://e-aitisi.sch.gr'
     if year != '2016':
-        url += parser.suffix
-    parse_url(url)
+        url += suffix
+    parse_url(url, suffix)
 
     # end output
     msg = '\nDone\n\nFound ' + str(len(parser.links)) + ' links and ' + str(len(parser.tables)) + ' tables'

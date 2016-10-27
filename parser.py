@@ -9,7 +9,7 @@ tables = {}
 suffix = ''
 log = None
 
-def parse_link(url, tag):
+def parse_link(url, tag, suffix):
 
     filetypes = ['.xls', '.xlsx', '.csv']
 
@@ -46,7 +46,7 @@ def parse_link(url, tag):
         elif url == 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':
             log.write('Crazy 2011 link to 2013 index\n')
         else:
-            parse_url(url)
+            parse_url(url, suffix)
 
 
     else:
@@ -83,7 +83,7 @@ def fix_url(url, suffix):
     return url
 
 
-def parse_url(url):
+def parse_url(url, suffix):
     html = requests.get(url)
     html.encoding = 'ISO-8859-7'
     soup = BeautifulSoup(html.content, 'html.parser')
@@ -96,4 +96,4 @@ def parse_url(url):
         href = tag.get('href')
         if not re.match('index\d+\.html', href):        # end 2016
             link_url = create_url(url, href)
-            parse_link(link_url, tag)
+            parse_link(link_url, tag, suffix)
