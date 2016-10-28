@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # finds links and tables in http://e-aitisi.sch.gr
-# exec: python3 crawler.py YYYY (2003-2016)
+# exec: python crawler.py year (eg 2003 for 2003-2004)
 # out: folder & log
 # checked for all years
 
@@ -13,9 +13,11 @@ import parser
 from parser import *
 
 def main(year):
+    parser = Parser()
+    
     school_year = year + '-' + str(int(year) + 1)
     suffix = '/index' + year + '.html'
-
+    
     # create folder
     if not os.path.exists(school_year):
         try:
@@ -35,7 +37,7 @@ def main(year):
     url = 'http://e-aitisi.sch.gr'
     if year != '2016':
         url += suffix
-    parse_url(url, suffix)
+    parser.parse_url(url, suffix)
 
     # end output
     msg = '\nDone\n\nFound ' + str(len(parser.links)) + ' links and ' + str(len(parser.tables)) + ' tables'

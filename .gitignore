@@ -89,10 +89,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
-scripts/
 proxeiro/
+__pycache__/
+scripts/
+.settings/
 .project
 .pydevproject
-.settings
-log.txt
-__pycache__/
