@@ -46,13 +46,11 @@ def main(year):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or not isinstance(sys.argv[1], int):
-        print("Usage: 'python crawler.py XXXX' where XXXX is an integer representing a year from 2003 to 2016 (e.g. \'2014\').")
-        sys.exit(1)
-        
-    year = str(sys.argv[1])
-    
-    if int(year) > 2016 or int(year) < 2003:
-        print("Year min 2003, max 2016")
-        sys.exit(1)
-    main(year)
+    try:
+        if len(sys.argv) != 2 or not (int(sys.argv[1]) >= 2003 and int(sys.argv[1]) <= 2016): 
+            print("Usage: 'python crawler.py YYYY' where YYYY is an integer representing a year from 2003 to 2016 (e.g. \'2014\').")
+            sys.exit(1)
+        year = sys.argv[1]
+        main(year)
+    except ValueError:
+       print("That's not a number")
