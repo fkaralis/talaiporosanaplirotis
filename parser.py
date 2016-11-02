@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import re
+import os
 from bs4 import BeautifulSoup
 import requests
+
+import db_init
 
 class Parser:
 
@@ -28,26 +31,21 @@ class Parser:
 
     def parse_link(self, url, tag, suffix):
     
-        filetypes = ['.xls', '.xlsx', '.csv']
-    
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
     
-        if any(url.endswith(x) for x in filetypes):
+        if (url.endswith('xls') or (url.endswith('.html') and 'index' not in url)):
             filename = url.rsplit('/')[-1]
-            msg = 'Found excel table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+            msg = 'Found table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+            
+            self.download_table(url, suffix)
+            
             self.tables[len(self.tables)+1] = url
             self.log.write(msg)
         
         elif url.endswith('gz'):
             filename = url.rsplit('/')[-1]
             msg = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-            self.tables[len(self.tables)+1] = url
-            self.log.write(msg)
-
-        elif url.endswith('.html') and 'index' not in url:
-            filename = url.rsplit('/')[-1]
-            msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             self.tables[len(self.tables)+1] = url
             self.log.write(msg)
     
@@ -93,6 +91,124 @@ class Parser:
             url = ''.join(list)
     
         return url
+    
+    def download_table(self, url, suffix):
+        filename = url.rsplit('/')[-1]
+        path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
+        if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
+            hmeromhnia = path_pinaka.rsplit('/')[-2]
+            print(hmeromhnia)
+        
+        kathgoria = path_pinaka.split('/')[1]
+        kathgoria = self.find_kathgoria(kathgoria)
+        
+        eidikothta = filename[:-4]
+        year = suffix[6:][:-5]
+        sxoliko_etos = year + '-' + str(int(year) + 1)
+        
+        full_path = 'data' + '/' + sxoliko_etos + path_pinaka
+        
+        if not os.path.exists(full_path):
+            try:
+                os.makedirs(full_path)
+            except OSError as exc: # Guard against race condition (me: ??)
+                if exc.errno != errno.EEXIST:
+                    raise
+        
+        if not os.path.isfile(full_path + filename):
+            response = requests.get(url)
+            with open(full_path + filename, 'wb') as output:
+                output.write(response.content)
+            print('Downloaded')
+        else: 
+            print('Already there')      
+            
+        print(filename, path_pinaka, kathgoria, eidikothta, path_pinaka.rsplit('/')[-1])
+    
+        
+    def find_kathgoria(self, kathgoria):
+        
+        # pinakes diorismwn
+        if kathgoria.startswith('eniaios_diorismwn') or kathgoria.startswith('eniaioidior_13'):
+            kathgoria = 'eniaios_diorismwn'
+        elif kathgoria.startswith('triantamino'):
+            kathgoria = 'triantamino'
+        elif kathgoria.startswith('eikositetramino'):
+            kathgoria = 'eikositetramino'
+            
+        # diorismoi eidikh kathgoria
+        elif kathgoria.startswith('specialcat'):
+            kathgoria = diorismwn_eidikh_kathgoria
+            
+        # eniaioi a/b-thmias
+        elif kathgoria.startswith('eniaiosp'):
+            if kathgoria.startswith('eniaiosp_zero'):
+                kathgoria = 'eniaios_protovathmias_mhdenikhs_proyphresias'
+            else: kathgoria = 'eniaios_protovathmias'
+        elif kathgoria.startswith('eniaiosd'):
+            if kathgoria.startswith('eniaiosd_zero'):
+                kathgoria = 'eniaios_defterovathmias_mhdenikhs_proyphresias'
+            else: 
+                kathgoria = 'eniaios_defterovathmias'
+            
+        # oloimera-oromisthioi
+        elif kathgoria.startswith('oloimera'):
+            kathgoria = 'oromisthioi_oloimera'
+        elif (kathgoria == 'eniaios_oromis8iwn_05_zero'):
+            kathgoria = 'oromisthioi_defterovathmias_mhdenikhs_proyphresias'
+        elif kathgoria.startswith('eniaios_oromis8iwn') or kathgoria.startswith('oromisthioi'):
+            kathgoria = 'oromisthioi_defterovathmias'
+        
+        # mousika   
+        elif kathgoria.startswith('mousika'):
+            if kathgoria.startswith('mousika_orom'):
+                kathgoria = 'mousika_sxoleia_oromisthioi'
+            else: 
+                kathgoria = 'mousika_sxoleia'
+        
+        # smea
+        elif 'smea' in kathgoria:
+            if kathgoria.startswith('eniaios_smea_oloim'):
+                kathgoria = 'smea_oloimera'
+            elif kathgoria.startswith('eniaios_smea_anap'):
+                kathgoria = 'smea_anaplirotes'
+            else: 
+                kathgoria = 'smea_oromisthioi'
+        
+        # politeknoi 2009
+        elif kathgoria == 'politeknoi2009':
+            kathgoria == 'politeknoi2009'
+        
+        # tad/ead
+        elif kathgoria.startswith('tad'):
+            if kathgoria.startswith('tadmon'):
+                kathgoria = 'tad_ead_monimoi'
+            if kathgoria.startswith('tadanap'):
+                kathgoria = 'tad_ead_anaplirotes'
+            else:
+                kathgoria = 'tad_ead_oromisthioi'
+        
+        # diagrafentes logw mh analhpshs yphresias
+        elif kathgoria.startswith('diagrafentes'):
+            kathgoria = 'diagrafentes_logw_mh_analhpshs_yphresias'
+        
+        # diagrafentes logw apolyshs
+        elif kathgoria.startswith('kataggelia'):
+            kathgoria = 'diagrafentes_logw_apolyshs'
+            
+        # meinotika thrakhs
+        elif kathgoria.startswith('pe73'):
+            kathgoria = 'meionotika_thrakhs'
+            
+        # meinotika thrakhs
+        elif kathgoria.startswith('avlonas'):
+            kathgoria = '2o_gymnasio_avlwna'
+            
+        return kathgoria
+                
+            
+                         
+    
 
 
 
