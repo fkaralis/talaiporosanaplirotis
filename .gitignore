@@ -96,3 +96,5 @@ scripts/
 .project
 .pydevproject
 talaiporosanaplirotis.db
+data/
+20*/
