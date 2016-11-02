@@ -28,17 +28,6 @@ metadata = MetaData(naming_convention=convention)
 Base = declarative_base(metadata=metadata)
 
 
-class Eidikothta(Base):
-    __tablename__ = "eidikothta"
-
-    id = Column("eidikothta_id", Integer, primary_key=True)
-    kodikos_eidikothtas = Column("kodikos_eidikothtas", String, nullable=False)
-    lektiko_eidikothtas = Column("lektiko_eidikothtas", String, nullable=False)
-
-    # relationships
-    pinakes = relationship("Pinakas", back_populates="eidikothta")
-
-
 class Kathgoria(Base):
     __tablename__ = "kathgoria"
 
@@ -48,6 +37,16 @@ class Kathgoria(Base):
     # relationships
     pinakes = relationship("Pinakas", back_populates="kathgoria")
     
+class Eidikothta(Base):
+    __tablename__ = "eidikothta"
+
+    id = Column("eidikothta_id", Integer, primary_key=True)
+    kodikos_eidikothtas = Column("kodikos_eidikothtas", String, nullable=False)
+    lektiko_eidikothtas = Column("lektiko_eidikothtas", String, nullable=False)
+
+    # relationships
+    pinakes = relationship("Pinakas", back_populates="eidikothta")
+    
 class Sxoliko_etos(Base):
     __tablename__ = "sxoliko_etos"
     
@@ -56,6 +55,15 @@ class Sxoliko_etos(Base):
     
     # relationships
     pinakes = relationship("Pinakas", back_populates="sxoliko_etos")
+    
+class Hmeromhnia(Base):
+    __tablename__ = "hmeromhnia"
+    
+    id = Column("hmeromhnia_id", Integer, primary_key=True)
+    lektiko_sxolikoy_etoys = Column("lektiko_hmeromhnias", String, nullable=False, unique=True)
+    
+    # relationships
+    #pinakes = relationship("Pinakas", back_populates="hmeromhnia")
 
 class Pinakas(Base):
     __tablename__ = "pinakas"
@@ -66,19 +74,21 @@ class Pinakas(Base):
     sxoliko_etos_id = Column(Integer, ForeignKey('sxoliko_etos.sxoliko_etos_id'))
     kathgoria_id = Column(Integer, ForeignKey('kathgoria.kathgoria_id'))
     eidikothta_id = Column(Integer, ForeignKey('eidikothta.eidikothta_id'))
+    hmeromhnia_id = Column(Integer, ForeignKey('hmeromhnia.hmeromhnia_id'))
     
     path_pinaka = Column("path_pinaka", String, nullable=False, unique=True)
     
-    eidikothta = relationship("Eidikothta", back_populates="pinakes")
-    kathgoria = relationship("Kathgoria", back_populates="pinakes")
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
+    kathgoria = relationship("Kathgoria", back_populates="pinakes")
+    eidikothta = relationship("Eidikothta", back_populates="pinakes")
+    #hmeromhnia = relationship("Hmeromhnia", back_populates="pinakes")
 
     
 
 
 #engine = create_engine('sqlite:///:memory:', echo=True)
 engine = create_engine('sqlite:///talaiporosanaplirotis.db')
-Session = sessionmaker(bind=engine)
-session = Session()
+#Session = sessionmaker(bind=engine)
+#session = Session()
 
 Base.metadata.create_all(engine)
