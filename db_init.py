@@ -32,7 +32,7 @@ class Kathgoria(Base):
     __tablename__ = "kathgoria"
 
     id = Column("kathgoria_id", Integer, primary_key=True)
-    lektiko_kathogorias = Column("lektiko_kathogorias", String, nullable=False, unique=True)
+    lektiko_kathgorias = Column("lektiko_kathgorias", String, nullable=False, unique=True)
 
     # relationships
     pinakes = relationship("Pinakas", back_populates="kathgoria")
@@ -87,7 +87,7 @@ class Pinakas(Base):
 
 
 #engine = create_engine('sqlite:///:memory:', echo=True)
-engine = create_engine('sqlite:///talaiporosanaplirotis.db')
+engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
 #Session = sessionmaker(bind=engine)
 #session = Session()
 

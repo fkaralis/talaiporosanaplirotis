@@ -96,5 +96,6 @@ scripts/
 .project
 .pydevproject
 talaiporosanaplirotis.db
+talaiporosanaplirotis.sqlite
 data/
 20*/
