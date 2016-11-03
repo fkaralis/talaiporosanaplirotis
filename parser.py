@@ -5,8 +5,6 @@ import os
 from bs4 import BeautifulSoup
 import requests
 
-import db_init
-
 class Parser:
 
     links = {}
@@ -93,21 +91,29 @@ class Parser:
         return url
     
     def download_table(self, url, suffix):
+        # get attributes for Pinakas
+        # lektiko_pinaka
         filename = url.rsplit('/')[-1]
+        
+        # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
+        
+        # hmeromhnia(if exists)
         if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
             hmeromhnia = path_pinaka.rsplit('/')[-2]
-            print(hmeromhnia)
+            #print(hmeromhnia)
         
-        kathgoria = path_pinaka.split('/')[1]
-        kathgoria = self.find_kathgoria(kathgoria)
+        # kathgoria
+        kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
         
+        # eidikothta
         eidikothta = filename[:-4]
+        
+        # sxoliko etos
         year = suffix[6:][:-5]
         sxoliko_etos = year + '-' + str(int(year) + 1)
         
         full_path = 'data' + '/' + sxoliko_etos + path_pinaka
-        
         if not os.path.exists(full_path):
             try:
                 os.makedirs(full_path)
@@ -115,15 +121,20 @@ class Parser:
                 if exc.errno != errno.EEXIST:
                     raise
         
+        # download table
         if not os.path.isfile(full_path + filename):
             response = requests.get(url)
             with open(full_path + filename, 'wb') as output:
                 output.write(response.content)
             print('Downloaded')
-        else: 
-            print('Already there')      
             
-        print(filename, path_pinaka, kathgoria, eidikothta, path_pinaka.rsplit('/')[-1])
+        else: 
+            print('Already there')   
+               
+        try:
+            print(filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
+        except NameError:
+            print(filename, path_pinaka, kathgoria, eidikothta, '!hmeromhnia')
     
         
     def find_kathgoria(self, kathgoria):
