@@ -42,7 +42,7 @@ class Eidikothta(Base):
 
     id = Column("eidikothta_id", Integer, primary_key=True)
     kodikos_eidikothtas = Column("kodikos_eidikothtas", String, nullable=False)
-    lektiko_eidikothtas = Column("lektiko_eidikothtas", String, nullable=False)
+    lektiko_eidikothtas = Column("lektiko_eidikothtas", String, nullable=True)
 
     # relationships
     pinakes = relationship("Pinakas", back_populates="eidikothta")
