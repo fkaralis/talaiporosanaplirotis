@@ -4,6 +4,10 @@ import re
 import os
 from bs4 import BeautifulSoup
 import requests
+import sqlite3
+
+conn = sqlite3.connect('talaiporosanaplirotis.sqlite')
+cur = conn.cursor()
 
 class Parser:
 
@@ -102,6 +106,7 @@ class Parser:
         if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
             hmeromhnia = path_pinaka.rsplit('/')[-2]
             #print(hmeromhnia)
+            
         
         # kathgoria
         kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
@@ -121,12 +126,24 @@ class Parser:
                 if exc.errno != errno.EEXIST:
                     raise
         
-        # download table
+        # download table and create table
         if not os.path.isfile(full_path + filename):
             response = requests.get(url)
             with open(full_path + filename, 'wb') as output:
                 output.write(response.content)
             print('Downloaded')
+            
+            # fill in DB and pinakas
+            cur.execute('INSERT OR IGNORE INTO kathgoria (lektiko_kathgorias) VALUES (?)', (kathgoria,))
+            cur.execute('INSERT OR IGNORE INTO eidikothta (kodikos_eidikothtas) VALUES (?)', (eidikothta,))
+            cur.execute('INSERT OR IGNORE INTO sxoliko_etos (lektiko_sxolikoy_etoys) VALUES (?)', (sxoliko_etos,))
+            try:
+                cur.execute('INSERT OR IGNORE INTO hmeromhnia (lektiko_hmeromhnias) VALUES (?)', (hmeromhnia,))
+            except NameError:
+                print('no hmeromhnia to insert')
+            conn.commit()
+            
+
             
         else: 
             print('Already there')   
