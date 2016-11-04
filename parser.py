@@ -200,7 +200,7 @@ class Parser:
             # create new Pinakas
             new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id, 
                                   kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id, 
-                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = path_pinaka)
+                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = full_path)
             session.add(new_pinakas)
             session.commit()
            
