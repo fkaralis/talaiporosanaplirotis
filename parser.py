@@ -4,6 +4,7 @@ import re
 import os
 from bs4 import BeautifulSoup
 import requests
+import datetime
 
 import sqlalchemy
 
@@ -113,26 +114,21 @@ class Parser:
         # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
         
-        # Hmeromhnia(if exists)
+        # Hmeromhnia
         if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
             hmeromhnia = path_pinaka.rsplit('/')[-2]
-            try:         
-                new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
-                session.add(new_hmeromhnia)
-                session.commit()
-            except sqlalchemy.exc.IntegrityError:
-                session.rollback()
-                print(hmeromhnia, 'already there')
         else:
-            hmeromhnia = '00000000'
-            try:         
-                new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
-                session.add(new_hmeromhnia)
-                session.commit()
-            except sqlalchemy.exc.IntegrityError:
-                session.rollback()
-                print(hmeromhnia, 'already there')
-            
+            hmeromhnia = '10101010'     # if no date in path
+        
+        try:         
+            new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
+            new_hmeromhnia.real_hmeromhnia = datetime.datetime.strptime(hmeromhnia, "%Y%m%d").date()
+            session.add(new_hmeromhnia)
+            session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            session.rollback()
+            print(hmeromhnia, 'already there')
+        
         # Kathgoria
         kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
         try:
@@ -179,11 +175,11 @@ class Parser:
         if not os.path.exists(full_path):
             try:
                 os.makedirs(full_path)
-            except OSError as exc: # Guard against race condition (me: ??)
+            except OSError as exc: # Guard against race condition (??)
                 if exc.errno != errno.EEXIST:
                     raise
         
-        # download table and create table
+        # download table and create pinakas in DB
         if not os.path.isfile(full_path + filename):
             response = requests.get(url)
             with open(full_path + filename, 'wb') as output:
@@ -200,7 +196,8 @@ class Parser:
             # create new Pinakas
             new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id, 
                                   kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id, 
-                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = full_path)
+                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = full_path, 
+                                  url_pinaka = url)
             session.add(new_pinakas)
             session.commit()
            
