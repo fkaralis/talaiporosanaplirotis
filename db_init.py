@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey
 from sqlalchemy.schema import MetaData
 from sqlalchemy.ext.declarative import declarative_base
+from enum import unique
 
 
 convention = {
@@ -61,6 +62,8 @@ class Hmeromhnia(Base):
     
     id = Column("hmeromhnia_id", Integer, primary_key=True)
     lektiko_hmeromhnias = Column("lektiko_hmeromhnias", String, nullable=False, unique=True)
+    real_hmeromhnia = Column("real_hmeromhnia", Date, nullable=False, unique=True)
+    
     
     # relationships
     #pinakes = relationship("Pinakas", back_populates="hmeromhnia")
@@ -77,6 +80,7 @@ class Pinakas(Base):
     hmeromhnia_id = Column(Integer, ForeignKey('hmeromhnia.hmeromhnia_id'))
     
     path_pinaka = Column("path_pinaka", String, nullable=False)
+    url_pinaka = Column("url_pinaka", String, nullable=False, unique=True)
     
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
     kathgoria = relationship("Kathgoria", back_populates="pinakes")
