@@ -4,10 +4,19 @@ import re
 import os
 from bs4 import BeautifulSoup
 import requests
-import sqlite3
 
-conn = sqlite3.connect('talaiporosanaplirotis.sqlite')
-cur = conn.cursor()
+import sqlalchemy
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import exists
+
+from db_init import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas, Base 
+
+engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 class Parser:
 
@@ -36,7 +45,7 @@ class Parser:
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
     
-        if (url.endswith('xls') or (url.endswith('.html') and 'index' not in url)):
+        if (url.endswith('xls') or url.endswith('xlsx') or (url.endswith('.html') and 'index' not in url)):
             filename = url.rsplit('/')[-1]
             msg = 'Found table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
@@ -95,29 +104,77 @@ class Parser:
         return url
     
     def download_table(self, url, suffix):
-        # get attributes for Pinakas
+        # get attributes for Pinakas 
+        # and fill DB Hmeromhnia, Kathgoria, Eidikothta, Sxoliko_etos
+        
         # lektiko_pinaka
         filename = url.rsplit('/')[-1]
         
         # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
         
-        # hmeromhnia(if exists)
+        # Hmeromhnia(if exists)
         if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
             hmeromhnia = path_pinaka.rsplit('/')[-2]
-            #print(hmeromhnia)
+            try:         
+                new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
+                session.add(new_hmeromhnia)
+                session.commit()
+            except sqlalchemy.exc.IntegrityError:
+                session.rollback()
+                print(hmeromhnia, 'already there')
+        else:
+            hmeromhnia = '00000000'
+            try:         
+                new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
+                session.add(new_hmeromhnia)
+                session.commit()
+            except sqlalchemy.exc.IntegrityError:
+                session.rollback()
+                print(hmeromhnia, 'already there')
             
-        
-        # kathgoria
+        # Kathgoria
         kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
+        try:
+            new_kathgoria = Kathgoria(lektiko_kathgorias = kathgoria)
+            session.add(new_kathgoria)
+            session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            session.rollback()
+            print(kathgoria, 'already there')
         
-        # eidikothta
-        eidikothta = filename[:-4]
+        # Eidikothta
+        if url.endswith('xls'): 
+            eidikothta = filename[:-4]
+        elif  (url.endswith('xlsx') or (url.endswith('html') and 'index' not in url)):
+            eidikothta = filename[:-5]
+        try:
+            new_eidikothta = Eidikothta(kodikos_eidikothtas = eidikothta)
+            session.add(new_eidikothta)
+            session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            session.rollback()
+            print(eidikothta, 'already there')
         
-        # sxoliko etos
+        # Sxoliko etos
         year = suffix[6:][:-5]
         sxoliko_etos = year + '-' + str(int(year) + 1)
+        try:
+            new_sxoliko_etos = Sxoliko_etos(lektiko_sxolikoy_etoys = sxoliko_etos)
+            session.add(new_sxoliko_etos)
+            session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            session.rollback()
+            print(sxoliko_etos, 'already there')
+            
+        new_sxoliko_etos = session.query(Sxoliko_etos).filter(Sxoliko_etos.lektiko_sxolikoy_etoys == sxoliko_etos).one()
+        new_eidikothta = session.query(Eidikothta).filter(Eidikothta.kodikos_eidikothtas == eidikothta).one()
+        new_kathgoria = session.query(Kathgoria).filter(Kathgoria.lektiko_kathgorias == kathgoria).one()
+        new_hmeromhnia = session.query(Hmeromhnia).filter(Hmeromhnia.lektiko_hmeromhnias == hmeromhnia).one()
         
+        print(filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
+        
+        # create path if not exists
         full_path = 'data' + '/' + sxoliko_etos + path_pinaka
         if not os.path.exists(full_path):
             try:
@@ -133,25 +190,23 @@ class Parser:
                 output.write(response.content)
             print('Downloaded')
             
-            # fill in DB and pinakas
-            cur.execute('INSERT OR IGNORE INTO kathgoria (lektiko_kathgorias) VALUES (?)', (kathgoria,))
-            cur.execute('INSERT OR IGNORE INTO eidikothta (kodikos_eidikothtas) VALUES (?)', (eidikothta,))
-            cur.execute('INSERT OR IGNORE INTO sxoliko_etos (lektiko_sxolikoy_etoys) VALUES (?)', (sxoliko_etos,))
-            try:
-                cur.execute('INSERT OR IGNORE INTO hmeromhnia (lektiko_hmeromhnias) VALUES (?)', (hmeromhnia,))
-            except NameError:
-                print('no hmeromhnia to insert')
-            conn.commit()
+            # fill Pinakas
+            # get id's for Pinakas
+            hmeromhnia_id = new_hmeromhnia.id
+            kathgoria_id = new_kathgoria.id
+            eidikothta_id = new_eidikothta.id
+            sxoliko_etos_id = new_sxoliko_etos.id
             
-
-            
+            # create new Pinakas
+            new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id, 
+                                  kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id, 
+                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = path_pinaka)
+            session.add(new_pinakas)
+            session.commit()
+           
         else: 
-            print('Already there')   
+            print('Pinakas already there')   
                
-        try:
-            print(filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
-        except NameError:
-            print(filename, path_pinaka, kathgoria, eidikothta, '!hmeromhnia')
     
         
     def find_kathgoria(self, kathgoria):
