@@ -117,10 +117,14 @@ class Parser:
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
         
         # Hmeromhnia
-        if path_pinaka.rsplit('/')[-2].isdigit():      # date in path pinaka
+        if path_pinaka.rsplit('/')[-2].isdigit():      # date YYYYMMDD in path pinaka
             hmeromhnia = path_pinaka.rsplit('/')[-2]
+        elif path_pinaka.rsplit('/')[-2][:8].isdigit():     # date YYYYMMDD(a/b)
+            hmeromhnia = path_pinaka.rsplit('/')[-2][:8]
+        elif path_pinaka.rsplit('/')[-3].isdigit():      # smea date 2015 in other position
+            hmeromhnia = path_pinaka.rsplit('/')[-3]
         else:
-            hmeromhnia = '10101010'     # if no date in path
+            hmeromhnia = '10101010'     # no date in path
         
         try:         
             new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
