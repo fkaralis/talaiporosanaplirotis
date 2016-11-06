@@ -46,7 +46,7 @@ class Parser:
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
     
-        if (url.endswith('xls') or url.endswith('xlsx') or (url.endswith('.html') and 'index' not in url)):
+        if (url.endswith('xls') or url.endswith('xlsx') or url.endswith('gz') or (url.endswith('.html') and 'index' not in url)):
             filename = url.rsplit('/')[-1]
             msg = 'Found table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
@@ -54,13 +54,7 @@ class Parser:
             
             self.tables[len(self.tables)+1] = url
             self.log.write(msg)
-        
-        elif url.endswith('gz'):
-            filename = url.rsplit('/')[-1]
-            msg = 'Found gz table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-            self.tables[len(self.tables)+1] = url
-            self.log.write(msg)
-    
+            
         elif ('index' in url and 'old' not in url) or url.endswith('/'):
             msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
             self.log.write(msg)
@@ -144,6 +138,8 @@ class Parser:
             eidikothta = filename[:-4]
         elif  (url.endswith('xlsx') or (url.endswith('html') and 'index' not in url)):
             eidikothta = filename[:-5]
+        elif url.endswith('gz'):
+            eidikothta = filename[:-10]
         try:
             new_eidikothta = Eidikothta(kodikos_eidikothtas = eidikothta)
             session.add(new_eidikothta)
