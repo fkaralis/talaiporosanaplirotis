@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
 from db_init import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas, Base 
+from requests import sessions
 
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
 Base.metadata.bind = engine
@@ -46,11 +47,18 @@ class Parser:
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
     
-        if (url.endswith('xls') or url.endswith('xlsx') or url.endswith('gz') or (url.endswith('.html') and 'index' not in url)):
+        if (url.endswith('xls') or url.endswith('xlsx') or url.endswith('gz')):
             filename = url.rsplit('/')[-1]
             msg = 'Found table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
             self.download_table(url, suffix)
+            
+            self.tables[len(self.tables)+1] = url
+            self.log.write(msg)
+        
+        elif ((url.endswith('.html') and 'index' not in url)):
+            filename = url.rsplit('/')[-1]
+            msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
             self.tables[len(self.tables)+1] = url
             self.log.write(msg)
@@ -188,7 +196,7 @@ class Parser:
             kathgoria_id = new_kathgoria.id
             eidikothta_id = new_eidikothta.id
             sxoliko_etos_id = new_sxoliko_etos.id
-            
+                            
             # create new Pinakas
             new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id, 
                                   kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id, 
