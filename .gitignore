@@ -95,8 +95,7 @@ scripts/
 .settings/
 .project
 .pydevproject
-talaiporosanaplirotis.db
-talaiporosanaplirotis.sqlite
+talaiporosanaplirotis.*
 data/
 20*/
 test*
