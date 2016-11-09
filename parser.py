@@ -146,7 +146,9 @@ class Parser:
             print(kathgoria, 'already there')
         
         # Eidikothta
-        if url.endswith('xls'): 
+        if kathgoria == 'oromisthioi_defterovathmias':      # oromisthioi_defterovathmias --> perioxes protimhseis
+            eidikothta = path_pinaka.rsplit('/')[-2]
+        elif url.endswith('xls'):   # usual case
             eidikothta = filename[:-4]
         elif  (url.endswith('xlsx') or (url.endswith('html') and 'index' not in url)):
             eidikothta = filename[:-5]
@@ -201,7 +203,7 @@ class Parser:
             eidikothta_id = new_eidikothta.id
             sxoliko_etos_id = new_sxoliko_etos.id
                             
-            # create new Pinakas
+            # create new Pinakas            
             new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id, 
                                   kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id, 
                                   hmeromhnia_id = hmeromhnia_id, path_pinaka = full_path, 
