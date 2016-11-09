@@ -60,6 +60,9 @@ class Parser:
             filename = url.rsplit('/')[-1]
             msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
+            if 'eniaioidior' in url:
+                self.download_table(url, suffix)
+            
             self.tables[len(self.tables)+1] = url
             self.log.write(msg)
             
@@ -85,7 +88,7 @@ class Parser:
         return url + '/' + href
 
     def fix_url(self, url, suffix):
-        if suffix in url:       # initial index,html
+        if suffix in url:       # initial index.html
             list = url.split(suffix)
             url = ''.join(list)
     
