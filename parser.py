@@ -60,7 +60,9 @@ class Parser:
             filename = url.rsplit('/')[-1]
             msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
             
-            if 'eniaioidior' in url:
+            if (('eniaioidior' in url) or ('eniaios_diorismwn_12' in url) or ('specialcat' in url)  # only html 
+                or ('eniaiosp_2012' in url) or ('eniaiosp_zero_2012' in url)                        # tables there
+                or ('eniaiosd_2012' in url) or ('eniaiosd_zero_2012' in url)):
                 self.download_table(url, suffix)
             
             self.tables[len(self.tables)+1] = url
@@ -231,7 +233,7 @@ class Parser:
             
         # diorismoi eidikh kathgoria
         elif kathgoria.startswith('specialcat'):
-            kathgoria = diorismwn_eidikh_kathgoria
+            kathgoria = 'diorismwn_eidikh_kathgoria'
             
         # eniaioi a/b-thmias
         elif kathgoria.startswith('eniaiosp'):
