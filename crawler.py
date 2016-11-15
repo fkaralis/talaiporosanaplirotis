@@ -14,10 +14,10 @@ from parser import *
 
 def main(year):
     parser = Parser()
-    
+
     school_year = year + '-' + str(int(year) + 1)
     suffix = '/index' + year + '.html'
-    
+
     # create folder
     if not os.path.exists(school_year):
         try:
