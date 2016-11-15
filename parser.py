@@ -12,8 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
-from db_init import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas, Base 
-from requests import sessions
+from db_init import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas, Base
 
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
 Base.metadata.bind = engine
