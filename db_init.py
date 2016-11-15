@@ -13,7 +13,6 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey
 from sqlalchemy.schema import MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from enum import unique
 
 
 convention = {
