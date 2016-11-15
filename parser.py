@@ -119,14 +119,15 @@ class Parser:
         
         # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
+        path_pinaka_parts = path_pinaka.rsplit('/')
         
         # Hmeromhnia
-        if path_pinaka.rsplit('/')[-2].isdigit():      # date YYYYMMDD in path pinaka
-            hmeromhnia = path_pinaka.rsplit('/')[-2]
-        elif path_pinaka.rsplit('/')[-2][:8].isdigit():     # date YYYYMMDD(a/b)
-            hmeromhnia = path_pinaka.rsplit('/')[-2][:8]
-        elif path_pinaka.rsplit('/')[-3].isdigit():      # smea date 2015 in other position
-            hmeromhnia = path_pinaka.rsplit('/')[-3]
+        if path_pinaka_parts[-2].isdigit():      # date YYYYMMDD in path pinaka
+            hmeromhnia = path_pinaka_parts[-2]
+        elif path_pinaka_parts[-2][:8].isdigit():     # date YYYYMMDD(a/b)
+            hmeromhnia = path_pinaka_parts[-2][:8]
+        elif path_pinaka_parts[-3].isdigit():      # smea date 2015 in other position
+            hmeromhnia = path_pinaka_parts[-3]
         else:
             hmeromhnia = '10101010'     # no date in path
         
@@ -151,7 +152,7 @@ class Parser:
         
         # Eidikothta
         if kathgoria == 'oromisthioi_defterovathmias':      # oromisthioi_defterovathmias --> perioxes protimhseis
-            eidikothta = path_pinaka.rsplit('/')[-2]
+            eidikothta = path_pinaka_parts[-2]
         elif url.endswith('xls'):   # usual case
             eidikothta = filename[:-4]
         elif  (url.endswith('xlsx') or (url.endswith('html') and 'index' not in url)):
