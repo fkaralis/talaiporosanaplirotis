@@ -59,10 +59,12 @@ class Parser:
             filename = url.rsplit('/')[-1]
             msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
 
-            # 2012 only html tables links
+            # only html tables (2012 and back)
             valid_names = [
                 'eniaioidior',
-                'eniaios_diorismwn_12',
+                'eniaios_diorismwn',
+                'triantamino',
+                'eikositetramino',
                 'specialcat',
                 'eniaiosp_2012',
                 'eniaiosp_zero_2012',
