@@ -8,24 +8,29 @@
 import os
 import os.path
 import sys
+import json
+import logging
+import logging.config
+
+# read settings
+with open("settings.json", "r", encoding="utf-8") as fd:
+    settings = json.load(fd)
+
+# Setup logging. you need to do this before importing the main module
+logging.config.dictConfig(settings["logging"])
+logger = logging.getLogger("crawler")
 
 from parser import Parser
 
 def main(year):
-    parser = Parser()
+    school_year = "%s-%d" % (year, int(year) + 1)
+    logger.info("Starting parsing: %s", school_year)
 
-    school_year = year + '-' + str(int(year) + 1)
+    parser = Parser(year)
     suffix = '/index' + year + '.html'
 
     # ensure that destination dir exists
     os.makedirs(school_year, exist_ok=True)
-
-    # create log file
-    log_filename = school_year + '/log ' + school_year + '.txt'
-    parser.log = open(log_filename, 'w')
-    msg = 'Crawling through school year ' + school_year + '\n'
-    print(msg.rstrip())
-    parser.log.write(msg)
 
     # parse initial url
     url = 'http://e-aitisi.sch.gr'
@@ -33,10 +38,8 @@ def main(year):
         url += suffix
     parser.parse_url(url, suffix)
 
-    # end output
-    msg = '\nDone\n\nFound ' + str(len(parser.links)) + ' links and ' + str(len(parser.tables)) + ' tables'
-    parser.log.write(msg)
-    print(msg)
+    logger.info("Finished parsing: %s", school_year)
+    logger.info("Found %d links %d tables", len(parser.links), len(parser.tables))
 
 
 if __name__ == "__main__":

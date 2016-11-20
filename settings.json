@@ -1,0 +1,69 @@
+{
+  "logging": {
+    "version": 1,
+    "disable_existing_loggers": true,
+    "formatters": {
+      "brief": {
+          "class": "logging.Formatter",
+          "datefmt": "%I:%M:%S",
+          "format": "%(levelname)-8s; %(name)-15s; %(message)s"
+      },
+      "single-line": {
+          "class": "logging.Formatter",
+          "datefmt": "%I:%M:%S",
+          "format": "%(levelname)-8s; %(asctime)s; %(name)-15s; %(module)s:%(funcName)s;%(lineno)d: %(message)s"
+      },
+      "multi-process": {
+          "class": "logging.Formatter",
+          "datefmt": "%I:%M:%S",
+          "format": "%(levelname)-8s; [%(process)d]; %(name)-15s; %(module)s:%(funcName)s;%(lineno)d: %(message)s"
+      },
+      "multi-thread": {
+          "class": "logging.Formatter",
+          "format": "%(levelname)-8s; %(asctime)s; %(threadName)9s; %(name)-5s; %(module)s:%(funcName)s;%(lineno)d: %(message)s"
+      },
+      "verbose": {
+          "class": "logging.Formatter",
+          "format": "%(levelname)-8s; [%(process)d]; %(threadName)9s; %(name)-15s; %(module)s:%(funcName)s;%(lineno)d: %(message)s"
+      },
+      "multiline": {
+          "class": "logging.Formatter",
+          "format": "Level: %(levelname)s\nTime: %(asctime)s\nProcess: %(process)d\nThread: %(threadName)s\nLogger: %(name)s\nPath: %(pathname)s:%(lineno)d\nFunction :%(funcName)s\nMessage: %(message)s\n"
+      }
+    },
+    "handlers": {
+      "console":{
+          "level": "DEBUG",
+          "class": "logging.StreamHandler",
+          "formatter": "single-line",
+          "stream" : "ext://sys.stdout"
+      },
+      "file_handler": {
+          "level": "INFO",
+          "class": "logging.handlers.WatchedFileHandler",
+          "formatter": "verbose",
+          "filename": "./full.log",
+          "mode": "a",
+          "encoding": "utf-8"
+      },
+      "smtp": {
+          "level": "ERROR",
+          "class": "logging.handlers.SMTPHandler",
+          "formatter": "multiline",
+          "mailhost": ["127.0.0.1", 25],
+          "fromaddr": "sender@example.com",
+          "toaddrs": ["recipient@example.com"],
+          "subject": "Something went wrong"
+      }
+    },
+    "loggers": {
+      "requests": {
+        "level": "WARNING"
+      }
+    },
+    "root": {
+      "handlers": ["console", "file_handler"],
+      "level": "DEBUG"
+    }
+  }
+}

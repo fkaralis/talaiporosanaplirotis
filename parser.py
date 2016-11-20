@@ -5,6 +5,7 @@ import os
 from bs4 import BeautifulSoup
 import requests
 import datetime
+import logging
 
 import sqlalchemy
 
@@ -21,11 +22,19 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+logger = logging.getLogger("parser")
+
+
 class Parser:
 
-    links = {}
-    tables = {}
-    log = None
+    def __init__(self, year, url='http://e-aitisi.sch.gr'):
+        self.year = year
+        self.suffix = '/index%s.html' % year
+        if year != '2016':
+            url += suffix
+        self.url = url
+        self.links = {}
+        self.tables = {}
 
     def parse_url(self, url, suffix):
         html = requests.get(url)
@@ -50,17 +59,12 @@ class Parser:
 
         if (url.endswith('xls') or url.endswith('xlsx') or url.endswith('gz')):
             filename = url.rsplit('/')[-1]
-            msg = 'Found table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-
             self.download_table(url, suffix)
-
             self.tables[len(self.tables)+1] = url
-            self.log.write(msg)
+            logger.info("Found table: %s %s <%r>", filename, url, tag.contents)
 
         elif ((url.endswith('.html') and 'index' not in url)):
             filename = url.rsplit('/')[-1]
-            msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-
             # only html tables (2012 and back)
             valid_names = [
                 'eniaioidior',
@@ -75,24 +79,21 @@ class Parser:
             ]
             if any(name in url for name in valid_names):
                 self.download_table(url, suffix)
-
             self.tables[len(self.tables)+1] = url
-            self.log.write(msg)
+            logger.info("Found html table: %s %s <%r>", filename, url, tag.contents)
 
         elif ('index' in url and 'old' not in url) or url.endswith('/'):
-            msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
-            self.log.write(msg)
+            logger.info("Found old link: %s <%r>", url, tag.contents)
             self.links[len(self.links)+1] = url
             if url == 'http://e-aitisi.sch.gr/triantamino_07/index.html':
-                self.log.write('Crazy 2007 link to 2016 index\n')
+                logger.warning('Crazy 2007 link to 2016 index\n')
             elif url == 'http://e-aitisi.sch.gr/eniaios_smea_orom_11_B/index.html':
-                self.log.write('Crazy 2011 link to 2013 index\n')
+                logger.warning('Crazy 2011 link to 2013 index\n')
             else:
                 self.parse_url(url, suffix)
 
         else:
-            msg = '--Not xls, html, or gz ' + url + ' ' + str(tag.contents) + '\n'
-            self.log.write(msg)
+            logger.info("Not xls, html or gz %s <%r>", url, tag.contents)
 
 
     def create_url(self, url, href):
@@ -180,7 +181,8 @@ class Parser:
             lektiko_sxolikoy_etoys=sxoliko_etos
         )
 
-        print(filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
+        logger.debug("fn: %s; pt: %s; kat: %s; eid: %s; hme: %s",
+                     filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
 
         # create path if not exists
         full_path = 'data' + '/' + sxoliko_etos + path_pinaka
@@ -191,7 +193,7 @@ class Parser:
             response = requests.get(url)
             with open(full_path + filename, 'wb') as output:
                 output.write(response.content)
-            print('Downloaded')
+            logger.info('Downloaded')
             # fill Pinakas
             get_one_or_create(
                 session,
@@ -206,7 +208,7 @@ class Parser:
             )
 
         else:
-            print('Pinakas already there')
+            logger.info('Pinakas already there')
 
 
     def find_kathgoria(self, kathgoria):
