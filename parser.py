@@ -12,7 +12,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
-from db import Base, Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
+from db import Base, get_one_or_create
+from db import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
+
 
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
 Base.metadata.bind = engine
@@ -140,25 +142,19 @@ class Parser:
             hmeromhnia = path_pinaka_parts[-3]
         else:
             hmeromhnia = '10101010'     # no date in path
+        new_hmeromhnia, _ = get_one_or_create(
+            session,
+            Hmeromhnia,
+            lektiko_hmeromhnias=hmeromhnia,
+            real_hmeromhnia=datetime.datetime.strptime(hmeromhnia, "%Y%m%d").date()
+        )
 
-        try:
-            new_hmeromhnia = Hmeromhnia(lektiko_hmeromhnias = hmeromhnia)
-            new_hmeromhnia.real_hmeromhnia = datetime.datetime.strptime(hmeromhnia, "%Y%m%d").date()
-            session.add(new_hmeromhnia)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            session.rollback()
-            print(hmeromhnia, 'already there')
-
-        # Kathgoria
         kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
-        try:
-            new_kathgoria = Kathgoria(lektiko_kathgorias = kathgoria)
-            session.add(new_kathgoria)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            session.rollback()
-            print(kathgoria, 'already there')
+        new_kathgoria, _ = get_one_or_create(
+            session,
+            Kathgoria,
+            lektiko_kathgorias=kathgoria,
+        )
 
         # Eidikothta
         if kathgoria == 'oromisthioi_defterovathmias':      # oromisthioi_defterovathmias --> perioxes protimhseis
@@ -169,29 +165,20 @@ class Parser:
             eidikothta = filename[:-5]
         elif url.endswith('gz'):
             eidikothta = filename[:-10]
-        try:
-            new_eidikothta = Eidikothta(kodikos_eidikothtas = eidikothta)
-            session.add(new_eidikothta)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            session.rollback()
-            print(eidikothta, 'already there')
+        new_eidikothta, _ = get_one_or_create(
+            session,
+            Eidikothta,
+            kodikos_eidikothtas=eidikothta,
+        )
 
-        # Sxoliko etos
+        # # Sxoliko etos
         year = suffix[6:][:-5]
         sxoliko_etos = year + '-' + str(int(year) + 1)
-        try:
-            new_sxoliko_etos = Sxoliko_etos(lektiko_sxolikoy_etoys = sxoliko_etos)
-            session.add(new_sxoliko_etos)
-            session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            session.rollback()
-            print(sxoliko_etos, 'already there')
-
-        new_sxoliko_etos = session.query(Sxoliko_etos).filter(Sxoliko_etos.lektiko_sxolikoy_etoys == sxoliko_etos).one()
-        new_eidikothta = session.query(Eidikothta).filter(Eidikothta.kodikos_eidikothtas == eidikothta).one()
-        new_kathgoria = session.query(Kathgoria).filter(Kathgoria.lektiko_kathgorias == kathgoria).one()
-        new_hmeromhnia = session.query(Hmeromhnia).filter(Hmeromhnia.lektiko_hmeromhnias == hmeromhnia).one()
+        new_sxoliko_etos, _ = get_one_or_create(
+            session,
+            Sxoliko_etos,
+            lektiko_sxolikoy_etoys=sxoliko_etos
+        )
 
         print(filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
 
@@ -210,21 +197,18 @@ class Parser:
             with open(full_path + filename, 'wb') as output:
                 output.write(response.content)
             print('Downloaded')
-
             # fill Pinakas
-            # get id's for Pinakas
-            hmeromhnia_id = new_hmeromhnia.id
-            kathgoria_id = new_kathgoria.id
-            eidikothta_id = new_eidikothta.id
-            sxoliko_etos_id = new_sxoliko_etos.id
-
-            # create new Pinakas
-            new_pinakas = Pinakas(lektiko_pinaka = filename, sxoliko_etos_id = sxoliko_etos_id,
-                                  kathgoria_id = kathgoria_id, eidikothta_id = eidikothta_id,
-                                  hmeromhnia_id = hmeromhnia_id, path_pinaka = full_path,
-                                  url_pinaka = url)
-            session.add(new_pinakas)
-            session.commit()
+            get_one_or_create(
+                session,
+                Pinakas,
+                lektiko_pinaka=filename,
+                sxoliko_etos_id=new_sxoliko_etos.id,
+                kathgoria_id=new_kathgoria.id,
+                eidikothta_id=new_eidikothta.id,
+                hmeromhnia_id=new_hmeromhnia.id,
+                path_pinaka=full_path,
+                url_pinaka=url
+            )
 
         else:
             print('Pinakas already there')
