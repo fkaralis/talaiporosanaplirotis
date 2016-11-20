@@ -17,13 +17,8 @@ def main(year):
     school_year = year + '-' + str(int(year) + 1)
     suffix = '/index' + year + '.html'
 
-    # create folder
-    if not os.path.exists(school_year):
-        try:
-            os.makedirs(school_year)
-        except OSError as exc: # Guard against race condition (me: ??)
-            if exc.errno != errno.EEXIST:
-                raise
+    # ensure that destination dir exists
+    os.makedirs(school_year, exist_ok=True)
 
     # create log file
     log_filename = school_year + '/log ' + school_year + '.txt'

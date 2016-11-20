@@ -184,12 +184,7 @@ class Parser:
 
         # create path if not exists
         full_path = 'data' + '/' + sxoliko_etos + path_pinaka
-        if not os.path.exists(full_path):
-            try:
-                os.makedirs(full_path)
-            except OSError as exc: # Guard against race condition (??)
-                if exc.errno != errno.EEXIST:
-                    raise
+        os.makedirs(full_path, exist_ok=True)
 
         # download table and create pinakas in DB
         if not os.path.isfile(full_path + filename):
