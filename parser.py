@@ -56,26 +56,32 @@ class Parser:
             self.log.write(msg)
 
         elif ((url.endswith('.html') and 'index' not in url)):
-            filename = url.rsplit('/')[-1]
-            msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
-
-            # only html tables (2012 and back)
-            valid_names = [
-                'eniaioidior',
-                'eniaios_diorismwn',
-                'triantamino',
-                'eikositetramino',
-                'specialcat',
-                'eniaiosp_2012',
-                'eniaiosp_zero_2012',
-                'eniaiosd_2012',
-                'eniaiosd_zero_2012',
-            ]
-            if any(name in url for name in valid_names):
-                self.download_table(url, suffix)
-
-            self.tables[len(self.tables)+1] = url
-            self.log.write(msg)
+            if any(url.endswith(suf) for suf in ['DE.html','TE.html']):    # 2006 and back, DE and TE indexes
+                msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
+                self.log.write(msg)
+                self.links[len(self.links)+1] = url
+                self.parse_url(url, suffix)
+            else:
+                filename = url.rsplit('/')[-1]
+                msg = 'Found html table: ' + filename + ' ' + url + ' ' + str(tag.contents) + '\n'
+    
+                # only html tables (2012 and back)
+                valid_names = [
+                    'eniaioidior',
+                    'eniaios_diorismwn',
+                    'triantamino',
+                    'eikositetramino',
+                    'specialcat',
+                    'eniaiosp_2012',
+                    'eniaiosp_zero_2012',
+                    'eniaiosd_2012',
+                    'eniaiosd_zero_2012',
+                ]
+                if any(name in url for name in valid_names):
+                    self.download_table(url, suffix)
+    
+                self.tables[len(self.tables)+1] = url
+                self.log.write(msg)
 
         elif ('index' in url and 'old' not in url) or url.endswith('/'):
             msg = '------------------\nFound link: ' + url + ' ' + str(tag.contents) + '\n'
