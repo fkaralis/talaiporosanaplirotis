@@ -2,30 +2,14 @@
 # -*- coding: utf-8 -*-
 # module:
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import absolute_import
+"""
 
-import datetime
+"""
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey
-from sqlalchemy.schema import MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
-
-convention = {
-  "ix": 'ix_%(column_0_label)s',
-  "uq": "uq_%(table_name)s_%(column_0_name)s",
-  "ck": "ck_%(table_name)s_%(constraint_name)s",
-  "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-  "pk": "pk_%(table_name)s"
-}
-
-
-metadata = MetaData(naming_convention=convention)
-Base = declarative_base(metadata=metadata)
+from . import Base
 
 
 class Kathgoria(Base):
@@ -37,6 +21,7 @@ class Kathgoria(Base):
     # relationships
     pinakes = relationship("Pinakas", back_populates="kathgoria")
 
+
 class Eidikothta(Base):
     __tablename__ = "eidikothta"
 
@@ -47,6 +32,7 @@ class Eidikothta(Base):
     # relationships
     pinakes = relationship("Pinakas", back_populates="eidikothta")
 
+
 class Sxoliko_etos(Base):
     __tablename__ = "sxoliko_etos"
 
@@ -55,6 +41,7 @@ class Sxoliko_etos(Base):
 
     # relationships
     pinakes = relationship("Pinakas", back_populates="sxoliko_etos")
+
 
 class Hmeromhnia(Base):
     __tablename__ = "hmeromhnia"
@@ -66,6 +53,7 @@ class Hmeromhnia(Base):
 
     # relationships
     #pinakes = relationship("Pinakas", back_populates="hmeromhnia")
+
 
 class Pinakas(Base):
     __tablename__ = "pinakas"
@@ -87,10 +75,11 @@ class Pinakas(Base):
     #hmeromhnia = relationship("Hmeromhnia", back_populates="pinakes")
 
 
-#engine = create_engine('sqlite:///:memory:', echo=True)
-engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
-#Session = sessionmaker(bind=engine)
-#session = Session()
-
-Base.metadata.create_all(engine)
+__all__ = [
+    "Kathgoria",
+    "Eidikothta",
+    "Sxoliko_etos",
+    "Hmeromhnia",
+    "Pinakas",
+]
 
