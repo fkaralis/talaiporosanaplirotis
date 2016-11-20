@@ -9,8 +9,7 @@ import os
 import os.path
 import sys
 
-import parser
-from parser import *
+from parser import Parser
 
 def main(year):
     parser = Parser()
