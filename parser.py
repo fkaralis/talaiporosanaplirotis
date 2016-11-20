@@ -100,23 +100,23 @@ class Parser:
 
     def fix_url(self, url, suffix):
         if suffix in url:       # initial index.html
-            list = url.split(suffix)
-            url = ''.join(list)
+            url_parts = url.split(suffix)
+            url = ''.join(url_parts)
 
         rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html',
                                '/indexABg.html', '/indexCg.html', '/indexGg.html']
         if any(x in url for x in rogue_suffixes):       # 2003-4
             splitter = re.search('/index.+?\.html', url).group(0)
-            list = url.split(splitter)
-            url = ''.join(list)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
         if '-index.html' in url:        # ~2010 tadmon(TAD/ETAD)
             splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
-            list = url.split(splitter)
-            url = ''.join(list)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
         if '_13/indexdior.html' in url:     # 2013
             splitter = re.search('/indexdior.html', url).group(0)
-            list = url.split(splitter)
-            url = ''.join(list)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
 
         return url
 
