@@ -76,6 +76,7 @@ class Parser:
                     'eniaiosp_zero_2012',
                     'eniaiosd_2012',
                     'eniaiosd_zero_2012',
+                    'eniaios_bthmias_2003',
                 ]
                 if any(name in url for name in valid_names):
                     self.download_table(url, suffix)
