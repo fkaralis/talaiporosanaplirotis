@@ -53,7 +53,7 @@ class Parser:
 
 
     def parse_link(self, url, tag, suffix):
-    
+
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
 
@@ -64,23 +64,32 @@ class Parser:
             logger.info("Found table: %s %s <%r>", filename, url, tag.contents)
 
         elif ((url.endswith('.html') and 'index' not in url)):
-            filename = url.rsplit('/')[-1]
-            # only html tables (2012 and back)
-            valid_names = [
-                'eniaioidior',
-                'eniaios_diorismwn',
-                'triantamino',
-                'eikositetramino',
-                'specialcat',
-                'eniaiosp_2012',
-                'eniaiosp_zero_2012',
-                'eniaiosd_2012',
-                'eniaiosd_zero_2012',
-            ]
-            if any(name in url for name in valid_names):
-                self.download_table(url, suffix)
-            self.tables[len(self.tables)+1] = url
-            logger.info("Found html table: %s %s <%r>", filename, url, tag.contents)
+            if any(url.endswith(suf) for suf in ['DE.html','TE.html']):    # 2006 and back, DE and TE indexes
+                self.links[len(self.links)+1] = url
+                self.parse_url(url, suffix)
+                logger.info("------------------\nFound link: %s <%r>", url, tag.contents)
+            else:
+                filename = url.rsplit('/')[-1]
+
+                # only html tables (2012 and back)
+                valid_names = [
+                    'eniaioidior',
+                    'eniaios_diorismwn',
+                    'triantamino',
+                    'eikositetramino',
+                    'specialcat',
+                    'eniaiosp_2012',
+                    'eniaiosp_zero_2012',
+                    'eniaiosd_2012',
+                    'eniaiosd_zero_2012',
+                    'eniaios_bthmias_2003',
+                ]
+                if any(name in url for name in valid_names):
+                    self.download_table(url, suffix)
+
+                self.tables[len(self.tables)+1] = url
+                logger.info("Found html table: %s %s <%r>", filename, url, tag.contents)
+
 
         elif ('index' in url and 'old' not in url) or url.endswith('/'):
             logger.info("Found old link: %s <%r>", url, tag.contents)
@@ -257,7 +266,7 @@ class Parser:
                 kathgoria = 'smea_oloimera'
             elif kathgoria.startswith('eniaios_smea_anap'):
                 kathgoria = 'smea_anaplirotes'
-            else: 
+            else:
                 kathgoria = 'smea_oromisthioi'
 
         # politeknoi 2009
