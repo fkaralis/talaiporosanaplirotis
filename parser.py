@@ -31,7 +31,7 @@ class Parser:
         self.year = year
         self.suffix = '/index%s.html' % year
         if year != '2016':
-            url += suffix
+            url += self.suffix
         self.url = url
         self.links = {}
         self.tables = {}
