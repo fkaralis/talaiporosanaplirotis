@@ -40,7 +40,7 @@ class Klados(Base):
 
     # relationships
     #eidikothtes = relationship("Eidikothta", back_populates="real_eidikothta_id")
-    pinakes = relationship("Pinakas", back_populates="eidikothta")
+    #pinakes = relationship("Pinakas", back_populates="eidikothta")
 
 class Eidikothta(Base):
     __tablename__ = "eidikothta"
