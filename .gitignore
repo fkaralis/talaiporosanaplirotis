@@ -91,7 +91,6 @@ ENV/
 
 proxeiro/
 __pycache__/
-scripts/
 .settings/
 .project
 .pydevproject
