@@ -22,6 +22,26 @@ class Kathgoria(Base):
     pinakes = relationship("Pinakas", back_populates="kathgoria")
 
 
+class Real_eidikothta(Base):
+    __tablename__ = "real_eidikothta"
+
+    id = Column("real_eidikothta_id", Integer, primary_key=True)
+    kodikos_real_eidikothtas = Column("kodikos_real_eidikothtas", String, nullable=False, unique=True)
+    lektiko_real_eidikothtas = Column("lektiko_real_eidikothtas", String, nullable=False)
+
+
+class Klados(Base):
+    __tablename__ = "klados"
+
+    id = Column("klados_id", Integer, primary_key=True)
+    kodikos_kladoy = Column("kodikos_kladoy", String, nullable=False, unique=True)
+    lektiko_kladoy = Column("lektiko_kladoy", String, nullable=False)
+    real_eidikothta_id = Column(Integer, ForeignKey('real_eidikothta.real_eidikothta_id'))
+
+    # relationships
+    #eidikothtes = relationship("Eidikothta", back_populates="real_eidikothta_id")
+    pinakes = relationship("Pinakas", back_populates="eidikothta")
+
 class Eidikothta(Base):
     __tablename__ = "eidikothta"
 
@@ -77,6 +97,8 @@ class Pinakas(Base):
 
 __all__ = [
     "Kathgoria",
+    "Real_eidikothta",
+    "Klados",
     "Eidikothta",
     "Sxoliko_etos",
     "Hmeromhnia",

@@ -27,13 +27,15 @@ metadata = MetaData(naming_convention=convention)
 Base = declarative_base(metadata=metadata)
 
 from .utils import get_one_or_create
-from .models import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
+from .models import Kathgoria, Real_eidikothta, Klados, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
 
 __all__ = [
     "metadata",
     "Base",
     "get_one_or_create",
     "Kathgoria",
+    "Real_eidikothta",
+    "Klados",
     "Eidikothta",
     "Sxoliko_etos",
     "Hmeromhnia",

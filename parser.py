@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
 from db import Base, get_one_or_create
-from db import Kathgoria, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
+from db import Kathgoria, Real_eidikothta, Klados, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
 
 
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
