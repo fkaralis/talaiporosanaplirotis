@@ -48,7 +48,7 @@ class Eidikothta(Base):
 
     id = Column("eidikothta_id", Integer, primary_key=True)
     kodikos_eidikothtas = Column("kodikos_eidikothtas", String, nullable=False, unique=True)
-    lektiko_real_eidikothtas = Column("lektiko_eidikothtas", String, nullable=True)
+    lektiko_real_eidikothtas = Column("lektiko_real_eidikothtas", String, nullable=True)
     real_eidikothta_id = Column(Integer, ForeignKey('real_eidikothta.real_eidikothta_id'))
 
     # relationships
