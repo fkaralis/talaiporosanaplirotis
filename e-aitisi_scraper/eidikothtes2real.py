@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-fill eidikothta.id_real_eidikothtas, eidikothta.lektiko_real_eidikothtas
+fill eidikothta.real_eidikothta_id
 '''
 
 import re
@@ -45,9 +45,17 @@ session = DBSession()
 real_eidikothtes = session.query(Real_eidikothta).all()
 eidikothtes = session.query(Eidikothta).all()
 
+def match(eidikothta, real_eidikothta):
+    logger.info("Assigning Real_eidikothta %s %s to Eidikothta %s %s",
+                real_eidikothta.id, real_eidikothta.lektiko_real_eidikothtas,
+                eidikothta.id, eidikothta.kodikos_eidikothtas)
+    eidikothta.real_eidikothta_id = real_eidikothta.id
+    session.commit()
+
+
 kodikoi_real_eidikothtwn = []
 for real_eidikothta in real_eidikothtes:
-    id_real_eidikothtas = real_eidikothta.id
+    real_eidikothta_id = real_eidikothta.id
     kodikos_real_eidikothtas = real_eidikothta.kodikos_real_eidikothtas
     lektiko_real_eidikothtas = real_eidikothta.lektiko_real_eidikothtas
 
@@ -64,7 +72,7 @@ for real_eidikothta in real_eidikothtes:
     last_real_eidikothtas = number_real_eidikothtas.split('.')[1]
     #last_real_eidikothtas = re.search('\d+\.*(\d*)', number_real_eidikothtas).group(1)
 
-    logger.info("----------------------\n%s %s %s %s %s %s %s", id_real_eidikothtas, kodikos_real_eidikothtas, lektiko_real_eidikothtas,
+    logger.info("----------------------\n%s %s %s %s %s %s %s", real_eidikothta_id, kodikos_real_eidikothtas, lektiko_real_eidikothtas,
           letters_real_eidikothtas, number_real_eidikothtas,
           first_real_eidikothtas, last_real_eidikothtas)
 
@@ -85,6 +93,8 @@ for real_eidikothta in real_eidikothtes:
             numbers_eidikothtas = []
             for i in eidikothta_parts:
                 numbers_eidikothtas.append(re.search('\D*(\d*)', i).group(1))
+                # remove ''
+                numbers_eidikothtas = [x for x in numbers_eidikothtas if x != '']
         except Exception as e:
             print('IN NUMBERS_EIDIKOTHTAS LIST')
 
@@ -100,17 +110,20 @@ for real_eidikothta in real_eidikothtes:
 
         if letters_real_eidikothtas == letters_eidikothtas:
             if first_real_eidikothtas == first_eidikothtas:
-                #logger.info("first match %s %s %s", kodikos_real_eidikothtas, kodikos_eidikothtas, last_eidikothtas)
                 if len(numbers_eidikothtas) < 3:
                     if last_eidikothtas is not None:
-                        if last_real_eidikothtas == last_eidikothtas:
-                            logger.info("first AND last match %s %s", kodikos_real_eidikothtas, kodikos_eidikothtas)
+                        if last_real_eidikothtas == last_eidikothtas or last_eidikothtas in ['', '1', '2', '3']:
+                            match(eidikothta, real_eidikothta)
                     else:
-                        logger.info("first ONLY match %s %s", kodikos_real_eidikothtas, kodikos_eidikothtas)
-                else:
-                    logger.info("%s", kodikos_eidikothtas)
-            #logger.info("%s %s %s %s %s %s", eidikothta_id, kodikos_eidikothtas, letters_eidikothtas, number_eidikothtas, first_eidikothtas, last_eidikothtas)
-
+                        match(eidikothta, real_eidikothta)
+                elif len(numbers_eidikothtas) < 4:
+                    if last_real_eidikothtas == numbers_eidikothtas[1]:
+                        match(eidikothta, real_eidikothta)
+                elif first_real_eidikothtas == '04':
+                    if last_real_eidikothtas == numbers_eidikothtas[3]:
+                        match(eidikothta, real_eidikothta)
+                elif last_eidikothtas == last_real_eidikothtas:
+                    match(eidikothta, real_eidikothta)
 
 
 
