@@ -57,7 +57,7 @@ for pinakas in pinakes:
     lektiko_pinaka = pinakas.lektiko_pinaka
     path_pinaka = pinakas.path_pinaka
     #logger.info('--------\n %s %s %s', count_eid, eidikothta_id, kodikos_eidikothtas)
-    logger.info('%s %s %s %s', count, pinakas_id, lektiko_pinaka, path_pinaka)
+    #logger.info('%s %s %s %s', count, pinakas_id, lektiko_pinaka, path_pinaka)
 
     lektiko_pinaka = lektiko_pinaka.split('_')[0]
     letters_pinaka = re.search('(\D*)\d+\.*\d+', lektiko_pinaka).group(1)
@@ -86,8 +86,11 @@ for pinakas in pinakes:
 
     eidikothta = session.query(Eidikothta).filter_by(real_eidikothta_id = real_eidikothta_id).first()
 
-    logger.info("%s %s %s %s %s", lektiko_pinaka,
-                kodikos_k, lektiko_k, kodikos_re, lektiko_re, eidikothta.kodikos_eidikothtas)
+    logger.info("%s %s %s %s", lektiko_pinaka, kodikos_k,
+                kodikos_re, eidikothta.kodikos_eidikothtas)
+
+    pinakas.eidikothta_id = eidikothta.id
+    session.commit()
 
 
 
