@@ -14,6 +14,8 @@ import logging.config
 import sqlalchemy
 
 from sqlalchemy import create_engine
+from sqlalchemy import and_
+from sqlalchemy import or_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
@@ -35,61 +37,40 @@ logger = logging.getLogger("eid2real")
 hdlr = logging.FileHandler('eid2real.log')
 logger.addHandler(hdlr)
 
-
-
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-real_eidikothtes = session.query(Real_eidikothta).all()
-eidikothtes = session.query(Eidikothta).all()
-kladoi = session.query(Klados).filter_by(name='jack').all()
-
 def match(eidikothta, real_eidikothta):
-    logger.info("Assigning Real_eidikothta %s %s to Eidikothta %s %s",
-                real_eidikothta.id, real_eidikothta.lektiko_real_eidikothtas,
-                eidikothta.id, eidikothta.kodikos_eidikothtas)
+    print("Assigning %s %s to Eidikothta %s",
+                real_eidikothta.kodikos_real_eidikothtas, real_eidikothta.lektiko_real_eidikothtas,
+                eidikothta.kodikos_eidikothtas)
     eidikothta.real_eidikothta_id = real_eidikothta.id
     session.commit()
 
+#real_eidikothtes = session.query(Real_eidikothta).all()
+eidikothtes = session.query(Eidikothta).filter_by(real_eidikothta_id=0).filter(or_(Eidikothta.kodikos_eidikothtas.like('pe%'), Eidikothta.kodikos_eidikothtas.like('de%'), Eidikothta.kodikos_eidikothtas.like('te%'))).all()
+kladoi = session.query(Klados).all()
 
-kodikoi_real_eidikothtwn = []
-for real_eidikothta in real_eidikothtes:
-    real_eidikothta_id = real_eidikothta.id
-    kodikos_real_eidikothtas = real_eidikothta.kodikos_real_eidikothtas
-    lektiko_real_eidikothtas = real_eidikothta.lektiko_real_eidikothtas
+count = 0
+for eidikothta in eidikothtes:
+    count+=1
 
-    letters_real_eidikothtas = re.search('(\D+)\d+\.*\d*\D*', kodikos_real_eidikothtas).group(1)
-    if letters_real_eidikothtas == 'ΠΕ':
-        letters_real_eidikothtas = 'PE'
-    elif letters_real_eidikothtas == 'ΤΕ':
-        letters_real_eidikothtas = 'TE'
-    elif letters_real_eidikothtas == 'ΔΕ':
-        letters_real_eidikothtas = 'DE'
-    number_real_eidikothtas = re.search('\D*(\d+\.*\d*)\D*', kodikos_real_eidikothtas).group(1)
-    first_real_eidikothtas = number_real_eidikothtas.split('.')[0]
-    #first_real_eidikothtas = re.search('(\d+)\.*\d*', number_real_eidikothtas).group(1)
-    last_real_eidikothtas = number_real_eidikothtas.split('.')[1]
-    #last_real_eidikothtas = re.search('\d+\.*(\d*)', number_real_eidikothtas).group(1)
+    eidikothta_id = eidikothta.id
+    kodikos_eidikothtas = eidikothta.kodikos_eidikothtas
 
-    logger.info("----------------------\n%s %s %s %s %s %s %s", real_eidikothta_id, kodikos_real_eidikothtas, lektiko_real_eidikothtas,
-          letters_real_eidikothtas, number_real_eidikothtas,
-          first_real_eidikothtas, last_real_eidikothtas)
+    #re pattern
+    p = re.compile(r'_|\.|,+')
+    eidikothta_parts = p.split(kodikos_eidikothtas)
 
-    for eidikothta in eidikothtes:
-        eidikothta_id = eidikothta.id
-        kodikos_eidikothtas = eidikothta.kodikos_eidikothtas
+    try:
+        letters_eidikothtas = re.search('(\D+)\d*', eidikothta_parts[0]).group(1).upper()
+    except Exception as e:
+        letters_eidikothtas = None
 
-        #re pattern
-        p = re.compile(r'_|\.|,+')
-        eidikothta_parts = p.split(kodikos_eidikothtas)
-
-        try:
-            letters_eidikothtas = re.search('(\D+)\d*', eidikothta_parts[0]).group(1).upper()
-        except Exception as e:
-            letters_eidikothtas = None
-
+    # for PE, DE, TE
+    if len(letters_eidikothtas) < 3:
         try:
             numbers_eidikothtas = []
             for i in eidikothta_parts:
@@ -109,41 +90,38 @@ for real_eidikothta in real_eidikothtes:
         except Exception as e:
             last_eidikothtas = None
 
-        if letters_real_eidikothtas == letters_eidikothtas:
-            if first_real_eidikothtas == first_eidikothtas:
-                if len(numbers_eidikothtas) < 3:
-                    if last_eidikothtas is not None:
-                        if last_real_eidikothtas == last_eidikothtas or last_eidikothtas in ['', '1', '2', '3']:
+        print('--------------\n', count, eidikothta_id, kodikos_eidikothtas,
+              letters_eidikothtas, numbers_eidikothtas,
+              first_eidikothtas, last_eidikothtas)
+
+        for klados in kladoi:
+            kodikos_kladoy = klados.kodikos_kladoy
+            letters_kladoy = re.search('(\D+)\d+\.*\d*\D*', kodikos_kladoy).group(1)
+            if letters_kladoy == 'ΠΕ':
+                letters_kladoy = 'PE'
+            elif letters_kladoy == 'ΤΕ':
+                letters_kladoy = 'TE'
+            elif letters_kladoy == 'ΔΕ':
+                letters_kladoy = 'DE'
+
+            if letters_eidikothtas == letters_kladoy:
+                klados_id = klados.id
+                lektiko_kladoy = klados.lektiko_kladoy
+                real_eidikothta_id_kladoy = klados.real_eidikothta_id
+
+                number_kladoy = re.search('\D*(\d+\.*\d*)\D*', kodikos_kladoy).group(1)
+                parts_number_kladoy = number_kladoy.split('.')
+                first_kladoy = parts_number_kladoy[0]
+                if first_eidikothtas == first_kladoy:
+                    if len(parts_number_kladoy) > 1:
+                        last_kladoy = parts_number_kladoy[1]
+
+                        if last_eidikothtas == last_kladoy:
+                            print(kodikos_kladoy, lektiko_kladoy, 'match')
+                            real_eidikothta = session.query(Real_eidikothta).filter_by(id=real_eidikothta_id_kladoy).one()
+                            print(real_eidikothta.kodikos_real_eidikothtas,
+                                  real_eidikothta.lektiko_real_eidikothtas)
                             match(eidikothta, real_eidikothta)
-                    else:
-                        match(eidikothta, real_eidikothta)
-                elif len(numbers_eidikothtas) < 4:
-                    if last_real_eidikothtas == numbers_eidikothtas[1]:
-                        match(eidikothta, real_eidikothta)
-                elif first_real_eidikothtas == '04':
-                    if last_real_eidikothtas == numbers_eidikothtas[3]:
-                        match(eidikothta, real_eidikothta)
-                elif last_eidikothtas == last_real_eidikothtas:
-                    match(eidikothta, real_eidikothta)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # for Moysika Organa, Athlimata
+    else:
+        print(letters_eidikothtas, 'mousiko organo, athlima')
