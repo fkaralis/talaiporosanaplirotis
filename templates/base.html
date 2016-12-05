@@ -2,6 +2,15 @@
 
 {% block title %} TalaiporosAnaplirotis {% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+      type="image/x-con">
+<link rel="icon" href="{{ url_for('static', filename = 'favicon.ico') }}"
+      type="image/x-con">
+{% endblock %}
+
+
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
@@ -13,7 +22,7 @@
                 <span class ="icon-bar"></span>
                 <span class ="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Talaiporos Anaplirotis</a>
+            <a class="navbar-brand" href="/">TalaiporosAnaplirotis</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
