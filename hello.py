@@ -3,10 +3,19 @@ from flask import request
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import Required
 from datetime import datetime
 
 
+class NameForm(FlaskForm):
+    name = StringField('Όνομα', validators=[Required()])
+    submit = SubmitField('Δώσε')
+
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '#@SCJ239asbAS<KCsdfhg7757'
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
@@ -23,9 +32,14 @@ def internal_server_error(e):
     return render_template("500.html"), 500
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html',
+    name = None
+    form = NameForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        form.name.data = ''
+    return render_template('index.html', form=form, name=name,
                            current_time=datetime.utcnow())
 
 
