@@ -4,6 +4,7 @@ from flask import session
 from flask import redirect
 from flask import url_for
 from flask import request
+from flask import flash
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -41,7 +42,14 @@ def index():
     name = None
     form = NameForm()
     if form.validate_on_submit():
+        old_name = session.get('name')
+        if old_name is not None:
+            if old_name != form.name.data:
+                flash('Αλλάξαμε ονοματάκι εε;;')
+            else:
+                flash('Ναι, εντάξει, εσύ είσαι, ΟΚ')
         session['name'] = form.name.data
+        form.name.data = ''
         return redirect(url_for('index'))
     return render_template('index.html', form=form, name=session.get('name'),
                            current_time=datetime.utcnow())
