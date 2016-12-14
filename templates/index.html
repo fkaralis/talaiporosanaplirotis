@@ -5,10 +5,16 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Γεια σου, {% if name %}ταλαίπωρε {{ name }}{% else %}αγνωστε ταλαίπωρε{% endif %}!</h1>
+    <h1>Γεια σου ταλαίπωρε</h1>
 </div>
+
 {{ wtf.quick_form(form) }}
+
+<h3>Σχ. έτος: {{ lektiko_sxolikoy_etoys }}
+<br>id: {{ sxoliko_etos_id }}</h3>
+
 <br>
 <p>Ημερομηνία και ώρα: {{ moment(current_time).format('LLLL') }}.</p>
 <p>({{ moment(current_time).fromNow(refresh=True) }})</p>
+
 {% endblock %}

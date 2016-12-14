@@ -94,8 +94,9 @@ class Sxoliko_etos(db.Model):
 
 
 class NameForm(FlaskForm):
-    name = StringField('Όνομα', validators=[Required()])
+    name = StringField('Σχολικό έτος', validators=[Required()])
     submit = SubmitField('Δώσε')
+
 
 
 @app.errorhandler(404)
@@ -108,21 +109,27 @@ def internal_server_error(e):
     return render_template("500.html"), 500
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    name = None
     form = NameForm()
+
     if form.validate_on_submit():
-        old_name = session.get('name')
-        if old_name is not None:
-            if old_name != form.name.data:
-                flash('Αλλάξαμε ονοματάκι εε;;')
-            else:
-                flash('Ναι, εντάξει, εσύ είσαι, ΟΚ')
-        session['name'] = form.name.data
+        sxoliko_etos = Sxoliko_etos.query.filter_by(lektiko_sxolikoy_etoys=form.name.data).first()
+        if sxoliko_etos is not None:
+            sxoliko_etos_id = sxoliko_etos.sxoliko_etos_id
+            lektiko_sxolikoy_etoys = sxoliko_etos.lektiko_sxolikoy_etoys
+        else:
+            sxoliko_etos_id = None
+            lektiko_sxolikoy_etoys = None
+        session['sxoliko_etos_id'] = sxoliko_etos_id
+        session['lektiko_sxolikoy_etoys'] = lektiko_sxolikoy_etoys
         form.name.data = ''
         return redirect(url_for('index'))
-    return render_template('index.html', form=form, name=session.get('name'),
+
+    return render_template('index.html', form=form,
+                           sxoliko_etos_id=session.get('sxoliko_etos_id'),
+                           lektiko_sxolikoy_etoys=session.get('lektiko_sxolikoy_etoys'),
                            current_time=datetime.utcnow())
 
 
