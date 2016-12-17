@@ -149,10 +149,18 @@ def index():
     form = Form()
 
     if form.submit.data:
-        session['sxoliko_etos']  = form.sxoliko_etos.data
-        session['kathgoria'] = form.kathgoria.data
-        session['klados'] = form.klados.data
-        session['hmeromhnia'] = form.hmeromhnia.data
+        sxoliko_etos_id = form.sxoliko_etos.data
+        kathgoria_id = form.kathgoria.data
+        klados_id = form.klados.data
+        hmeromhnia_id = form.hmeromhnia.data
+
+        real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
+
+        session['sxoliko_etos_id']  = sxoliko_etos_id
+        session['kathgoria_id'] = kathgoria_id
+        session['klados_id'] = klados_id
+        session['hmeromhnia_id'] = hmeromhnia_id
+        session['real_eidikothta_id'] = real_eidikothta_id
 
         return redirect(url_for('result'))
 
@@ -161,10 +169,11 @@ def index():
 
 @app.route('/result', methods=['GET', 'POST'])
 def result():
-    return render_template('result.html', sxoliko_etos=session.get('sxoliko_etos'),
-                           kathgoria=session.get('kathgoria'),
-                           klados=session.get('klados'),
-                           hmeromhnia=session.get('hmeromhnia'))
+    return render_template('result.html', sxoliko_etos_id=session.get('sxoliko_etos_id'),
+                           kathgoria_id=session.get('kathgoria_id'),
+                           klados_id=session.get('klados_id'),
+                           hmeromhnia_id=session.get('hmeromhnia_id'),
+                           real_eidikothta_id=session.get('real_eidikothta_id'))
 
 
 @app.route('/user/<name>')
