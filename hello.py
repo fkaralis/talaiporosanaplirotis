@@ -116,12 +116,13 @@ for klados in kladoi:
 choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])
 
 for hmeromhnia in hmeromhnies:
-    choice = (Hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
+    choice = (hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
     choices_hmeromhnies.append(choice)
+choices_hmeromhnies = sorted(choices_hmeromhnies)
 
 # form class
 class Form(FlaskForm):
-    sxoliko_etos = SelectField('Σχολικό έτος', coerce=str, choices=choices_sxolika_eth, validators=[Required()])
+    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[Required()])
     kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[Required()])
     klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[Required()])
     hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[Required()])
@@ -148,15 +149,10 @@ def index():
     form = Form()
 
     if form.submit.data:
-        sxoliko_etos = form.sxoliko_etos.data
-        kathgoria = form.kathgoria.data
-        klados = form.klados.data
-        hmeromhnia = form.hmeromhnia.data
-
-        session['sxoliko_etos'] = sxoliko_etos
-        session['kathgoria'] = kathgoria
-        session['klados'] = klados
-        session['hmeromhnia'] = hmeromhnia
+        session['sxoliko_etos']  = form.sxoliko_etos.data
+        session['kathgoria'] = form.kathgoria.data
+        session['klados'] = form.klados.data
+        session['hmeromhnia'] = form.hmeromhnia.data
 
         return redirect(url_for('result'))
 
