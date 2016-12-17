@@ -121,11 +121,11 @@ for hmeromhnia in hmeromhnies:
 
 # form class
 class Form(FlaskForm):
-    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[Required()])
+    sxoliko_etos = SelectField('Σχολικό έτος', coerce=str, choices=choices_sxolika_eth, validators=[Required()])
     kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[Required()])
     klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[Required()])
     hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[Required()])
-    submit = SubmitField('Δώσε')
+    submit = SubmitField('Yποβολή')
 #
 # form end
 
@@ -147,7 +147,7 @@ def internal_server_error(e):
 def index():
     form = Form()
 
-    if form.validate_on_submit():
+    if form.submit.data:
         sxoliko_etos = form.sxoliko_etos.data
         kathgoria = form.kathgoria.data
         klados = form.klados.data
@@ -163,7 +163,7 @@ def index():
     return render_template('index.html', form=form, current_time=datetime.utcnow())
 
 
-@app.route('result', methods=['GET', 'POST'])
+@app.route('/result', methods=['GET', 'POST'])
 def result():
     return render_template('result.html', sxoliko_etos=session.get('sxoliko_etos'),
                            kathgoria=session.get('kathgoria'),
