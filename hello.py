@@ -11,7 +11,7 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required
 from datetime import datetime
 
@@ -41,15 +41,12 @@ class Eidikothta(db.Model):
         return '\nΕιδικότητα id %r\nκωδικός %r\nreal %r' %\
             (self.eidikothta_id, self.kodikos_eidikothtas, self.real_eidikothta_id)
 
-
-
 class Hmeromhnia(db.Model):
     __table__ = db.Model.metadata.tables['hmeromhnia']
 
     def __repr__(self):
         return '\nΗμερομηνία id %r\nλεκτικό %r\nπρ. ημ/νία %r' %\
             (self.hmeromhnia_id, self.lektiko_hmeromhnias, self.real_hmeromhnia)
-
 
 class Kathgoria(db.Model):
     __table__ = db.Model.metadata.tables['kathgoria']
@@ -58,14 +55,12 @@ class Kathgoria(db.Model):
         return '\nΚατηγορία id %r\nλεκτικό %r' %\
             (self.kathgoria_id, self.lektiko_kathgorias)
 
-
 class Klados(db.Model):
     __table__ = db.Model.metadata.tables['klados']
 
     def __repr__(self):
         return '\nΚλάδος id %r\nκωδικός %r\nλεκτικό %r\nreal %r' %\
             (self.klados_id, self.kodikos_kladoy, self.lektiko_kladoy, self.real_eidikothta_id)
-
 
 class Pinakas(db.Model):
     __table__ = db.Model.metadata.tables['pinakas']
@@ -75,7 +70,6 @@ class Pinakas(db.Model):
             (self.pinakas_id, self.lektiko_pinaka, self.sxoliko_etos_id, self.kathgoria_id, \
              self.eidikothta_id, self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
 
-
 class Real_eidikothta(db.Model):
     __table__ = db.Model.metadata.tables['real_eidikothta']
 
@@ -83,22 +77,61 @@ class Real_eidikothta(db.Model):
         return '\nΠραγματική ειδικότητα\nid %r\nκωδικός %r\nλεκτικό %r' %\
             (self.real_eidikothta_id, self.kodikos_real_eidikothtas, self.lektiko_real_eidikothtas)
 
-
 class Sxoliko_etos(db.Model):
     __table__ = db.Model.metadata.tables['sxoliko_etos']
 
     def __repr__(self):
         return '\nΣχολικό έτος\nid %r\nλεκτικό %r' %\
             (self.sxoliko_etos_id, self.lektiko_sxolikoy_etoys)
+#
+# Model end
 
 
+# main page form
+#
+## gather choices
+choices_sxolika_eth = []
+choices_kathgories = []
+choices_kladoi = []
+choices_hmeromhnies = []
 
-class NameForm(FlaskForm):
-    name = StringField('Σχολικό έτος', validators=[Required()])
+sxolika_eth = Sxoliko_etos.query.all()
+kathgories = Kathgoria.query.all()
+kladoi = Klados.query.all()
+hmeromhnies = Hmeromhnia.query.all()
+
+for sxoliko_etos in sxolika_eth:
+    choice = (sxoliko_etos.sxoliko_etos_id, sxoliko_etos.lektiko_sxolikoy_etoys)
+    choices_sxolika_eth.append(choice)
+choices_sxolika_eth = sorted(choices_sxolika_eth, reverse=True)
+
+for kathgoria in kathgories:
+    choice = (kathgoria.kathgoria_id, kathgoria.lektiko_kathgorias)
+    choices_kathgories.append(choice)
+choices_kathgories = sorted(choices_kathgories)
+
+for klados in kladoi:
+    choice = (klados.klados_id, klados.kodikos_kladoy+' '+klados.lektiko_kladoy)
+    choices_kladoi.append(choice)
+choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])
+
+for hmeromhnia in hmeromhnies:
+    choice = (Hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
+    choices_hmeromhnies.append(choice)
+
+# form class
+class Form(FlaskForm):
+    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[Required()])
+    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[Required()])
+    klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[Required()])
+    hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[Required()])
     submit = SubmitField('Δώσε')
+#
+# form end
 
 
-
+# view functions
+#
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
@@ -112,30 +145,37 @@ def internal_server_error(e):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = NameForm()
+    form = Form()
 
     if form.validate_on_submit():
-        sxoliko_etos = Sxoliko_etos.query.filter_by(lektiko_sxolikoy_etoys=form.name.data).first()
-        if sxoliko_etos is not None:
-            sxoliko_etos_id = sxoliko_etos.sxoliko_etos_id
-            lektiko_sxolikoy_etoys = sxoliko_etos.lektiko_sxolikoy_etoys
-        else:
-            sxoliko_etos_id = None
-            lektiko_sxolikoy_etoys = None
-        session['sxoliko_etos_id'] = sxoliko_etos_id
-        session['lektiko_sxolikoy_etoys'] = lektiko_sxolikoy_etoys
-        form.name.data = ''
-        return redirect(url_for('index'))
+        sxoliko_etos = form.sxoliko_etos.data
+        kathgoria = form.kathgoria.data
+        klados = form.klados.data
+        hmeromhnia = form.hmeromhnia.data
 
-    return render_template('index.html', form=form,
-                           sxoliko_etos_id=session.get('sxoliko_etos_id'),
-                           lektiko_sxolikoy_etoys=session.get('lektiko_sxolikoy_etoys'),
-                           current_time=datetime.utcnow())
+        session['sxoliko_etos'] = sxoliko_etos
+        session['kathgoria'] = kathgoria
+        session['klados'] = klados
+        session['hmeromhnia'] = hmeromhnia
+
+        return redirect(url_for('result'))
+
+    return render_template('index.html', form=form, current_time=datetime.utcnow())
+
+
+@app.route('result', methods=['GET', 'POST'])
+def result():
+    return render_template('result.html', sxoliko_etos=session.get('sxoliko_etos'),
+                           kathgoria=session.get('kathgoria'),
+                           klados=session.get('klados'),
+                           hmeromhnia=session.get('hmeromhnia'))
 
 
 @app.route('/user/<name>')
 def user(name):
     return render_template('user.html', name=name)
+#
+# view functions end
 
 
 if __name__ == '__main__':
