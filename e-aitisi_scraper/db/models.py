@@ -17,6 +17,7 @@ class Kathgoria(Base):
 
     id = Column("kathgoria_id", Integer, primary_key=True)
     lektiko_kathgorias = Column("lektiko_kathgorias", String, nullable=False, unique=True)
+    greek_lektiko_kathgorias = Column("greek_lektiko_kathgorias", String)
 
     # relationships
     pinakes = relationship("Pinakas", back_populates="kathgoria")

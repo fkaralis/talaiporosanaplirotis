@@ -106,7 +106,7 @@ for sxoliko_etos in sxolika_eth:
 choices_sxolika_eth = sorted(choices_sxolika_eth, reverse=True)
 
 for kathgoria in kathgories:
-    choice = (kathgoria.kathgoria_id, kathgoria.lektiko_kathgorias)
+    choice = (kathgoria.kathgoria_id, kathgoria.greek_lektiko_kathgorias)
     choices_kathgories.append(choice)
 choices_kathgories = sorted(choices_kathgories)
 
