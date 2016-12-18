@@ -14,7 +14,10 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required
 from datetime import datetime
+import locale
 
+loc = locale.getlocale()
+locale.setlocale(locale.LC_ALL, loc)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -118,7 +121,15 @@ choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])
 for hmeromhnia in hmeromhnies:
     choice = (hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
     choices_hmeromhnies.append(choice)
-choices_hmeromhnies = sorted(choices_hmeromhnies)
+choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True)
+
+# fix hmeromhnia format (e.g. 10-Οκτ-2016)
+for i, choice in enumerate(choices_hmeromhnies):
+    choice_list = list(choices_hmeromhnies[i])
+    choice_list[1] = '{:%d-%b-%Y}'.format(choice_list[1])
+    choices_hmeromhnies[i] = tuple(choice_list)
+## end choices
+
 
 # form class
 class Form(FlaskForm):
