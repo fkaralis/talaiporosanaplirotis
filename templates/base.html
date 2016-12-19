@@ -47,6 +47,11 @@
 
 {% block scripts %} 
 {{ super() }}
+<script>
+function myFunction() {
+    alert("ahoaaa!");
+}
+</script>
 {{ moment.include_moment() }}
 {{ moment.lang('el') }}
 {% endblock %}

@@ -6,6 +6,7 @@ from flask import redirect
 from flask import url_for
 from flask import request
 from flask import flash
+from flask import jsonify
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -134,9 +135,9 @@ for i, choice in enumerate(choices_hmeromhnies):
 # form class
 class Form(FlaskForm):
     sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[Required()])
-    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[Required()])
-    klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[Required()])
-    hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[Required()])
+    kathgoria = SelectField('Κατηγορία', choices=[], validators=[Required()])
+    klados = SelectField('Κλάδος', choices=[], validators=[Required()])
+    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[Required()])
     submit = SubmitField('Yποβολή')
 #
 # form end
@@ -153,8 +154,18 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template("500.html"), 500
 
+''' code for populating kathgoria selectfield after sxoliko_etos...
 
-
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=form.sxoliko_etos.data).all()
+    kathgories_id = []
+    for pinakas in pinakes:
+        if pinakas.kathgoria_id not in kathgories_id:
+            kathgories_id.append(pinakas.kathgoria_id)
+    choices_kathgories = []
+    for kathgoria_id in kathgories_id:
+        choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
+                          first().greek_lektiko_kathgorias))
+'''
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = Form()
@@ -164,7 +175,6 @@ def index():
         kathgoria_id = form.kathgoria.data
         klados_id = form.klados.data
         hmeromhnia_id = form.hmeromhnia.data
-
         real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
