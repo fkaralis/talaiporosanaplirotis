@@ -13,7 +13,7 @@ from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
-from wtforms.validators import Required
+from wtforms.validators import Required, DataRequired
 from datetime import datetime
 import locale
 
@@ -134,10 +134,10 @@ for i, choice in enumerate(choices_hmeromhnies):
 
 # form class
 class Form(FlaskForm):
-    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[Required()])
-    kathgoria = SelectField('Κατηγορία', choices=[], validators=[Required()])
-    klados = SelectField('Κλάδος', choices=[], validators=[Required()])
-    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[Required()])
+    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[DataRequired()], id='select_sxoliko_etos')
+    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[DataRequired()], id='select_kathgoria')
+    klados = SelectField('Κλάδος', choices=[], validators=[Required()], id='select_klados')
+    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[Required()], id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
 # form end
@@ -154,18 +154,8 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template("500.html"), 500
 
-''' code for populating kathgoria selectfield after sxoliko_etos...
 
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=form.sxoliko_etos.data).all()
-    kathgories_id = []
-    for pinakas in pinakes:
-        if pinakas.kathgoria_id not in kathgories_id:
-            kathgories_id.append(pinakas.kathgoria_id)
-    choices_kathgories = []
-    for kathgoria_id in kathgories_id:
-        choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
-                          first().greek_lektiko_kathgorias))
-'''
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = Form()
@@ -195,6 +185,24 @@ def result():
                            klados_id=session.get('klados_id'),
                            hmeromhnia_id=session.get('hmeromhnia_id'),
                            real_eidikothta_id=session.get('real_eidikothta_id'))
+
+
+@app.route('/_get_kathgories/')
+def _get_kathgories():
+    sxoliko_etos_id = request.args.get('sxoliko_etos')
+
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id).all()
+    # kathgoria ids list
+    kathgories_id = []
+    for pinakas in pinakes:
+        if pinakas.kathgoria_id not in kathgories_id:
+            kathgories_id.append(pinakas.kathgoria_id)
+    # kathgoria choice tuples list
+    choices_kathgories = []
+    for kathgoria_id in kathgories_id:
+        choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
+                          first().greek_lektiko_kathgorias))
+    return jsonify(choices_kathgories)
 
 
 @app.route('/user/<name>')

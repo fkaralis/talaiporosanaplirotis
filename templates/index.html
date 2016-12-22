@@ -8,10 +8,6 @@
     <h1>Γεια σου ταλαίπωρε</h1>
 </div>
 
-{{ wtf.form_field(form.sxoliko_etos) }}
-asdas<br>
-{{ form.sxoliko_etos(**{"onchange":"myFunction()"}) }}<br>
-sdsfsc
 {{ wtf.quick_form(form) }}
 
 <form class="form form-horizontal" method="post" role="form">
@@ -27,4 +23,49 @@ sdsfsc
 <p>Ημερομηνία και ώρα: {{ moment(current_time).format('LLLL') }}.</p>
 <p>({{ moment(current_time).fromNow(refresh=True) }})</p>
 
+{% endblock %}
+
+{% block scripts %} 
+{{ super() }}
+<script charset="utf-8" type="text/javascript">
+
+$(function() {
+    
+    // jQuery selection for the 2 select fields
+    var dropdown = {
+        sxoliko_etos: $('#select_sxoliko_etos'),
+        kathgoria: $('#select_kathgoria')
+    };
+    
+    // call to update on load
+    updateKathgories();
+    
+    // function to call XHR and update kathgoria dropdown
+    function updateKathgories() {
+        var send =  {
+            sxoliko_etos: dropdown.sxoliko_etos.val()
+        };
+        dropdown.kathgoria.attr('disabled', 'disabled');
+        dropdown.kathgoria.empty();
+        $.getJSON("{{ url_for('_get_kathgories') }}", send, function(data) {
+            data.forEach(function(item) {
+                dropdown.kathgoria.append(
+                    $('<option>', {
+                        value: item[0],
+                        text: item[1]
+                    })
+                );
+            });
+            dropdown.kathgoria.removeAttr('disabled');
+        });
+    }
+    
+    // event listener to sxoliko_etos dropdown change
+    dropdown.sxoliko_etos.on('change', function() {
+        updateKathgories();
+    });
+    
+});
+
+</script>
 {% endblock %}
