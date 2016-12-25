@@ -24,7 +24,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] =\
-    'sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper/talaiporosanaplirotis.sqlite')
+    'sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper' + os.sep + 'talaiporosanaplirotis.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = '#@SCJ239asbAS<KCsdfhg7757'
