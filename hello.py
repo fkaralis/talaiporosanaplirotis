@@ -19,8 +19,12 @@ from flask_migrate import Migrate
 from flask_migrate import MigrateCommand
 from flask_mail import Mail
 from flask_mail import Message
-from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
-from wtforms.validators import Required, DataRequired
+from wtforms import StringField
+from wtforms import SelectField
+from wtforms import SelectMultipleField
+from wtforms import SubmitField
+from wtforms.validators import Required
+from wtforms.validators import DataRequired
 
 
 loc = locale.getlocale()
