@@ -1,4 +1,7 @@
 import os
+import locale
+from datetime import datetime
+from threading import Thread
 from flask import Flask
 from flask import render_template
 from flask import session
@@ -18,8 +21,7 @@ from flask_mail import Mail
 from flask_mail import Message
 from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required, DataRequired
-from datetime import datetime
-import locale
+
 
 loc = locale.getlocale()
 locale.setlocale(locale.LC_ALL, loc)
@@ -35,7 +37,8 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = '#@SCJ239asbAS<KCsdfhg7757'
 
-# app config mail
+# e-mail
+#
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -45,21 +48,30 @@ app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] = '[TalaipAnap] '
 app.config['TALAIPANAP_MAIL_SENDER'] = 'TalaipAnap Admin <fivoskaralis@gmail.com>'
 app.config['TALAIPANAP_ADMIN'] = os.environ.get('TALAIPANAP_ADMIN')
 
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
 def send_email(to, subject, body):
     msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + subject,\
                   sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
     msg.body = body
-    mail.send(msg)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
 
 ''' tutorial send_mail function
 def send_email(to, subject, template, **kwargs):
-    msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + subject,\
-                  sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
-    #msg.body = render_template(template + '.txt', **kwargs)
-    #msg.html = render_template(template + '.html', **kwargs)
-    msg.body = render_template(template)
-    mail.send(msg)
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,\
+                  sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
 '''
+#
+# e-mail end
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
