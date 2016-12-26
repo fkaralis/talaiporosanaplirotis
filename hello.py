@@ -41,17 +41,25 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] = '[TalaipAnap]'
+app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] = '[TalaipAnap] '
 app.config['TALAIPANAP_MAIL_SENDER'] = 'TalaipAnap Admin <fivoskaralis@gmail.com>'
 app.config['TALAIPANAP_ADMIN'] = os.environ.get('TALAIPANAP_ADMIN')
 
+def send_email(to, subject, body):
+    msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + subject,\
+                  sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
+    msg.body = body
+    mail.send(msg)
+
+''' tutorial send_mail function
 def send_email(to, subject, template, **kwargs):
     msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + subject,\
                   sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
     #msg.body = render_template(template + '.txt', **kwargs)
     #msg.html = render_template(template + '.html', **kwargs)
     msg.body = render_template(template)
-    mail.send(message)
+    mail.send(msg)
+'''
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
@@ -161,10 +169,10 @@ for i, choice in enumerate(choices_hmeromhnies):
 
 # form class
 class Form(FlaskForm):
-    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[DataRequired()], id='select_sxoliko_etos')
-    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[DataRequired()], id='select_kathgoria')
-    klados = SelectField('Κλάδος', choices=[], validators=[Required()], id='select_klados')
-    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[Required()], id='select_hmeromhnia')
+    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[DataRequired()], coerce=int, id='select_sxoliko_etos')
+    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[DataRequired()], coerce=int, id='select_kathgoria')
+    klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[DataRequired()], coerce=int, id='select_klados')
+    hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[DataRequired()], coerce=int, id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
 # form end
@@ -201,7 +209,12 @@ def index():
         session['real_eidikothta_id'] = real_eidikothta_id
 
         if app.config['TALAIPANAP_ADMIN']:
-            send_email(app.config['TALAIPANAP_ADMIN'], 'New submit', 'result.html')
+            msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
+                                  'Κατηγορία id ' + str(kathgoria_id),\
+                                  'Κλάδος id ' + str(klados_id),\
+                                  'Ημερομηνία id ' + str(hmeromhnia_id),\
+                                  'Real ειδικότητα id ' + str(real_eidikothta_id)))
+            send_email(app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
         return redirect(url_for('result'))
 
