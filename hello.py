@@ -13,6 +13,7 @@ from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
+from flask_mail import Mail
 from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required, DataRequired
 from datetime import datetime
@@ -24,11 +25,18 @@ locale.setlocale(locale.LC_ALL, loc)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+# app config db
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper' + os.sep + 'talaiporosanaplirotis.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = '#@SCJ239asbAS<KCsdfhg7757'
+# app config mail
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
@@ -36,6 +44,7 @@ moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+mail = Mail(app)
 
 # talaiporosanaplirotis.sqlite Model
 #
