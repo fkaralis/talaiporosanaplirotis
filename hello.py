@@ -12,8 +12,10 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import Migrate
+from flask_migrate import MigrateCommand
 from flask_mail import Mail
+from flask_mail import Message
 from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required, DataRequired
 from datetime import datetime
@@ -25,18 +27,31 @@ locale.setlocale(locale.LC_ALL, loc)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
 # app config db
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper' + os.sep + 'talaiporosanaplirotis.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = '#@SCJ239asbAS<KCsdfhg7757'
+
 # app config mail
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] = '[TalaipAnap]'
+app.config['TALAIPANAP_MAIL_SENDER'] = 'TalaipAnap Admin <fivoskaralis@gmail.com>'
+app.config['TALAIPANAP_ADMIN'] = os.environ.get('TALAIPANAP_ADMIN')
+
+def send_email(to, subject, template, **kwargs):
+    msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + subject,\
+                  sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
+    #msg.body = render_template(template + '.txt', **kwargs)
+    #msg.html = render_template(template + '.html', **kwargs)
+    msg.body = render_template(template)
+    mail.send(message)
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
@@ -172,7 +187,7 @@ def internal_server_error(e):
 def index():
     form = Form()
 
-    if form.submit.data:
+    if form.validate_on_submit():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
         klados_id = form.klados.data
@@ -184,6 +199,9 @@ def index():
         session['klados_id'] = klados_id
         session['hmeromhnia_id'] = hmeromhnia_id
         session['real_eidikothta_id'] = real_eidikothta_id
+
+        if app.config['TALAIPANAP_ADMIN']:
+            send_email(app.config['TALAIPANAP_ADMIN'], 'New submit', 'result.html')
 
         return redirect(url_for('result'))
 
