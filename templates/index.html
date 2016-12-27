@@ -10,36 +10,30 @@
 
 {{ wtf.quick_form(form) }}
 
-<form class="form form-horizontal" method="post" role="form">
-  {{ form.hidden_tag() }}
-  {{ wtf.form_errors(form, hiddens="only") }}
-
-</form>
-
-<h3>Σχ. έτος: {{ lektiko_sxolikoy_etoys }}
-<br>id: {{ sxoliko_etos_id }}</h3>
-
 <br>
 <p>Ημερομηνία και ώρα: {{ moment(current_time).format('LLLL') }}.</p>
 <p>({{ moment(current_time).fromNow(refresh=True) }})</p>
 
 {% endblock %}
 
-{% block scripts %} 
+{% block scripts %}
 {{ super() }}
 <script charset="utf-8" type="text/javascript">
 
 $(function() {
-    
-    // jQuery selection for the 2 select fields
+
+    // jQuery selection for the select fields
     var dropdown = {
         sxoliko_etos: $('#select_sxoliko_etos'),
-        kathgoria: $('#select_kathgoria')
+        kathgoria: $('#select_kathgoria'),
+        klados: $('#select_klados'),
+        hmeromhnia: $('#select_hmeromhnia')
     };
-    
+
     // call to update on load
-    updateKathgories();
-    
+    //updateKathgories();
+    //updateKladoi();
+
     // function to call XHR and update kathgoria dropdown
     function updateKathgories() {
         var send =  {
@@ -59,12 +53,37 @@ $(function() {
             dropdown.kathgoria.removeAttr('disabled');
         });
     }
-    
-    // event listener to sxoliko_etos dropdown change
+
+    // function to call XHR and update kladoi dropdown
+    function updateKladoi() {
+        var send =  {
+            kathgoria: dropdown.kathgoria.val(),
+            sxoliko_etos: dropdown.sxoliko_etos.val()
+        };
+        dropdown.klados.attr('disabled', 'disabled');
+        dropdown.klados.empty();
+        $.getJSON("{{ url_for('_get_kladoi') }}", send, function(data) {
+            data.forEach(function(item) {
+                dropdown.klados.append(
+                    $('<option>', {
+                        value: item[0],
+                        text: item[1]
+                    })
+                );
+            });
+            dropdown.klados.removeAttr('disabled');
+        });
+    }
+
+    // event listeners to dropdown changes
     dropdown.sxoliko_etos.on('change', function() {
         updateKathgories();
     });
-    
+
+    dropdown.kathgoria.on('change', function() {
+        updateKladoi();
+    });
+
 });
 
 </script>

@@ -186,9 +186,9 @@ for i, choice in enumerate(choices_hmeromhnies):
 # form class
 class Form(FlaskForm):
     sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[DataRequired()], coerce=int, id='select_sxoliko_etos')
-    kathgoria = SelectField('Κατηγορία', choices=choices_kathgories, validators=[DataRequired()], coerce=int, id='select_kathgoria')
-    klados = SelectField('Κλάδος', choices=choices_kladoi, validators=[DataRequired()], coerce=int, id='select_klados')
-    hmeromhnia = SelectField('Ημερομηνία', choices=choices_hmeromhnies, validators=[DataRequired()], coerce=int, id='select_hmeromhnia')
+    kathgoria = SelectField('Κατηγορία', choices=[], validators=[DataRequired()], coerce=int, id='select_kathgoria')
+    klados = SelectField('Κλάδος', choices=[], validators=[DataRequired()], coerce=int, id='select_klados')
+    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[DataRequired()], coerce=int, id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
 # form end
@@ -254,14 +254,39 @@ def _get_kathgories():
     # kathgoria ids list
     kathgories_id = []
     for pinakas in pinakes:
-        if pinakas.kathgoria_id not in kathgories_id:
-            kathgories_id.append(pinakas.kathgoria_id)
+        temp_kathgoria_id = pinakas.kathgoria_id
+        if temp_kathgoria_id not in kathgories_id:
+            kathgories_id.append(temp_kathgoria_id)
     # kathgoria choice tuples list
     choices_kathgories = []
     for kathgoria_id in kathgories_id:
         choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
                           first().greek_lektiko_kathgorias))
     return jsonify(choices_kathgories)
+
+@app.route('/_get_kladoi/')
+def _get_kladoi():
+    sxoliko_etos_id = request.args.get('sxoliko_etos')
+    kathgoria_id = request.args.get('kathgoria')
+    print(sxoliko_etos_id, kathgoria_id)
+
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id, kathgoria_id=kathgoria_id).all()
+    # lists ids and choices
+    eidikothtes_id = []
+    real_eidikothtes_id = []
+    choices_kladoi = []
+    for pinakas in pinakes:
+        temp_eidikothta_id = pinakas.eidikothta_id
+        if temp_eidikothta_id not in eidikothtes_id:
+            eidikothtes_id.append(temp_eidikothta_id)
+            temp_real_eidikothta_id = Eidikothta.query.filter_by(eidikothta_id=temp_eidikothta_id).first().real_eidikothta_id
+            if temp_real_eidikothta_id not in real_eidikothtes_id:
+                real_eidikothtes_id.append(temp_real_eidikothta_id)
+                temp_kladoi = Klados.query.filter_by(real_eidikothta_id=temp_real_eidikothta_id).all()
+                for klados in temp_kladoi:
+                    choices_kladoi.append((klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy))
+    print(choices_kladoi)
+    return jsonify(choices_kladoi)
 
 
 @app.route('/user/<name>')
