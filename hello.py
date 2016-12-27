@@ -163,17 +163,17 @@ choices_sxolika_eth = sorted(choices_sxolika_eth)
 for kathgoria in kathgories:
     choice = (kathgoria.kathgoria_id, kathgoria.greek_lektiko_kathgorias)
     choices_kathgories.append(choice)
-choices_kathgories = sorted(choices_kathgories)
+choices_kathgories = sorted(choices_kathgories, key=lambda x: x[1]) # sort alphabetically
 
 for klados in kladoi:
     choice = (klados.klados_id, klados.kodikos_kladoy+' '+klados.lektiko_kladoy)
     choices_kladoi.append(choice)
-choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])
+choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1]) # sort alphabetically
 
 for hmeromhnia in hmeromhnies:
     choice = (hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
     choices_hmeromhnies.append(choice)
-choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True)
+choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True)  # sort alphabetically decr.
 
 # fix hmeromhnia format (e.g. 10-Οκτ-2016)
 for i, choice in enumerate(choices_hmeromhnies):
@@ -211,7 +211,7 @@ def internal_server_error(e):
 def index():
     form = Form()
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
         klados_id = form.klados.data
@@ -262,13 +262,15 @@ def _get_kathgories():
     for kathgoria_id in kathgories_id:
         choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
                           first().greek_lektiko_kathgorias))
+    choices_kathgories = sorted(choices_kathgories, key=lambda x: x[1]) # sort alphabetically
+
     return jsonify(choices_kathgories)
+
 
 @app.route('/_get_kladoi/')
 def _get_kladoi():
     sxoliko_etos_id = request.args.get('sxoliko_etos')
     kathgoria_id = request.args.get('kathgoria')
-    print(sxoliko_etos_id, kathgoria_id)
 
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id, kathgoria_id=kathgoria_id).all()
     # lists ids and choices
@@ -285,8 +287,50 @@ def _get_kladoi():
                 temp_kladoi = Klados.query.filter_by(real_eidikothta_id=temp_real_eidikothta_id).all()
                 for klados in temp_kladoi:
                     choices_kladoi.append((klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy))
-    print(choices_kladoi)
+    choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])  # sort alphabetically
+
     return jsonify(choices_kladoi)
+
+
+@app.route('/_get_hmeromhnies/')
+def _get_hmeromhnies():
+    sxoliko_etos_id = request.args.get('sxoliko_etos')
+    kathgoria_id = request.args.get('kathgoria')
+    klados_id = request.args.get('klados')
+
+    print(sxoliko_etos_id)
+    print(kathgoria_id)
+    print(klados_id)
+
+    real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
+    eidikothtes = Eidikothta.query.filter_by(real_eidikothta_id=real_eidikothta_id).all()
+    pinakes = []
+    choices_hmeromhnies = []
+
+    for eidikothta in eidikothtes:
+        print(eidikothta.eidikothta_id, eidikothta.kodikos_eidikothtas)
+        temp_pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id,\
+                                               eidikothta_id=eidikothta.eidikothta_id).all()
+        for pinakas in temp_pinakes:
+            if pinakas not in pinakes:
+                pinakes.append(pinakas)
+
+    for pinakas in pinakes:
+        print(pinakas.pinakas_id, pinakas.lektiko_pinaka)
+        temp_hmeromhnies = Hmeromhnia.query.filter_by(hmeromhnia_id=pinakas.hmeromhnia_id).all()
+        for hmeromhnia in temp_hmeromhnies:
+            choices_hmeromhnies.append((hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia))
+    choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True) # sort alphabetically decr.
+
+    # fix hmeromhnia format (e.g. 10-Οκτ-2016)
+    for i, choice in enumerate(choices_hmeromhnies):
+        choice_list = list(choices_hmeromhnies[i])
+        choice_list[1] = '{:%d-%b-%Y}'.format(choice_list[1])
+        choices_hmeromhnies[i] = tuple(choice_list)
+
+    return jsonify(choices_hmeromhnies)
+
 
 
 @app.route('/user/<name>')
