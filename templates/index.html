@@ -33,14 +33,17 @@ $(function() {
     // call to update on load
     //updateKathgories();
     //updateKladoi();
+    dropdown.kathgoria.attr('disabled', 'disabled');
+    dropdown.klados.attr('disabled', 'disabled');
+    dropdown.hmeromhnia.attr('disabled', 'disabled');
 
     // function to call XHR and update kathgoria dropdown
     function updateKathgories() {
         var send =  {
             sxoliko_etos: dropdown.sxoliko_etos.val()
         };
-        dropdown.kathgoria.attr('disabled', 'disabled');
-        dropdown.kathgoria.empty();
+        //dropdown.kathgoria.attr('disabled', 'disabled');
+        //dropdown.kathgoria.empty();
         $.getJSON("{{ url_for('_get_kathgories') }}", send, function(data) {
             data.forEach(function(item) {
                 dropdown.kathgoria.append(
@@ -57,11 +60,11 @@ $(function() {
     // function to call XHR and update kladoi dropdown
     function updateKladoi() {
         var send =  {
-            kathgoria: dropdown.kathgoria.val(),
-            sxoliko_etos: dropdown.sxoliko_etos.val()
+            sxoliko_etos: dropdown.sxoliko_etos.val(),
+            kathgoria: dropdown.kathgoria.val()
         };
-        dropdown.klados.attr('disabled', 'disabled');
-        dropdown.klados.empty();
+        //dropdown.klados.attr('disabled', 'disabled');
+        //dropdown.klados.empty();
         $.getJSON("{{ url_for('_get_kladoi') }}", send, function(data) {
             data.forEach(function(item) {
                 dropdown.klados.append(
@@ -75,6 +78,28 @@ $(function() {
         });
     }
 
+    // function to call XHR and update hmeromhnia dropdown
+    function updateHmeromhnies() {
+        var send =  {
+            sxoliko_etos: dropdown.sxoliko_etos.val(),
+            kathgoria: dropdown.kathgoria.val(),
+            klados: dropdown.klados.val()
+        };
+        //dropdown.hmeromhnia.attr('disabled', 'disabled');
+        //dropdown.hmeromhnia.empty();
+        $.getJSON("{{ url_for('_get_hmeromhnies') }}", send, function(data) {
+            data.forEach(function(item) {
+                dropdown.hmeromhnia.append(
+                    $('<option>', {
+                        value: item[0],
+                        text: item[1]
+                    })
+                );
+            });
+            dropdown.hmeromhnia.removeAttr('disabled');
+        });
+    }
+
     // event listeners to dropdown changes
     dropdown.sxoliko_etos.on('change', function() {
         updateKathgories();
@@ -82,6 +107,10 @@ $(function() {
 
     dropdown.kathgoria.on('change', function() {
         updateKladoi();
+    });
+
+    dropdown.klados.on('change', function() {
+        updateHmeromhnies();
     });
 
 });
