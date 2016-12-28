@@ -27,8 +27,9 @@ from wtforms.validators import Required
 from wtforms.validators import DataRequired
 
 
-loc = locale.getlocale()
-locale.setlocale(locale.LC_ALL, loc)
+#loc = locale.getdefaultlocale()
+#locale.setlocale(locale.LC_ALL, loc)
+locale.setlocale(locale.LC_ALL, 'ell')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
