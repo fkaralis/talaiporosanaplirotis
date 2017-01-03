@@ -87,7 +87,7 @@ class Pinakas(Base):
     kathgoria_id = Column(Integer, ForeignKey('kathgoria.kathgoria_id'))
     eidikothta_id = Column(Integer, ForeignKey('eidikothta.eidikothta_id'))
     hmeromhnia_id = Column(Integer, ForeignKey('hmeromhnia.hmeromhnia_id'))
-    klados_id = Column(Integer, ForeignKey('klados.klados_id'))
+    klados_id = Column("klados_id", String, nullable=True)
 
     path_pinaka = Column("path_pinaka", String, nullable=False)
     url_pinaka = Column("url_pinaka", String, nullable=False, unique=True)
