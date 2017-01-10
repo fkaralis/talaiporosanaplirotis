@@ -159,7 +159,7 @@ hmeromhnies = Hmeromhnia.query.all()
 for sxoliko_etos in sxolika_eth:
     choice = (sxoliko_etos.sxoliko_etos_id, sxoliko_etos.lektiko_sxolikoy_etoys)
     choices_sxolika_eth.append(choice)
-choices_sxolika_eth = sorted(choices_sxolika_eth)
+choices_sxolika_eth = sorted(choices_sxolika_eth)[:5] # up to 2012-13
 
 for kathgoria in kathgories:
     choice = (kathgoria.kathgoria_id, kathgoria.greek_lektiko_kathgorias)
