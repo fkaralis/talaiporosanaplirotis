@@ -275,19 +275,16 @@ def _get_kladoi():
 
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id, kathgoria_id=kathgoria_id).all()
     # lists ids and choices
-    eidikothtes_id = []
-    real_eidikothtes_id = []
     choices_kladoi = []
     for pinakas in pinakes:
-        temp_eidikothta_id = pinakas.eidikothta_id
-        if temp_eidikothta_id not in eidikothtes_id:
-            eidikothtes_id.append(temp_eidikothta_id)
-            temp_real_eidikothta_id = Eidikothta.query.filter_by(eidikothta_id=temp_eidikothta_id).first().real_eidikothta_id
-            if temp_real_eidikothta_id not in real_eidikothtes_id:
-                real_eidikothtes_id.append(temp_real_eidikothta_id)
-                temp_kladoi = Klados.query.filter_by(real_eidikothta_id=temp_real_eidikothta_id).all()
-                for klados in temp_kladoi:
-                    choices_kladoi.append((klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy))
+        kladoi_id = pinakas.klados_id
+        kladoi_id = kladoi_id.split(' ')
+        for klados_id in kladoi_id:
+            klados = Klados.query.filter_by(klados_id=klados_id).first()
+            klados_tuple = (klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy)
+            if klados_tuple not in choices_kladoi:
+                choices_kladoi.append(klados_tuple)
+
     choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])  # sort alphabetically
 
     return jsonify(choices_kladoi)
