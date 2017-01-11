@@ -10,10 +10,6 @@
 
 {{ wtf.quick_form(form) }}
 
-<br>
-<p>Ημερομηνία και ώρα: {{ moment(current_time).format('LLLL') }}.</p>
-<p>({{ moment(current_time).fromNow(refresh=True) }})</p>
-
 {% endblock %}
 
 {% block scripts %}

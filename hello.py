@@ -219,17 +219,11 @@ def index():
         hmeromhnia_id = form.hmeromhnia.data
         real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
 
-        print(sxoliko_etos_id, kathgoria_id, klados_id, hmeromhnia_id)
-
-        pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+        url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                           kathgoria_id=kathgoria_id,\
                                           hmeromhnia_id=hmeromhnia_id).\
                                           filter(Pinakas.klados_id.contains(klados_id)).\
-                                          first()
-
-        print(pinakas)
-        url_pinaka = pinakas.url_pinaka
-        print(url_pinaka)
+                                          first().url_pinaka
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
@@ -249,7 +243,7 @@ def index():
 
         return redirect(url_for('result'))
 
-    return render_template('index.html', form=form, current_time=datetime.utcnow())
+    return render_template('index.html', form=form)
 
 
 @app.route('/result', methods=['GET', 'POST'])
@@ -337,7 +331,7 @@ def _get_hmeromhnies():
     return jsonify(choices_hmeromhnies)
 
 
-
+# tutorial leftover
 @app.route('/user/<name>')
 def user(name):
     return render_template('user.html', name=name)
