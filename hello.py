@@ -215,22 +215,36 @@ def index():
     if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
-        klados_id = form.klados.data
+        klados_id = str(form.klados.data)
         hmeromhnia_id = form.hmeromhnia.data
         real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
+
+        print(sxoliko_etos_id, kathgoria_id, klados_id, hmeromhnia_id)
+
+        pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                          kathgoria_id=kathgoria_id,\
+                                          hmeromhnia_id=hmeromhnia_id).\
+                                          filter(Pinakas.klados_id.contains(klados_id)).\
+                                          first()
+
+        print(pinakas)
+        url_pinaka = pinakas.url_pinaka
+        print(url_pinaka)
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
         session['klados_id'] = klados_id
         session['hmeromhnia_id'] = hmeromhnia_id
         session['real_eidikothta_id'] = real_eidikothta_id
+        session['url_pinaka'] = url_pinaka
 
         if app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
                                   'Κατηγορία id ' + str(kathgoria_id),\
                                   'Κλάδος id ' + str(klados_id),\
                                   'Ημερομηνία id ' + str(hmeromhnia_id),\
-                                  'Real ειδικότητα id ' + str(real_eidikothta_id)))
+                                  'Real ειδικότητα id ' + str(real_eidikothta_id),\
+                                  url_pinaka))
             send_email(app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
         return redirect(url_for('result'))
@@ -244,7 +258,8 @@ def result():
                            kathgoria_id=session.get('kathgoria_id'),
                            klados_id=session.get('klados_id'),
                            hmeromhnia_id=session.get('hmeromhnia_id'),
-                           real_eidikothta_id=session.get('real_eidikothta_id'))
+                           real_eidikothta_id=session.get('real_eidikothta_id'),
+                           url_pinaka = session.get('url_pinaka'))
 
 
 @app.route('/_get_kathgories/')
@@ -296,29 +311,21 @@ def _get_hmeromhnies():
     kathgoria_id = request.args.get('kathgoria')
     klados_id = request.args.get('klados')
 
-    print(sxoliko_etos_id)
-    print(kathgoria_id)
-    print(klados_id)
-
-    real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
-    eidikothtes = Eidikothta.query.filter_by(real_eidikothta_id=real_eidikothta_id).all()
+    klados = Klados.query.filter_by(klados_id=klados_id).first()
+    real_eidikothta_id = klados.real_eidikothta_id
     pinakes = []
     choices_hmeromhnies = []
 
-    for eidikothta in eidikothtes:
-        print(eidikothta.eidikothta_id, eidikothta.kodikos_eidikothtas)
-        temp_pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id,\
-                                               eidikothta_id=eidikothta.eidikothta_id).all()
-        for pinakas in temp_pinakes:
-            if pinakas not in pinakes:
-                pinakes.append(pinakas)
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(Pinakas.klados_id.contains(klados_id)).all()
 
     for pinakas in pinakes:
-        print(pinakas.pinakas_id, pinakas.lektiko_pinaka)
-        temp_hmeromhnies = Hmeromhnia.query.filter_by(hmeromhnia_id=pinakas.hmeromhnia_id).all()
-        for hmeromhnia in temp_hmeromhnies:
-            choices_hmeromhnies.append((hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia))
+        hmeromhnia = Hmeromhnia.query.filter_by(hmeromhnia_id=pinakas.hmeromhnia_id).first()
+        hmeromhnia_tuple = (hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
+        if hmeromhnia_tuple not in choices_hmeromhnies:
+            #print(hmeromhnia_tuple, pinakas.pinakas_id)
+            choices_hmeromhnies.append(hmeromhnia_tuple)
     choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True) # sort alphabetically decr.
 
     # fix hmeromhnia format (e.g. 10-Οκτ-2016)
