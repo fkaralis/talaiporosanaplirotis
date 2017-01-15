@@ -41,18 +41,7 @@ class Klados(Base):
     real_eidikothta_id = Column(Integer, ForeignKey('real_eidikothta.real_eidikothta_id'))
 
     # relationships
-    #eidikothtes = relationship("Eidikothta", back_populates="real_eidikothta_id")
     #pinakes = relationship("Pinakas", back_populates="klados")
-
-class Eidikothta(Base):
-    __tablename__ = "eidikothta"
-
-    id = Column("eidikothta_id", Integer, primary_key=True)
-    kodikos_eidikothtas = Column("kodikos_eidikothtas", String, nullable=False, unique=True)
-    real_eidikothta_id = Column(Integer, ForeignKey('real_eidikothta.real_eidikothta_id'))
-
-    # relationships
-    pinakes = relationship("Pinakas", back_populates="eidikothta")
 
 
 class Sxoliko_etos(Base):
@@ -85,7 +74,6 @@ class Pinakas(Base):
 
     sxoliko_etos_id = Column(Integer, ForeignKey('sxoliko_etos.sxoliko_etos_id'))
     kathgoria_id = Column(Integer, ForeignKey('kathgoria.kathgoria_id'))
-    eidikothta_id = Column(Integer, ForeignKey('eidikothta.eidikothta_id'))
     hmeromhnia_id = Column(Integer, ForeignKey('hmeromhnia.hmeromhnia_id'))
     klados_id = Column("klados_id", String, nullable=True)
 
@@ -94,7 +82,6 @@ class Pinakas(Base):
 
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
     kathgoria = relationship("Kathgoria", back_populates="pinakes")
-    eidikothta = relationship("Eidikothta", back_populates="pinakes")
     #hmeromhnia = relationship("Hmeromhnia", back_populates="pinakes")
     #klados = relationship("Klados", back_populates="pinakes")
 
@@ -103,7 +90,6 @@ __all__ = [
     "Kathgoria",
     "Real_eidikothta",
     "Klados",
-    "Eidikothta",
     "Sxoliko_etos",
     "Hmeromhnia",
     "Pinakas",

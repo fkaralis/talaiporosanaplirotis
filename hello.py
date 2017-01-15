@@ -26,10 +26,11 @@ from wtforms import SubmitField
 from wtforms.validators import Required
 from wtforms.validators import DataRequired
 
-
-#loc = locale.getdefaultlocale()
-#locale.setlocale(locale.LC_ALL, loc)
-locale.setlocale(locale.LC_ALL, 'ell')
+# linux locale
+loc = locale.getdefaultlocale()
+locale.setlocale(locale.LC_ALL, loc)
+# win locale
+#locale.setlocale(locale.LC_ALL, 'ell')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -90,13 +91,6 @@ mail = Mail(app)
 #
 db.Model.metadata.reflect(db.engine)
 
-class Eidikothta(db.Model):
-    __table__ = db.Model.metadata.tables['eidikothta']
-
-    def __repr__(self):
-        return '\nΕιδικότητα id %r\nκωδικός %r\nreal %r' %\
-            (self.eidikothta_id, self.kodikos_eidikothtas, self.real_eidikothta_id)
-
 class Hmeromhnia(db.Model):
     __table__ = db.Model.metadata.tables['hmeromhnia']
 
@@ -124,7 +118,7 @@ class Pinakas(db.Model):
     def __repr__(self):
         return '\nΠίνακας id %r\nλεκτικό %r\nσχ.έτος %r\nκατηγορία %r\nειδικότητα %r\nημ/νια %r\npath %r\nurl %r' %\
             (self.pinakas_id, self.lektiko_pinaka, self.sxoliko_etos_id, self.kathgoria_id, \
-             self.eidikothta_id, self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
+             self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
 
 class Real_eidikothta(db.Model):
     __table__ = db.Model.metadata.tables['real_eidikothta']
