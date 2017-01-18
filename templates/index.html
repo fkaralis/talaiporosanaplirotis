@@ -33,6 +33,7 @@ $(function() {
     //updateKladoi();
     dropdown.kathgoria.attr('disabled', 'disabled');
 
+    //smeae
     $('label[for="select_smeae_pinakas"]').hide();
     dropdown.smeae_pinakas.hide();
     $('label[for="select_smeae"]').hide();
@@ -51,6 +52,7 @@ $(function() {
 
         dropdown.kathgoria.empty();
 
+        // smeae
         $('label[for="select_smeae_pinakas"]').hide();
         dropdown.smeae_pinakas.hide();
         $('label[for="select_smeae"]').hide();
@@ -81,7 +83,7 @@ $(function() {
             kathgoria: dropdown.kathgoria.val()
         };
 
-        alert(send.sxoliko_etos + " " + send.kathgoria);
+        alert(send.sxoliko_etos + "\n" + send.kathgoria);
 
         //smeae
         if ((send.kathgoria==11) || (send.kathgoria==18) || (send.kathgoria==19)) {
@@ -122,7 +124,7 @@ $(function() {
             klados: dropdown.klados.val()
         };
 
-        alert(send.sxoliko_etos + " " + send.kathgoria + " " + send.klados);
+        alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
 
         dropdown.hmeromhnia.empty();
         dropdown.hmeromhnia.removeAttr('disabled');
