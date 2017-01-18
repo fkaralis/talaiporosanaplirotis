@@ -321,7 +321,8 @@ def _get_kladoi():
         kladoi_id = kladoi_id.split(' ')
         for klados_id in kladoi_id:
             klados = Klados.query.filter_by(klados_id=klados_id).first()
-            klados_tuple = (klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy)
+            if klados.klados_id != 254:     # not Bad or No File
+                klados_tuple = (klados.klados_id, klados.kodikos_kladoy + ' ' + klados.lektiko_kladoy)
             if klados_tuple not in choices_kladoi:
                 choices_kladoi.append(klados_tuple)
 
