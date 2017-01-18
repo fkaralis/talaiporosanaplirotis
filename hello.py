@@ -144,6 +144,8 @@ choices_sxolika_eth = []
 choices_kathgories = []
 choices_kladoi = []
 choices_hmeromhnies = []
+choices_smeae_pinakas = [(1, 'Α'), (2, 'B')]
+choices_smeae = [(1, 'Γενικός'), (2, 'Braille'), (3, 'ΕΝΓ'), (4, 'Braille και ΕΝΓ')]
 
 sxolika_eth = Sxoliko_etos.query.all()
 kathgories = Kathgoria.query.all()
@@ -180,10 +182,35 @@ for i, choice in enumerate(choices_hmeromhnies):
 
 # form class
 class Form(FlaskForm):
-    sxoliko_etos = SelectField('Σχολικό έτος', choices=choices_sxolika_eth, validators=[DataRequired()], coerce=int, id='select_sxoliko_etos')
-    kathgoria = SelectField('Κατηγορία', choices=[], validators=[DataRequired()], coerce=int, id='select_kathgoria')
-    klados = SelectField('Κλάδος', choices=[], validators=[DataRequired()], coerce=int, id='select_klados')
-    hmeromhnia = SelectField('Ημερομηνία', choices=[], validators=[DataRequired()], coerce=int, id='select_hmeromhnia')
+    sxoliko_etos = SelectField('Σχολικό έτος',\
+                               choices=choices_sxolika_eth,\
+                               validators=[DataRequired()],\
+                               coerce=int,\
+                               id='select_sxoliko_etos')
+    kathgoria = SelectField('Κατηγορία',\
+                            choices=[],\
+                            validators=[DataRequired()],\
+                            coerce=int,\
+                            id='select_kathgoria')
+    smeae_pinakas = SelectField('Πίνακας ΣΜΕΑΕ',\
+                                choices=choices_smeae_pinakas,\
+                                validators=[DataRequired()],\
+                                coerce=int,\
+                                id='select_smeae_pinakas')
+    smeae = SelectField('Κατηγορία για ΣΜΕΑΕ',\
+                        choices=choices_smeae,\
+                        validators=[DataRequired()],\
+                        coerce=int,\
+                        id='select_smeae')
+    klados = SelectField('Κλάδος',\
+                         choices=[],\
+                         validators=[DataRequired()],\
+                         coerce=int, id='select_klados')
+    hmeromhnia = SelectField('Ημερομηνία',\
+                             choices=[],\
+                             validators=[DataRequired()],\
+                             coerce=int,\
+                             id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
 # form end
@@ -209,6 +236,10 @@ def index():
     if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
+        if form.smeae_pinakas.data:
+            smeae_pinakas = form.smeae_pinakas.data
+        if form.smeae.data:
+            smeae = form.smeae.data
         klados_id = str(form.klados.data)
         hmeromhnia_id = form.hmeromhnia.data
         real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
@@ -221,6 +252,8 @@ def index():
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
+        session['smeae_pinakas'] = smeae_pinakas
+        session['smeae'] = smeae
         session['klados_id'] = klados_id
         session['hmeromhnia_id'] = hmeromhnia_id
         session['real_eidikothta_id'] = real_eidikothta_id
@@ -229,6 +262,8 @@ def index():
         if app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
                                   'Κατηγορία id ' + str(kathgoria_id),\
+                                  'Πίνακας ΣΜΕΑΕ ' + str(smeae_pinakas),\
+                                  'ΣΜΕΑΕ: ' + str(smeae),\
                                   'Κλάδος id ' + str(klados_id),\
                                   'Ημερομηνία id ' + str(hmeromhnia_id),\
                                   'Real ειδικότητα id ' + str(real_eidikothta_id),\
@@ -244,6 +279,8 @@ def index():
 def result():
     return render_template('result.html', sxoliko_etos_id=session.get('sxoliko_etos_id'),
                            kathgoria_id=session.get('kathgoria_id'),
+                           smeae_pinakas=session.get('smeae_pinakas'),
+                           smeae=session.get('smeae'),
                            klados_id=session.get('klados_id'),
                            hmeromhnia_id=session.get('hmeromhnia_id'),
                            real_eidikothta_id=session.get('real_eidikothta_id'),
