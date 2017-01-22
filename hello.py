@@ -156,16 +156,19 @@ for sxoliko_etos in sxolika_eth:
     choice = (sxoliko_etos.sxoliko_etos_id, sxoliko_etos.lektiko_sxolikoy_etoys)
     choices_sxolika_eth.append(choice)
 choices_sxolika_eth = sorted(choices_sxolika_eth)[:5] # up to 2012-13
+choices_sxolika_eth.insert(0, (0, '--Επιλογή σχ. έτους--'))
 
 for kathgoria in kathgories:
     choice = (kathgoria.kathgoria_id, kathgoria.greek_lektiko_kathgorias)
     choices_kathgories.append(choice)
 choices_kathgories = sorted(choices_kathgories, key=lambda x: x[1]) # sort alphabetically
+choices_kathgories.insert(0, (0, '--Επιλογή κατηγορίας--'))
 
 for klados in kladoi:
     choice = (klados.klados_id, klados.kodikos_kladoy+' '+klados.lektiko_kladoy)
     choices_kladoi.append(choice)
 choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1]) # sort alphabetically
+choices_kladoi.insert(0, (0, '--Επιλογή κλάδου--'))
 
 for hmeromhnia in hmeromhnies:
     choice = (hmeromhnia.hmeromhnia_id, hmeromhnia.real_hmeromhnia)
@@ -177,6 +180,7 @@ for i, choice in enumerate(choices_hmeromhnies):
     choice_list = list(choices_hmeromhnies[i])
     choice_list[1] = '{:%d-%b-%Y}'.format(choice_list[1])
     choices_hmeromhnies[i] = tuple(choice_list)
+choices_hmeromhnies.insert(0, (0, '--Επιλογή ημ/νίας--'))
 ## end choices
 
 
@@ -188,7 +192,7 @@ class Form(FlaskForm):
                                coerce=int,\
                                id='select_sxoliko_etos')
     kathgoria = SelectField('Κατηγορία',\
-                            choices=[],\
+                            choices=choices_kathgories,\
                             validators=[DataRequired()],\
                             coerce=int,\
                             id='select_kathgoria')
@@ -203,11 +207,11 @@ class Form(FlaskForm):
                         coerce=int,\
                         id='select_smeae')
     klados = SelectField('Κλάδος',\
-                         choices=[],\
+                         choices=choices_kladoi,\
                          validators=[DataRequired()],\
                          coerce=int, id='select_klados')
     hmeromhnia = SelectField('Ημερομηνία',\
-                             choices=[],\
+                             choices=choices_hmeromhnies,\
                              validators=[DataRequired()],\
                              coerce=int,\
                              id='select_hmeromhnia')
@@ -233,7 +237,7 @@ def internal_server_error(e):
 def index():
     form = Form()
 
-    if form.is_submitted():
+    if form.validate_on_submit():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
         if form.smeae_pinakas.data:
@@ -304,6 +308,7 @@ def _get_kathgories():
         choices_kathgories.append((kathgoria_id, Kathgoria.query.filter_by(kathgoria_id=kathgoria_id).
                           first().greek_lektiko_kathgorias))
     choices_kathgories = sorted(choices_kathgories, key=lambda x: x[1]) # sort alphabetically
+    choices_kathgories.insert(0, (0, '--Επιλογή κατηγορίας--'))
 
     return jsonify(choices_kathgories)
 
@@ -327,6 +332,7 @@ def _get_kladoi():
                 choices_kladoi.append(klados_tuple)
 
     choices_kladoi = sorted(choices_kladoi, key=lambda x: x[1])  # sort alphabetically
+    choices_kladoi.insert(0, (0, '--Επιλογή κλάδου--'))
 
     return jsonify(choices_kladoi)
 
@@ -359,6 +365,8 @@ def _get_hmeromhnies():
         choice_list = list(choices_hmeromhnies[i])
         choice_list[1] = '{:%d-%b-%Y}'.format(choice_list[1])
         choices_hmeromhnies[i] = tuple(choice_list)
+
+    choices_hmeromhnies.insert(0, (0, '--Επιλογή ημ/νίας--'))
 
     return jsonify(choices_hmeromhnies)
 
