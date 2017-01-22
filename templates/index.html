@@ -86,7 +86,14 @@ $(function() {
         alert(send.sxoliko_etos + "\n" + send.kathgoria);
 
         //smeae
-        if ((send.kathgoria==11) || (send.kathgoria==18) || (send.kathgoria==19)) {
+        //if (send.sxoliko_etos==1) {
+        //    $('#select_smeae_pinakas').removeAttr('required');
+        //    $('#select_smeae_pinakas').parent().removeClass('required');
+        //   $('#select_smeae').removeAttr('required');
+        //   $('#select_smeae').parent().removeClass('required');
+        //} else
+        if (((send.kathgoria==11) || (send.kathgoria==18) || (send.kathgoria==19))
+            && (send.sxoliko_etos!=1)) {
             $('label[for="select_smeae_pinakas"]').show();
             $('#select_smeae_pinakas').show();
             $('label[for="select_smeae"]').show();

@@ -144,8 +144,8 @@ choices_sxolika_eth = []
 choices_kathgories = []
 choices_kladoi = []
 choices_hmeromhnies = []
-choices_smeae_pinakas = [(1, 'Α'), (2, 'B')]
-choices_smeae = [(1, 'Γενικός'), (2, 'Braille'), (3, 'ΕΝΓ'), (4, 'Braille και ΕΝΓ')]
+choices_smeae_pinakas = [(0, '--Επιλογή πίνακα--'), (1, 'Α'), (2, 'B')]
+choices_smeae = [(0, '--Επιλογή κατηγορίας ΣΜΕΑΕ--'), (1, 'Γενικός'), (2, 'Braille'), (3, 'ΕΝΓ'), (4, 'Braille και ΕΝΓ')]
 
 sxolika_eth = Sxoliko_etos.query.all()
 kathgories = Kathgoria.query.all()
@@ -198,12 +198,10 @@ class Form(FlaskForm):
                             id='select_kathgoria')
     smeae_pinakas = SelectField('Πίνακας ΣΜΕΑΕ',\
                                 choices=choices_smeae_pinakas,\
-                                validators=[DataRequired()],\
                                 coerce=int,\
                                 id='select_smeae_pinakas')
     smeae = SelectField('Κατηγορία για ΣΜΕΑΕ',\
                         choices=choices_smeae,\
-                        validators=[DataRequired()],\
                         coerce=int,\
                         id='select_smeae')
     klados = SelectField('Κλάδος',\
@@ -242,8 +240,12 @@ def index():
         kathgoria_id = form.kathgoria.data
         if form.smeae_pinakas.data:
             smeae_pinakas = form.smeae_pinakas.data
+        else:
+            smeae_pinakas = 0
         if form.smeae.data:
             smeae = form.smeae.data
+        else:
+            smeae = 0
         klados_id = str(form.klados.data)
         hmeromhnia_id = form.hmeromhnia.data
         real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
