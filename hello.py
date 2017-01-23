@@ -145,29 +145,29 @@ class Smeae_kathgoria(db.Model):
     __table__ = db.Model.metadata.tables['smeae_kathgoria']
 
     def __repr__(self):
-        return '\nΣΜΕΑΕ Κατηγορία\nid %r\nλεκτικό %r\noriginal_lektiko %r' %\
-            (self.id, self.lektiko, self.original_lektiko)
+        return '\nΣΜΕΑΕ Κατηγορία\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
 
 class Perioxh(db.Model):
     __table__ = db.Model.metadata.tables['perioxh']
 
     def __repr__(self):
-        return '\nΣΜΕΑΕ Περιοχή\nid %r\nλεκτικό %r\noriginal_lektiko %r' %\
-            (self.id, self.lektiko, self.original_lektiko)
+        return '\nΣΜΕΑΕ Περιοχή\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
 
 class Mousiko_organo(db.Model):
     __table__ = db.Model.metadata.tables['mousiko_organo']
 
     def __repr__(self):
-        return '\nΜουσικό όργανο\nid %r\nλεκτικό %r\noriginal_lektiko %r' %\
-            (self.id, self.lektiko, self.original_lektiko)
+        return '\nΜουσικό όργανο\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
 
 class Athlima(db.Model):
     __table__ = db.Model.metadata.tables['athlima']
 
     def __repr__(self):
-        return '\nΆθλημα\nid %r\nλεκτικό %r\noriginal_lektiko %r' %\
-            (self.id, self.lektiko, self.original_lektiko)
+        return '\nΆθλημα\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
 #
 # Model end
 
