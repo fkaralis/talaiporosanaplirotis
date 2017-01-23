@@ -148,12 +148,26 @@ class Smeae_kathgoria(db.Model):
         return '\nΣΜΕΑΕ Κατηγορία\nid %r\nλεκτικό %r' %\
             (self.id, self.lektiko)
 
+class Smeae_kathgoria_greeklish(db.Model):
+    __table__ = db.Model.metadata.tables['smeae_kathgoria_greeklish']
+
+    def __repr__(self):
+        return '\nΣΜΕΑΕ Κατηγορία grklsh\nid %r\nλεκτικό %r\nΣΜΕΑΕ κατηγορία id' %\
+            (self.id, self.lektiko, self.smeae_kathgoria_id)
+
 class Perioxh(db.Model):
     __table__ = db.Model.metadata.tables['perioxh']
 
     def __repr__(self):
         return '\nΣΜΕΑΕ Περιοχή\nid %r\nλεκτικό %r' %\
             (self.id, self.lektiko)
+
+class Perioxh_greeklish(db.Model):
+    __table__ = db.Model.metadata.tables['perioxh_greeklish']
+
+    def __repr__(self):
+        return '\nΠεριοχή grklsh\nid %r\nλεκτικό %r\nΠεριοχή id' %\
+            (self.id, self.lektiko, self.perioxh_id)
 
 class Mousiko_organo(db.Model):
     __table__ = db.Model.metadata.tables['mousiko_organo']
@@ -162,12 +176,26 @@ class Mousiko_organo(db.Model):
         return '\nΜουσικό όργανο\nid %r\nλεκτικό %r' %\
             (self.id, self.lektiko)
 
+class Mousiko_organo_greeklish(db.Model):
+    __table__ = db.Model.metadata.tables['mousiko_organo_greeklish']
+
+    def __repr__(self):
+        return '\Μουσικό όργανο grklsh\nid %r\nλεκτικό %r\nΜουσικό όργανο id' %\
+            (self.id, self.lektiko, self.mousiko_organo_id)
+
 class Athlima(db.Model):
     __table__ = db.Model.metadata.tables['athlima']
 
     def __repr__(self):
         return '\nΆθλημα\nid %r\nλεκτικό %r' %\
             (self.id, self.lektiko)
+
+class Athlima_greeklish(db.Model):
+    __table__ = db.Model.metadata.tables['athlima_greeklish']
+
+    def __repr__(self):
+        return '\nΆθλημα grklsh\nid %r\nλεκτικό %r\Άθλημα id' %\
+            (self.id, self.lektiko, self.athlima_id)
 #
 # Model end
 

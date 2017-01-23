@@ -28,7 +28,8 @@ Base = declarative_base(metadata=metadata)
 
 from .utils import get_one_or_create
 from .models import Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
-Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima
+Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
+Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_greeklish
 
 __all__ = [
     "metadata",
@@ -45,4 +46,8 @@ __all__ = [
     "Perioxh",
     "Mousiko_organo",
     "Athlima",
+    "Smeae_kathgoria_greeklish",
+    "Perioxh_greeklish",
+    "Mousiko_organo_greeklish",
+    "Athlima_greeklish",
 ]

@@ -77,11 +77,25 @@ class Smeae_kathgoria(Base):
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
 
+class Smeae_kathgoria_greeklish(Base):
+    __tablename__ = "smeae_kathgoria_greeklish"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+    smeae_kathgoria_id = Column(Integer, ForeignKey('smeae_kathgoria.id'))
+
 class Perioxh(Base):
     __tablename__ = "perioxh"
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Perioxh_greeklish(Base):
+    __tablename__ = "perioxh_greeklish"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+    perioxh_id = Column(Integer, ForeignKey('perioxh.id'))
 
 class Mousiko_organo(Base):
     __tablename__ = "mousiko_organo"
@@ -89,11 +103,25 @@ class Mousiko_organo(Base):
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
 
+class Mousiko_organo_greeklish(Base):
+    __tablename__ = "mousiko_organo_greeklish"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+    mousiko_organo_id = Column(Integer, ForeignKey('mousiko_organo.id'))
+
 class Athlima(Base):
     __tablename__ = "athlima"
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Athlima_greeklish(Base):
+    __tablename__ = "athlima_greeklish"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+    athlima_id = Column(Integer, ForeignKey('athlima.id'))
 
 
 class Pinakas(Base):
@@ -134,5 +162,9 @@ __all__ = [
     "Perioxh",
     "Mousiko_organo",
     "Athlima",
+    "Smeae_kathgoria_greeklish",
+    "Perioxh_greeklish",
+    "Mousiko_organo_greeklish",
+    "Athlima_greeklish",
 ]
 
