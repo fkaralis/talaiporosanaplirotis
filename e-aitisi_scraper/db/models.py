@@ -65,6 +65,36 @@ class Hmeromhnia(Base):
     # relationships
     #pinakes = relationship("Pinakas", back_populates="hmeromhnia")
 
+class Smeae_pinakas(Base):
+    __tablename__ = "smeae_pinakas"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Smeae_kathgoria(Base):
+    __tablename__ = "smeae_kathgoria"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Perioxh(Base):
+    __tablename__ = "perioxh"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Mousiko_organo(Base):
+    __tablename__ = "mousiko_organo"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+
+class Athlima(Base):
+    __tablename__ = "athlima"
+
+    id = Column("id", Integer, primary_key=True)
+    lektiko = Column("lektiko", String, nullable=False, unique=True)
+
 
 class Pinakas(Base):
     __tablename__ = "pinakas"
@@ -79,6 +109,12 @@ class Pinakas(Base):
 
     path_pinaka = Column("path_pinaka", String, nullable=False)
     url_pinaka = Column("url_pinaka", String, nullable=False, unique=True)
+
+    smeae_pinakas_id = Column(Integer, ForeignKey('smeae_pinakas.id'))
+    smeae_kathgoria_id = Column(Integer, ForeignKey('smeae_kathgoria.id'))
+    perioxh_id = Column(Integer, ForeignKey('perioxh.id'))
+    mousiko_organo_id = Column(Integer, ForeignKey('mousiko_organo.id'))
+    athlima_id = Column(Integer, ForeignKey('athlima.id'))
 
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
     kathgoria = relationship("Kathgoria", back_populates="pinakes")

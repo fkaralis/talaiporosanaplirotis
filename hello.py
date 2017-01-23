@@ -133,6 +133,41 @@ class Sxoliko_etos(db.Model):
     def __repr__(self):
         return '\nΣχολικό έτος\nid %r\nλεκτικό %r' %\
             (self.sxoliko_etos_id, self.lektiko_sxolikoy_etoys)
+
+class Smeae_pinakas(db.Model):
+    __table__ = db.Model.metadata.tables['smeae_pinakas']
+
+    def __repr__(self):
+        return '\nΣΜΕΑΕ Πίνακας\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
+
+class Smeae_kathgoria(db.Model):
+    __table__ = db.Model.metadata.tables['smeae_kathgoria']
+
+    def __repr__(self):
+        return '\nΣΜΕΑΕ Κατηγορία\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
+
+class Perioxh(db.Model):
+    __table__ = db.Model.metadata.tables['perioxh']
+
+    def __repr__(self):
+        return '\nΣΜΕΑΕ Περιοχή\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
+
+class Mousiko_organo(db.Model):
+    __table__ = db.Model.metadata.tables['mousiko_organo']
+
+    def __repr__(self):
+        return '\nΜουσικό όργανο\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
+
+class Athlima(db.Model):
+    __table__ = db.Model.metadata.tables['athlima']
+
+    def __repr__(self):
+        return '\nΆθλημα\nid %r\nλεκτικό %r' %\
+            (self.id, self.lektiko)
 #
 # Model end
 
