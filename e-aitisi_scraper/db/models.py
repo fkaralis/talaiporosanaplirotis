@@ -76,28 +76,28 @@ class Smeae_kathgoria(Base):
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
-    original_lektiko = Column("lektiko", String)
+    original_lektiko = Column("original_lektiko", String)
 
 class Perioxh(Base):
     __tablename__ = "perioxh"
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
-    original_lektiko = Column("lektiko", String)
+    original_lektiko = Column("original_lektiko", String)
 
 class Mousiko_organo(Base):
     __tablename__ = "mousiko_organo"
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
-    original_lektiko = Column("lektiko", String)
+    original_lektiko = Column("original_lektiko", String)
 
 class Athlima(Base):
     __tablename__ = "athlima"
 
     id = Column("id", Integer, primary_key=True)
     lektiko = Column("lektiko", String, nullable=False, unique=True)
-    original_lektiko = Column("lektiko", String)
+    original_lektiko = Column("original_lektiko", String)
 
 
 class Pinakas(Base):
