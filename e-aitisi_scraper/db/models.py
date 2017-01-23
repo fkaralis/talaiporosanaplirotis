@@ -129,5 +129,10 @@ __all__ = [
     "Sxoliko_etos",
     "Hmeromhnia",
     "Pinakas",
+    "Smeae_pinakas",
+    "Smeae_kathgoria",
+    "Perioxh",
+    "Mousiko_organo",
+    "Athlima",
 ]
 
