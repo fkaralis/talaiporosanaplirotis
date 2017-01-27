@@ -274,7 +274,7 @@ for mousiko_organo in mousika_organa:
     choice = (mousiko_organo.id, mousiko_organo.lektiko)
     choices_mousika_organa.append(choice)
 choices_mousika_organa = sorted(choices_mousika_organa, key=lambda x: x[1]) # sort alphabetically
-choices_mousika_organa.insert(0, (0, '--Επιλογή περιοχής--'))
+choices_mousika_organa.insert(0, (0, '--Επιλογή μουσικού οργάνου--'))
 
 for athlima in athlimata:
     choice = (athlima.id, athlima.lektiko)
@@ -306,7 +306,7 @@ class Form(FlaskForm):
     smeae_kathgoria = SelectField('Κατηγορία για ΣΜΕΑΕ',\
                         choices=choices_smeae_kathgories,\
                         coerce=int,\
-                        id='select_smeae')
+                        id='select_smeae_kathgoria')
     klados = SelectField('Κλάδος',\
                          choices=choices_kladoi,\
                          validators=[DataRequired()],\

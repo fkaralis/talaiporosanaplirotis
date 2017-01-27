@@ -23,24 +23,32 @@ $(function() {
         sxoliko_etos: $('#select_sxoliko_etos'),
         kathgoria: $('#select_kathgoria'),
         smeae_pinakas: $('#select_smeae_pinakas'),
-        smeae: $('#select_smeae'),
+        smeae_kathgoria: $('#select_smeae_kathgoria'),
         klados: $('#select_klados'),
-        hmeromhnia: $('#select_hmeromhnia')
+        hmeromhnia: $('#select_hmeromhnia'),
+        perioxh: $('#select_perioxh'),
+        mousiko_organo: $('#select_mousiko_organo'),
+        athlima: $('#select_athlima'),
     };
 
     // call to update on load
     //updateKathgories();
     //updateKladoi();
     dropdown.kathgoria.attr('disabled', 'disabled');
+    dropdown.klados.attr('disabled', 'disabled');
+    dropdown.hmeromhnia.attr('disabled', 'disabled');   // hide too?
 
-    //smeae
+    //hidden select fields
     $('label[for="select_smeae_pinakas"]').hide();
     dropdown.smeae_pinakas.hide();
-    $('label[for="select_smeae"]').hide();
-    dropdown.smeae.hide();
-
-    dropdown.klados.attr('disabled', 'disabled');
-    dropdown.hmeromhnia.attr('disabled', 'disabled');
+    $('label[for="select_smeae_kathgoria"]').hide();
+    dropdown.smeae_kathgoria.hide();
+    $('label[for="select_perioxh"]').hide();
+    dropdown.perioxh.hide();
+    $('label[for="select_mousiko_organo"]').hide();
+    dropdown.mousiko_organo.hide();
+    $('label[for="select_athlima"]').hide();
+    dropdown.athlima.hide();
 
     // function to call XHR and update kathgoria dropdown
     function updateKathgories() {
@@ -55,8 +63,8 @@ $(function() {
         // smeae
         $('label[for="select_smeae_pinakas"]').hide();
         dropdown.smeae_pinakas.hide();
-        $('label[for="select_smeae"]').hide();
-        dropdown.smeae.hide();
+        $('label[for="select_smeae_kathgoria"]').hide();
+        dropdown.smeae_kathgoria.hide();
 
         dropdown.klados.empty();
         dropdown.hmeromhnia.empty();
@@ -96,13 +104,13 @@ $(function() {
             && (send.sxoliko_etos!=1)) {
             $('label[for="select_smeae_pinakas"]').show();
             $('#select_smeae_pinakas').show();
-            $('label[for="select_smeae"]').show();
-            $('#select_smeae').show();
+            $('label[for="select_smeae_kathgoria"]').show();
+            $('#select_smeae_kathgoria').show();
         } else {
             $('label[for="select_smeae_pinakas"]').hide();
             $('#select_smeae_pinakas').hide();
-            $('label[for="select_smeae"]').hide();
-            $('#select_smeae').hide();
+            $('label[for="select_smeae_kathgoria"]').hide();
+            $('#select_smeae_kathgoria').hide();
         }
 
 
