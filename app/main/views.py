@@ -1,6 +1,7 @@
 from datetime import datetime
 from threading import Thread
 from flask import Flask
+from flask import current_app
 from flask import render_template
 from flask import session
 from flask import redirect
@@ -22,48 +23,70 @@ Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_
 def index():
     form = MainForm()
 
+    smeae_pinakas_id = 0
+    smeae_kathgoria_id = 0
+    perioxh_id = 0
+    mousiko_organo_id = 0
+    athlima_id = 0
+
     if form.validate_on_submit():
         sxoliko_etos_id = form.sxoliko_etos.data
         kathgoria_id = form.kathgoria.data
-        if form.smeae_pinakas.data:
-            smeae_pinakas_id = form.smeae_pinakas.data
-        else:
-            smeae_pinakas_id = 0
-        if form.smeae_kathgoria.data:
-            smeae_kathgoria_id = form.smeae_kathgoria.data
-        else:
-            smeae_kathgoria_id = 0
         klados_id = str(form.klados.data)
         hmeromhnia_id = form.hmeromhnia.data
-        real_eidikothta_id = Klados.query.filter_by(klados_id=klados_id).first().real_eidikothta_id
+
+        if form.smeae_pinakas.data:
+            smeae_pinakas_id = form.smeae_pinakas.data
+        if form.smeae_kathgoria.data:
+            smeae_kathgoria_id = form.smeae_kathgoria.data
+        if form.perioxh.data:
+            perioxh_id = form.perioxh.data
+        if form.mousiko_organo.data:
+            mousiko_organo_id = form.mousiko_organo.data
+        if form.athlima.data:
+            athlima_id = form.athlima.data
+
+        real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().id
+
 
         url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                           kathgoria_id=kathgoria_id,\
-                                          hmeromhnia_id=hmeromhnia_id).\
+                                          hmeromhnia_id=hmeromhnia_id,\
+                                          smeae_pinakas_id=smeae_pinakas_id,\
+                                          smeae_kathgoria_id=smeae_kathgoria_id,\
+                                          perioxh_id=perioxh_id,\
+                                          mousiko_organo_id=mousiko_organo_id,\
+                                          athlima_id=athlima_id).\
                                           filter(Pinakas.klados_id.contains(klados_id)).\
                                           first().url_pinaka
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
-        session['smeae_pinakas_id'] = smeae_pinakas_id
-        session['smeae_kathgoria_id'] = smeae_kathgoria_id
         session['klados_id'] = klados_id
         session['hmeromhnia_id'] = hmeromhnia_id
+        session['smeae_pinakas_id'] = smeae_pinakas_id
+        session['smeae_kathgoria_id'] = smeae_kathgoria_id
+        session['perioxh_id'] = perioxh_id
+        session['mousiko_organo_id'] = mousiko_organo_id
+        session['athlima_id'] = athlima_id
         session['real_eidikothta_id'] = real_eidikothta_id
         session['url_pinaka'] = url_pinaka
 
-        if app.config['TALAIPANAP_ADMIN']:
+        if current_app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
                                   'Κατηγορία id ' + str(kathgoria_id),\
-                                  'Πίνακας ΣΜΕΑΕ id' + str(smeae_pinakas_id),\
-                                  'Κατηγορία ΣΜΕΑΕ id: ' + str(smeae_kathgoria_id),\
                                   'Κλάδος id ' + str(klados_id),\
                                   'Ημερομηνία id ' + str(hmeromhnia_id),\
+                                  'Πίνακας ΣΜΕΑΕ id: ' + str(smeae_pinakas_id),\
+                                  'Κατηγορία ΣΜΕΑΕ id: ' + str(smeae_kathgoria_id),\
+                                  'Περιοχή id' + str(perioxh_id),\
+                                  'Μουσικό όργανο id: ' + str(mousiko_organo_id),\
+                                  'Άθλημα id: ' + str(athlima_id),\
                                   'Real ειδικότητα id ' + str(real_eidikothta_id),\
                                   url_pinaka))
-            send_email(app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
+            send_email(current_app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
-        return redirect(url_for('result'))
+        return redirect(url_for('main.result'))
 
     return render_template('index.html', form=form)
 
@@ -72,10 +95,13 @@ def index():
 def result():
     return render_template('result.html', sxoliko_etos_id=session.get('sxoliko_etos_id'),
                            kathgoria_id=session.get('kathgoria_id'),
-                           smeae_pinakas_id=session.get('smeae_pinakas_id'),
-                           smeae_kathgoria_id=session.get('smeae_kathgoria_id'),
                            klados_id=session.get('klados_id'),
                            hmeromhnia_id=session.get('hmeromhnia_id'),
+                           smeae_pinakas_id=session.get('smeae_pinakas_id'),
+                           smeae_kathgoria_id=session.get('smeae_kathgoria_id'),
+                           perioxh_id=session.get('perioxh_id'),
+                           mousiko_organo_id=session.get('mousiko_organo_id'),
+                           athlima_id=session.get('athlima_id'),
                            real_eidikothta_id=session.get('real_eidikothta_id'),
                            url_pinaka = session.get('url_pinaka'))
 

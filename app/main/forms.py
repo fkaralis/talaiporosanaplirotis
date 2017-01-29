@@ -120,22 +120,18 @@ class MainForm(FlaskForm):
                          coerce=int, id='select_klados')
     hmeromhnia = SelectField('Ημερομηνία',\
                              choices=choices_hmeromhnies,\
-                             validators=[DataRequired()],\
                              coerce=int,\
                              id='select_hmeromhnia')
     perioxh = SelectField('Περιοχή',\
                              choices=choices_perioxes,\
-                             validators=[DataRequired()],\
                              coerce=int,\
                              id='select_perioxh')
     mousiko_organo = SelectField('Mουσικό όργανο',\
                              choices=choices_mousika_organa,\
-                             validators=[DataRequired()],\
                              coerce=int,\
                              id='select_mousiko_organo')
     athlima = SelectField('Άθλημα',\
                              choices=choices_athlimata,\
-                             validators=[DataRequired()],\
                              coerce=int,\
                              id='select_athlima')
     submit = SubmitField('Yποβολή')
