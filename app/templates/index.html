@@ -71,7 +71,7 @@ $(function() {
         dropdown.klados.attr('disabled', 'disabled');
         dropdown.hmeromhnia.attr('disabled', 'disabled');
 
-        $.getJSON("{{ url_for('_get_kathgories') }}", send, function(data) {
+        $.getJSON("{{ url_for('main._get_kathgories') }}", send, function(data) {
             data.forEach(function(item) {
                 dropdown.kathgoria.append(
                     $('<option>', {
@@ -118,7 +118,7 @@ $(function() {
         dropdown.hmeromhnia.empty();
         dropdown.hmeromhnia.attr('disabled', 'disabled');
 
-        $.getJSON("{{ url_for('_get_kladoi') }}", send, function(data) {
+        $.getJSON("{{ url_for('main._get_kladoi') }}", send, function(data) {
             data.forEach(function(item) {
                 dropdown.klados.append(
                     $('<option>', {
@@ -145,7 +145,7 @@ $(function() {
         dropdown.hmeromhnia.removeAttr('disabled');
         //dropdown.hmeromhnia.attr('disabled', 'disabled');
 
-        $.getJSON("{{ url_for('_get_hmeromhnies') }}", send, function(data) {
+        $.getJSON("{{ url_for('main._get_hmeromhnies') }}", send, function(data) {
             data.forEach(function(item) {
                 dropdown.hmeromhnia.append(
                     $('<option>', {
