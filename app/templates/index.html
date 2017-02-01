@@ -62,18 +62,24 @@ $(function() {
 
         dropdown.kathgoria.empty();
 
-        // hide selsect fields
+        //hidden select fields
         $('label[for="select_hmeromhnia"]').hide();
         dropdown.hmeromhnia.hide();
         $('label[for="select_smeae_pinakas"]').hide();
         dropdown.smeae_pinakas.hide();
         $('label[for="select_smeae_kathgoria"]').hide();
         dropdown.smeae_kathgoria.hide();
+        $('label[for="select_perioxh"]').hide();
+        dropdown.perioxh.hide();
+        $('label[for="select_mousiko_organo"]').hide();
+        dropdown.mousiko_organo.hide();
+        $('label[for="select_athlima"]').hide();
+        dropdown.athlima.hide();
 
         //dropdown.klados.empty();
-        dropdown.hmeromhnia.empty();
+        //dropdown.hmeromhnia.empty();
         dropdown.klados.attr('disabled', 'disabled');
-        dropdown.hmeromhnia.attr('disabled', 'disabled');
+        //dropdown.hmeromhnia.attr('disabled', 'disabled');
 
         $.getJSON("{{ url_for('main._get_kathgories') }}", send, function(data) {
             data.forEach(function(item) {
@@ -97,21 +103,19 @@ $(function() {
 
         alert(send.sxoliko_etos + "\n" + send.kathgoria);
 
-        // hide select fields
+        //hidden select fields
         $('label[for="select_hmeromhnia"]').hide();
         dropdown.hmeromhnia.hide();
-        if (((send.kathgoria==11) || (send.kathgoria==18) || (send.kathgoria==19))
-            && (send.sxoliko_etos!=1)) {
-            $('label[for="select_smeae_pinakas"]').show();
-            $('#select_smeae_pinakas').show();
-            $('label[for="select_smeae_kathgoria"]').show();
-            $('#select_smeae_kathgoria').show();
-        } else {
-            $('label[for="select_smeae_pinakas"]').hide();
-            $('#select_smeae_pinakas').hide();
-            $('label[for="select_smeae_kathgoria"]').hide();
-            $('#select_smeae_kathgoria').hide();
-        }
+        $('label[for="select_smeae_pinakas"]').hide();
+        dropdown.smeae_pinakas.hide();
+        $('label[for="select_smeae_kathgoria"]').hide();
+        dropdown.smeae_kathgoria.hide();
+        $('label[for="select_perioxh"]').hide();
+        dropdown.perioxh.hide();
+        $('label[for="select_mousiko_organo"]').hide();
+        dropdown.mousiko_organo.hide();
+        $('label[for="select_athlima"]').hide();
+        dropdown.athlima.hide();
 
 
         dropdown.klados.empty();
@@ -130,6 +134,27 @@ $(function() {
             dropdown.klados.removeAttr('disabled');
         });
     }
+
+    function updateFields() {
+        var send =  {
+            sxoliko_etos: dropdown.sxoliko_etos.val(),
+            kathgoria: dropdown.kathgoria.val(),
+            klados: dropdown.klados.val()
+        };
+
+        alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
+
+        $.getJSON("{{ url_for('main._get_fields') }}", send, function(data) {
+            alert(data)
+            data.forEach(function(item) {
+                alert(item[0] + " " + item[1])
+            });
+        });
+
+
+
+    }
+
 
     // function to call XHR and update hmeromhnia dropdown
     function updateHmeromhnies() {
@@ -171,7 +196,7 @@ $(function() {
     });
 
     dropdown.klados.on('change', function() {
-        updateHmeromhnies();
+        updateFields();
     });
 
 });

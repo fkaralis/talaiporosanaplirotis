@@ -16,6 +16,8 @@ from .. import db
 from ..models import Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
 Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
 Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_greeklish
+from sqlalchemy import or_
+from sqlalchemy import and_
 
 
 
@@ -152,14 +154,68 @@ def _get_kladoi():
     return jsonify(choices_kladoi)
 
 
+@main.route('/_get_fields/')
+def _get_fields():
+    sxoliko_etos_id = request.args.get('sxoliko_etos')
+    kathgoria_id = request.args.get('kathgoria')
+    klados_id = request.args.get('klados')
+
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(Pinakas.klados_id.contains(klados_id)).all()
+
+    smeae_pinakas = False
+    smeae_kathgoria = False
+    perioxh = False
+    mousiko_organo = False
+    athlima = False
+
+    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.smeae_pinakas_id != 0)).all()) > 0:
+           smeae_pinakas = True
+
+    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.smeae_kathgoria_id != 0)).all()) > 0:
+           smeae_kathgoria = True
+
+    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.perioxh_id != 0)).all()) > 0:
+           perioxh = True
+
+
+    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.mousiko_organo_id != 0)).all()) > 0:
+           mousiko_organo = True
+
+
+    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                               kathgoria_id=kathgoria_id).\
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.athlima_id != 0)).all()) > 0:
+           athlima = True
+
+    return jsonify([('smeae_pinakas',smeae_pinakas),\
+                      ('smeae_kathgoria',smeae_kathgoria),\
+                      ('perioxh',perioxh),\
+                      ('mousiko_organo',mousiko_organo),\
+                      ('athlima',athlima)])
+
+
+
 @main.route('/_get_hmeromhnies/')
 def _get_hmeromhnies():
     sxoliko_etos_id = request.args.get('sxoliko_etos')
     kathgoria_id = request.args.get('kathgoria')
     klados_id = request.args.get('klados')
 
-    klados = Klados.query.filter_by(id=klados_id).first()
-    real_eidikothta_id = klados.real_eidikothta_id
     pinakes = []
     choices_hmeromhnies = []
 
@@ -192,3 +248,31 @@ def user(name):
     return render_template('user.html', name=name)
 #
 # view functions end
+
+
+'''
+    smeae_pinakes_id = []
+    smeae_kathgories_id = []
+    perioxes_id = []
+    mousika_organa_id = []
+    athlimata_id = []
+
+    for pinakas in pinakes:
+        smeae_pinakas_id = pinakas.smeae_pinakas_id
+        smeae_kathgoria_id = pinakas.smeae_kathgoria_id
+        perioxh_id = pinakas.perioxh_id
+        mousiko_organo_id = pinakas.mousiko_organo_id
+        athlima_id = pinakas.athlima_id
+
+        if smeae_pinakas_id !=0 and smeae_pinakas_id not in smeae_pinakes_id:
+            smeae_pinakes_id.append(smeae_pinakas_id)
+        if smeae_kathgoria_id !=0 and smeae_kathgoria_id not in smeae_kathgories_id:
+            smeae_kathgories_id.append(smeae_kathgoria_id)
+        if perioxh_id !=0 and perioxh_id not in perioxes_id:
+            perioxes_id.append(perioxh_id)
+        if mousiko_organo_id !=0 and mousiko_organo_id not in mousika_organa_id:
+            mousika_organa_id.append(mousiko_organo_id)
+        if athlima_id !=0 and athlima_id not in athlimata_id:
+            athlimata_id.append(athlima_id)
+
+'''
