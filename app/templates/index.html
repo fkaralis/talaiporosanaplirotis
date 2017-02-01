@@ -36,9 +36,11 @@ $(function() {
     //updateKladoi();
     dropdown.kathgoria.attr('disabled', 'disabled');
     dropdown.klados.attr('disabled', 'disabled');
-    dropdown.hmeromhnia.attr('disabled', 'disabled');   // hide too?
+    //dropdown.hmeromhnia.attr('disabled', 'disabled');   // hide too?
 
     //hidden select fields
+    $('label[for="select_hmeromhnia"]').hide();
+    dropdown.hmeromhnia.hide();
     $('label[for="select_smeae_pinakas"]').hide();
     dropdown.smeae_pinakas.hide();
     $('label[for="select_smeae_kathgoria"]').hide();
@@ -60,13 +62,15 @@ $(function() {
 
         dropdown.kathgoria.empty();
 
-        // smeae
+        // hide selsect fields
+        $('label[for="select_hmeromhnia"]').hide();
+        dropdown.hmeromhnia.hide();
         $('label[for="select_smeae_pinakas"]').hide();
         dropdown.smeae_pinakas.hide();
         $('label[for="select_smeae_kathgoria"]').hide();
         dropdown.smeae_kathgoria.hide();
 
-        dropdown.klados.empty();
+        //dropdown.klados.empty();
         dropdown.hmeromhnia.empty();
         dropdown.klados.attr('disabled', 'disabled');
         dropdown.hmeromhnia.attr('disabled', 'disabled');
@@ -93,13 +97,9 @@ $(function() {
 
         alert(send.sxoliko_etos + "\n" + send.kathgoria);
 
-        //smeae
-        //if (send.sxoliko_etos==1) {
-        //    $('#select_smeae_pinakas').removeAttr('required');
-        //    $('#select_smeae_pinakas').parent().removeClass('required');
-        //   $('#select_smeae').removeAttr('required');
-        //   $('#select_smeae').parent().removeClass('required');
-        //} else
+        // hide select fields
+        $('label[for="select_hmeromhnia"]').hide();
+        dropdown.hmeromhnia.hide();
         if (((send.kathgoria==11) || (send.kathgoria==18) || (send.kathgoria==19))
             && (send.sxoliko_etos!=1)) {
             $('label[for="select_smeae_pinakas"]').show();
@@ -115,8 +115,8 @@ $(function() {
 
 
         dropdown.klados.empty();
-        dropdown.hmeromhnia.empty();
-        dropdown.hmeromhnia.attr('disabled', 'disabled');
+        //dropdown.hmeromhnia.empty();
+        //dropdown.hmeromhnia.attr('disabled', 'disabled');
 
         $.getJSON("{{ url_for('main._get_kladoi') }}", send, function(data) {
             data.forEach(function(item) {
@@ -140,6 +140,9 @@ $(function() {
         };
 
         alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
+
+        $('label[for="select_hmeromhnia"]').show();
+        $('#select_hmeromhnia').show();
 
         dropdown.hmeromhnia.empty();
         dropdown.hmeromhnia.removeAttr('disabled');
