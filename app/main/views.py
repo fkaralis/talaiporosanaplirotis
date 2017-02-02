@@ -160,53 +160,88 @@ def _get_fields():
     kathgoria_id = request.args.get('kathgoria')
     klados_id = request.args.get('klados')
 
+    smeae_pinakes = []
+    smeae_kathgories = []
+    perioxes = []
+    mousika_organa = []
+    athlimata = []
+    hmeromhnies = []
+
+    choices_fields = []
+
+    #check smeae pinakas
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(Pinakas.klados_id.contains(klados_id)).all()
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                                      Pinakas.smeae_pinakas_id != 0)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.smeae_pinakas_id not in smeae_pinakes:
+                smeae_pinakes.append(pinakas.smeae_pinakas_id)
+        choices_fields.append(('smeae_pinakes', smeae_pinakes))
 
-    smeae_pinakas = False
-    smeae_kathgoria = False
-    perioxh = False
-    mousiko_organo = False
-    athlima = False
 
-    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+    #check smeae kathgoria
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
                                                filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.smeae_pinakas_id != 0)).all()) > 0:
-           smeae_pinakas = True
+                                                      Pinakas.smeae_kathgoria_id != 0)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.smeae_kathgoria_id not in smeae_kathgories:
+                smeae_kathgories.append(pinakas.smeae_kathgoria_id)
+        choices_fields.append(('smeae_kathgories', smeae_kathgories))
 
-    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+
+    #check perioxh
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
                                                filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.smeae_kathgoria_id != 0)).all()) > 0:
-           smeae_kathgoria = True
+                                                      Pinakas.perioxh_id != 0)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.perioxh_id not in perioxes:
+                perioxes.append(pinakas.perioxh_id)
+        choices_fields.append(('perioxes', perioxes))
 
-    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+
+    #check mousiko_organo
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
                                                filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.perioxh_id != 0)).all()) > 0:
-           perioxh = True
+                                                      Pinakas.mousiko_organo_id != 0)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.mousiko_organo_id not in mousika_organa:
+                mousika_organa.append(pinakas.mousiko_organo_id_id)
+        choices_fields.append(('mousika_organa', mousika_organa))
 
 
-    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+    #check athlima
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
                                                filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.mousiko_organo_id != 0)).all()) > 0:
-           mousiko_organo = True
+                                                      Pinakas.athlima_id != 0)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.athlima_id not in athlimata:
+                athlimata.append(pinakas.athlima_id)
+        choices_fields.append(('athlimata', athlimata))
 
 
-    if len(Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+    #check hmeromhnia
+    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
                                                filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.athlima_id != 0)).all()) > 0:
-           athlima = True
+                                                      Pinakas.hmeromhnia_id != 1)).all()
+    if len(pinakes) > 0:
+        for pinakas in pinakes:
+            if pinakas.hmeromhnia_id not in hmeromhnies:
+                hmeromhnies.append(pinakas.hmeromhnia_id)
+        choices_fields.append(('hmeromhnies', hmeromhnies))
 
-    return jsonify([('smeae_pinakas',smeae_pinakas),\
-                      ('smeae_kathgoria',smeae_kathgoria),\
-                      ('perioxh',perioxh),\
-                      ('mousiko_organo',mousiko_organo),\
-                      ('athlima',athlima)])
+
+    return jsonify(choices_fields)
 
 
 
