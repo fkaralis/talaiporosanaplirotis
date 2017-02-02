@@ -30,25 +30,37 @@ def index():
     perioxh_id = 0
     mousiko_organo_id = 0
     athlima_id = 0
+    hmeromhnia_id = 1
 
     if form.validate_on_submit():
         sxoliko_etos_id = form.sxoliko_etos.data
+        print(sxoliko_etos_id)
         kathgoria_id = form.kathgoria.data
+        print(kathgoria_id)
         klados_id = str(form.klados.data)
-        hmeromhnia_id = form.hmeromhnia.data
+        print(klados_id)
 
         if form.smeae_pinakas.data:
             smeae_pinakas_id = form.smeae_pinakas.data
+            print(smeae_pinakas_id)
         if form.smeae_kathgoria.data:
             smeae_kathgoria_id = form.smeae_kathgoria.data
+            print(smeae_kathgoria_id)
         if form.perioxh.data:
             perioxh_id = form.perioxh.data
+            print(perioxh_id)
         if form.mousiko_organo.data:
             mousiko_organo_id = form.mousiko_organo.data
+            print(mousiko_organo_id)
         if form.athlima.data:
             athlima_id = form.athlima.data
+            print(athlima_id)
+        if form.hmeromhnia.data:
+            hmeromhnia_id = form.hmeromhnia.data
+            print(hmeromhnia_id)
 
         real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().id
+        print(real_eidikothta_id)
 
 
         url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
@@ -172,8 +184,8 @@ def _get_fields():
     #check smeae pinakas
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
-                                                      Pinakas.smeae_pinakas_id != 0)).all()
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
+                                                           Pinakas.smeae_pinakas_id != 0)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.smeae_pinakas_id not in smeae_pinakes:
@@ -184,7 +196,7 @@ def _get_fields():
     #check smeae kathgoria
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
                                                       Pinakas.smeae_kathgoria_id != 0)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
@@ -196,7 +208,7 @@ def _get_fields():
     #check perioxh
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
                                                       Pinakas.perioxh_id != 0)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
@@ -208,19 +220,19 @@ def _get_fields():
     #check mousiko_organo
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
                                                       Pinakas.mousiko_organo_id != 0)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.mousiko_organo_id not in mousika_organa:
-                mousika_organa.append(pinakas.mousiko_organo_id_id)
+                mousika_organa.append(pinakas.mousiko_organo_id)
         choices_fields.append(('mousika_organa', mousika_organa))
 
 
     #check athlima
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
                                                       Pinakas.athlima_id != 0)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
@@ -232,7 +244,7 @@ def _get_fields():
     #check hmeromhnia
     pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                                kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),
+                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
                                                       Pinakas.hmeromhnia_id != 1)).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
@@ -244,26 +256,96 @@ def _get_fields():
     return jsonify(choices_fields)
 
 
+@main.route('/_get_smeae_pinakes/')
+def _get_smeae_pinakes():
+    smeae_pinakes_id = request.args.getlist('ids[]')
+    choices_smeae_pinakes = []
+
+    for smeae_pinakas_id in smeae_pinakes_id:
+        smeae_pinakas_tuple = (smeae_pinakas_id, Smeae_pinakas.query.filter_by(id=smeae_pinakas_id).one().lektiko)
+        if smeae_pinakas_tuple not in choices_smeae_pinakes:
+            choices_smeae_pinakes.append(smeae_pinakas_tuple)
+
+    choices_smeae_pinakes = sorted(choices_smeae_pinakes, key=lambda x: x[1])  # sort alphabetically
+    choices_smeae_pinakes.insert(0, (0, '--Επιλογή πίνακα--'))
+
+    return jsonify(choices_smeae_pinakes)
+
+
+@main.route('/_get_smeae_kathgories/')
+def _get_smeae_kathgories():
+    smeae_kathgories_id = request.args.getlist('ids[]')
+    choices_smeae_kathgories = []
+
+    for smeae_kathgoria_id in smeae_kathgories_id:
+        smeae_kathgoria_tuple = (smeae_kathgoria_id, Smeae_kathgoria.query.filter_by(id=smeae_kathgoria_id).one().lektiko)
+        if smeae_kathgoria_tuple not in choices_smeae_kathgories:
+            choices_smeae_kathgories.append(smeae_kathgoria_tuple)
+
+    choices_smeae_kathgories = sorted(choices_smeae_kathgories)  # sort id acc
+    choices_smeae_kathgories.insert(0, (0, '--Επιλογή κατηγορίας--'))
+
+    return jsonify(choices_smeae_kathgories)
+
+
+@main.route('/_get_perioxes/')
+def _get_perioxes():
+    perioxes_id = request.args.getlist('ids[]')
+    choices_perioxes = []
+
+    for perioxh_id in perioxes_id:
+        perioxh_tuple = (perioxh_id, Perioxh.query.filter_by(id=perioxh_id).one().lektiko)
+        if perioxh_tuple not in choices_perioxes:
+            choices_perioxes.append(perioxh_tuple)
+
+    choices_perioxes = sorted(choices_perioxes, key=lambda x: x[1])  # sort alphabetically
+    choices_perioxes.insert(0, (0, '--Επιλογή περιοχής--'))
+
+    return jsonify(choices_perioxes)
+
+
+@main.route('/_get_mousika_organa/')
+def _get_mousika_organa():
+    mousika_organa_id = request.args.getlist('ids[]')
+    choices_mousika_organa = []
+
+    for mousiko_organo_id in mousika_organa_id:
+        mousiko_organo_tuple = (mousiko_organo_id, Mousiko_organo.query.filter_by(id=mousiko_organo_id).one().lektiko)
+        if mousiko_organo_tuple not in choices_mousika_organa:
+            choices_mousika_organa.append(mousiko_organo_tuple)
+
+    choices_mousika_organa = sorted(choices_mousika_organa, key=lambda x: x[1])  # sort alphabetically
+    choices_mousika_organa.insert(0, (0, '--Επιλογή μουσικού οργάνου--'))
+
+    return jsonify(choices_mousika_organa)
+
+
+@main.route('/_get_athlimata/')
+def _get_athlimata():
+    athlimata_id = request.args.getlist('ids[]')
+    choices_athlimata = []
+
+    for athlima_id in athlimata_id:
+        athlima_tuple = (athlima_id, Athlima.query.filter_by(id=athlima_id).one().lektiko)
+        if athlima_tuple not in choices_athlimata:
+            choices_athlimata.append(athlima_tuple)
+
+    choices_athlimata = sorted(choices_athlimata, key=lambda x: x[1])  # sort alphabetically
+    choices_athlimata.insert(0, (0, '--Επιλογή αθλήματος--'))
+
+    return jsonify(choices_athlimata)
+
 
 @main.route('/_get_hmeromhnies/')
 def _get_hmeromhnies():
-    sxoliko_etos_id = request.args.get('sxoliko_etos')
-    kathgoria_id = request.args.get('kathgoria')
-    klados_id = request.args.get('klados')
-
-    pinakes = []
+    hmeromhnies_id = request.args.getlist('ids[]')
     choices_hmeromhnies = []
 
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(Pinakas.klados_id.contains(klados_id)).all()
-
-    for pinakas in pinakes:
-        hmeromhnia = Hmeromhnia.query.filter_by(id=pinakas.hmeromhnia_id).first()
-        hmeromhnia_tuple = (hmeromhnia.id, hmeromhnia.real_hmeromhnia)
+    for hmeromhnia_id in hmeromhnies_id:
+        hmeromhnia_tuple = (hmeromhnia_id, Hmeromhnia.query.filter_by(id=hmeromhnia_id).one().real_hmeromhnia)
         if hmeromhnia_tuple not in choices_hmeromhnies:
-            #print(hmeromhnia_tuple, pinakas.pinakas_id)
             choices_hmeromhnies.append(hmeromhnia_tuple)
+
     choices_hmeromhnies = sorted(choices_hmeromhnies, key=lambda x: x[1], reverse=True) # sort alphabetically decr.
 
     # fix hmeromhnia format (e.g. 10-Οκτ-2016)
@@ -283,31 +365,3 @@ def user(name):
     return render_template('user.html', name=name)
 #
 # view functions end
-
-
-'''
-    smeae_pinakes_id = []
-    smeae_kathgories_id = []
-    perioxes_id = []
-    mousika_organa_id = []
-    athlimata_id = []
-
-    for pinakas in pinakes:
-        smeae_pinakas_id = pinakas.smeae_pinakas_id
-        smeae_kathgoria_id = pinakas.smeae_kathgoria_id
-        perioxh_id = pinakas.perioxh_id
-        mousiko_organo_id = pinakas.mousiko_organo_id
-        athlima_id = pinakas.athlima_id
-
-        if smeae_pinakas_id !=0 and smeae_pinakas_id not in smeae_pinakes_id:
-            smeae_pinakes_id.append(smeae_pinakas_id)
-        if smeae_kathgoria_id !=0 and smeae_kathgoria_id not in smeae_kathgories_id:
-            smeae_kathgories_id.append(smeae_kathgoria_id)
-        if perioxh_id !=0 and perioxh_id not in perioxes_id:
-            perioxes_id.append(perioxh_id)
-        if mousiko_organo_id !=0 and mousiko_organo_id not in mousika_organa_id:
-            mousika_organa_id.append(mousiko_organo_id)
-        if athlima_id !=0 and athlima_id not in athlimata_id:
-            athlimata_id.append(athlima_id)
-
-'''

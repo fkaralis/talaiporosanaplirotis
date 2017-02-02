@@ -22,13 +22,13 @@ $(function() {
     var dropdown = {
         sxoliko_etos: $('#select_sxoliko_etos'),
         kathgoria: $('#select_kathgoria'),
+        klados: $('#select_klados'),
         smeae_pinakas: $('#select_smeae_pinakas'),
         smeae_kathgoria: $('#select_smeae_kathgoria'),
-        klados: $('#select_klados'),
-        hmeromhnia: $('#select_hmeromhnia'),
         perioxh: $('#select_perioxh'),
         mousiko_organo: $('#select_mousiko_organo'),
         athlima: $('#select_athlima'),
+        hmeromhnia: $('#select_hmeromhnia'),
     };
 
     // call to update on load
@@ -61,6 +61,7 @@ $(function() {
         alert(send.sxoliko_etos);
 
         dropdown.kathgoria.empty();
+        dropdown.klados.empty();
 
         //hidden select fields
         $('label[for="select_hmeromhnia"]').hide();
@@ -145,47 +146,121 @@ $(function() {
 
         alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
 
+        //hidden select fields
+        $('label[for="select_hmeromhnia"]').hide();
+        dropdown.hmeromhnia.hide();
+        $('label[for="select_smeae_pinakas"]').hide();
+        dropdown.smeae_pinakas.hide();
+        $('label[for="select_smeae_kathgoria"]').hide();
+        dropdown.smeae_kathgoria.hide();
+        $('label[for="select_perioxh"]').hide();
+        dropdown.perioxh.hide();
+        $('label[for="select_mousiko_organo"]').hide();
+        dropdown.mousiko_organo.hide();
+        $('label[for="select_athlima"]').hide();
+        dropdown.athlima.hide();
+
         $.getJSON("{{ url_for('main._get_fields') }}", send, function(data) {
             alert(data)
             data.forEach(function(item) {
                 alert(item[0] + " " + item[1])
+                var send = { ids: item[1] };
+
+                if (item[0] == 'smeae_pinakes') {
+                    $('label[for="select_smeae_pinakas"]').show();
+                    dropdown.smeae_pinakas.show();
+                    dropdown.smeae_pinakas.empty();
+                    $.getJSON("{{ url_for('main._get_smeae_pinakes') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.smeae_pinakas.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
+                if (item[0] == 'smeae_kathgories') {
+                    $('label[for="select_smeae_kathgoria"]').show();
+                    dropdown.smeae_kathgoria.show();
+                    dropdown.smeae_kathgoria.empty();
+                    $.getJSON("{{ url_for('main._get_smeae_kathgories') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.smeae_kathgoria.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
+                if (item[0] == 'perioxes') {
+                    $('label[for="select_perioxh"]').show();
+                    dropdown.perioxh.show();
+                    dropdown.perioxh.empty();
+                    $.getJSON("{{ url_for('main._get_perioxes') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.perioxh.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
+                if (item[0] == 'mousika_organa') {
+                    $('label[for="select_mousiko_organo"]').show();
+                    dropdown.mousiko_organo.show();
+                    dropdown.mousiko_organo.empty();
+                    $.getJSON("{{ url_for('main._get_mousika_organa') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.mousiko_organo.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
+                if (item[0] == 'athlimata') {
+                    $('label[for="select_athlima"]').show();
+                    dropdown.athlima.show();
+                    dropdown.athlima.empty();
+                    $.getJSON("{{ url_for('main._get_athlimata') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.athlima.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
+                if (item[0] == 'hmeromhnies') {
+                    $('label[for="select_hmeromhnia"]').show();
+                    dropdown.hmeromhnia.show();
+                    dropdown.hmeromhnia.empty();
+                    $.getJSON("{{ url_for('main._get_hmeromhnies') }}", send, function(data) {
+                        data.forEach(function(item) {
+                            dropdown.hmeromhnia.append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        });
+                    });
+                };
             });
         });
-
-
-
     }
 
 
-    // function to call XHR and update hmeromhnia dropdown
-    function updateHmeromhnies() {
-        var send =  {
-            sxoliko_etos: dropdown.sxoliko_etos.val(),
-            kathgoria: dropdown.kathgoria.val(),
-            klados: dropdown.klados.val()
-        };
-
-        alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
-
-        $('label[for="select_hmeromhnia"]').show();
-        $('#select_hmeromhnia').show();
-
-        dropdown.hmeromhnia.empty();
-        dropdown.hmeromhnia.removeAttr('disabled');
-        //dropdown.hmeromhnia.attr('disabled', 'disabled');
-
-        $.getJSON("{{ url_for('main._get_hmeromhnies') }}", send, function(data) {
-            data.forEach(function(item) {
-                dropdown.hmeromhnia.append(
-                    $('<option>', {
-                        value: item[0],
-                        text: item[1]
-                    })
-                );
-            });
-            dropdown.hmeromhnia.removeAttr('disabled');
-        });
-    }
 
     // event listeners to dropdown changes
     dropdown.sxoliko_etos.on('change', function() {
