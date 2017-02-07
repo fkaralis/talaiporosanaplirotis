@@ -34,33 +34,34 @@ def index():
 
     if form.validate_on_submit():
         sxoliko_etos_id = form.sxoliko_etos.data
-        print(sxoliko_etos_id)
+        print('sx. etos', sxoliko_etos_id)
         kathgoria_id = form.kathgoria.data
-        print(kathgoria_id)
+        print('kathgoria', kathgoria_id)
         klados_id = str(form.klados.data)
-        print(klados_id)
+        print('klados', klados_id)
 
         if form.smeae_pinakas.data:
             smeae_pinakas_id = form.smeae_pinakas.data
-            print(smeae_pinakas_id)
+            print('sm pin', smeae_pinakas_id)
         if form.smeae_kathgoria.data:
             smeae_kathgoria_id = form.smeae_kathgoria.data
-            print(smeae_kathgoria_id)
+            print('sm kat', smeae_kathgoria_id)
         if form.perioxh.data:
             perioxh_id = form.perioxh.data
-            print(perioxh_id)
+            print('perioxh', perioxh_id)
         if form.mousiko_organo.data:
             mousiko_organo_id = form.mousiko_organo.data
-            print(mousiko_organo_id)
+            print('mous org', mousiko_organo_id)
         if form.athlima.data:
             athlima_id = form.athlima.data
-            print(athlima_id)
+            print('athlima', athlima_id)
         if form.hmeromhnia.data:
             hmeromhnia_id = form.hmeromhnia.data
-            print(hmeromhnia_id)
+            print('hmnia', hmeromhnia_id)
+        else: print('hmnia clear')
 
         real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().id
-        print(real_eidikothta_id)
+        print('real eid', real_eidikothta_id)
 
 
         url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
@@ -164,6 +165,75 @@ def _get_kladoi():
     choices_kladoi.insert(0, (0, '--Επιλογή κλάδου--'))
 
     return jsonify(choices_kladoi)
+
+
+@main.route('/_update_fields/')
+def _update_fields():
+
+    print(request.args)
+
+    sxoliko_etos_id = request.args.get('sxoliko_etos')
+    kathgoria_id = request.args.get('kathgoria')
+    klados_id = request.args.get('klados')
+    smeae_pinakas_id = request.args.get('smeae_pinakas')
+    smeae_kathgoria_id = request.args.get('smeae_kathgoria')
+    perioxh_id = request.args.get('perioxh')
+    mousiko_organo_id = request.args.get('mousiko_organo')
+    athlima_id = request.args.get('athlima')
+    hmeromhnia_id = request.args.get('hmeromhnia')
+    field = request.args.get('field')
+
+    filters = {}
+    filters['sxoliko_etos_id'] = sxoliko_etos_id
+    filters['kathgoria_id'] = kathgoria_id
+    filters['klados_id'] = str(klados_id)
+
+    choices_fields = []
+
+    print('sxoliko_etos', sxoliko_etos_id,\
+          '\nkathgoria', kathgoria_id,\
+          '\nklados', klados_id,\
+          '\nsmeae_pinakas', smeae_pinakas_id,\
+          '\nsmeae_kathgoria', smeae_kathgoria_id,\
+          '\nperioxh', perioxh_id,\
+          '\nmousiko_organo', mousiko_organo_id,\
+          '\nathlima_id', athlima_id,\
+          '\nhmeromhnia_id', hmeromhnia_id,\
+          '\nfield', field)
+
+    #check smeae_pinakes
+    if smeae_pinakas_id is not None:
+        filters['smeae_pinakas_id'] = smeae_pinakas_id
+
+    if smeae_kathgoria_id is not None:
+        filters['smeae_kathgoria_id'] = smeae_kathgoria_id
+
+    if perioxh_id is not None:
+        filters['perioxh_id'] = perioxh_id
+
+    if mousiko_organo_id is not None:
+        filters['mousiko_organo_id'] = mousiko_organo_id
+
+    if athlima_id is not None:
+        filters['athlima_id'] = athlima_id
+
+    if hmeromhnia_id is not None:
+        hmeromhnies = []
+        for attr, value in filters.items():
+            pinakes = Pinakas.query.filter(getattr(Pinakas, attr).like("%%%s%%" % value)).all()
+        print(pinakes)
+        for pinakas in pinakes:
+            if pinakas.hmeromhnia_id not in hmeromhnies:
+                hmeromhnies.append(pinakas.hmeromhnia_id)
+        choices_fields.append(('hmeromhnies', hmeromhnies))
+
+    print('filters', filters)
+    print('choices_fields', choices_fields)
+
+
+    return jsonify(choices_fields)
+
+
 
 
 @main.route('/_get_fields/')
