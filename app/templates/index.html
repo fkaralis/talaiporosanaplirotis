@@ -324,7 +324,20 @@ $(function() {
 
     $('#submit').click(function() {
 
-        alert('sm kat ' + dropdown.smeae_kathgoria.val());
+        if (dropdown.sxoliko_etos.val() == 0) {
+            alert('select some sxoliko_etos bitxh!');
+            return false;
+        }
+
+        if (dropdown.kathgoria.val() == 0) {
+            alert('select some kathgoria bitxh!');
+            return false;
+        }
+
+        if (dropdown.klados.val() == 0) {
+            alert('select some klados bitxh!');
+            return false;
+        }
 
         if (dropdown.smeae_pinakas.disabled == false && dropdown.smeae_pinakas.val() == 0) {
             alert('select some smeae pianakas bitxh!');
