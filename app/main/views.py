@@ -32,7 +32,7 @@ def index():
     athlima_id = 0
     hmeromhnia_id = 1
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
         print('sx. etos', sxoliko_etos_id)
         kathgoria_id = form.kathgoria.data
@@ -218,10 +218,14 @@ def _update_fields():
         filters['athlima_id'] = athlima_id
 
     if hmeromhnia_id is not None:
+        print('in update fileds hmnies')
         hmeromhnies = []
+        q = Pinakas.query
         for attr, value in filters.items():
-            pinakes = Pinakas.query.filter(getattr(Pinakas, attr).like("%%%s%%" % value)).all()
-        print(pinakes)
+            print(attr, value)
+            q = q.filter(getattr(Pinakas, attr).like("%%%s%%" % value))
+            print(q)
+        pinakes = q.all()
         for pinakas in pinakes:
             if pinakas.hmeromhnia_id not in hmeromhnies:
                 hmeromhnies.append(pinakas.hmeromhnia_id)
