@@ -220,6 +220,8 @@ def _update_fields():
     if hmeromhnia_id is not None:
         print('in update fileds hmnies')
         hmeromhnies = []
+
+        # build filters query
         q = Pinakas.query
         for attr, value in filters.items():
             print(attr, value)

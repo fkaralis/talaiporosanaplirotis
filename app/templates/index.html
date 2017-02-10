@@ -324,52 +324,53 @@ $(function() {
 
     $('#submit').click(function() {
 
-        if (dropdown.sxoliko_etos.val() == 0) {
-            alert('select some sxoliko_etos bitxh!');
+        if (dropdown.sxoliko_etos.val() == 0 || dropdown.sxoliko_etos.val() == null) {
+            alert('select some sxoliko_etos bitxh! ' + dropdown.sxoliko_etos.val());
             return false;
         }
 
-        if (dropdown.kathgoria.val() == 0) {
-            alert('select some kathgoria bitxh!');
+        if (dropdown.kathgoria.val() == 0 || dropdown.kathgoria.val() == null) {
+            alert('select some kathgoria bitxh! ' + dropdown.kathgoria.val());
             return false;
         }
 
-        if (dropdown.klados.val() == 0) {
-            alert('select some klados bitxh!');
+        if (dropdown.klados.val() == 0 || dropdown.klados.val() == null) {
+            alert('select some klados bitxh! ' + dropdown.klados.val());
             return false;
         }
 
         if (dropdown.smeae_pinakas.disabled == false && dropdown.smeae_pinakas.val() == 0) {
-            alert('select some smeae pianakas bitxh!');
+            alert('select some smeae pianakas bitxh! ' + dropdown.smeae_pinakas.val());
             return false;
         }
 
         if (dropdown.smeae_kathgoria.disabled == false && dropdown.smeae_kathgoria.val() == 0) {
-            alert('select some smeae_kathgoria bitxh!');
+            alert('select some smeae_kathgoria bitxh! ' + dropdown.smeae_kathgoria.val());
             return false;
         }
 
         if (dropdown.perioxh.disabled == false && dropdown.perioxh.val() == 0) {
-            alert('select some perioxh bitxh!');
+            alert('select some perioxh bitxh! ' + dropdown.perioxh.val());
             return false;
         }
 
         if (dropdown.mousiko_organo.disabled == false && dropdown.mousiko_organo.val() == 0) {
-            alert('select some mousiko_organo bitxh!');
+            alert('select some mousiko_organo bitxh! ' + dropdown.mousiko_organo.val());
             return false;
         }
 
         if (dropdown.athlima.disabled == false && dropdown.athlima.val() == 0) {
-            alert('select some athlima bitxh!');
+            alert('select some athlima bitxh! ' + dropdown.athlima.val());
             return false;
         }
 
         if (dropdown.hmeromhnia.val() == 0) {
-            alert('select some hmeromhnia bitxh!');
+            alert('select some hmeromhnia bitxh! ' + dropdown.hmeromhnia.val());
             return false;
         }
 
         if (dropdown.hmeromhnia.val() == null) {
+            // setting hmeromhnia to default
             alert('hmeromhnia ' + dropdown.hmeromhnia.val());
             $('#select_hmeromhnia').append($('<option>', {
                 value: 1,
