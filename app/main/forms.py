@@ -106,6 +106,10 @@ class MainForm(FlaskForm):
                             validators=[DataRequired()],\
                             coerce=int,\
                             id='select_kathgoria')
+    klados = SelectField('Κλάδος',\
+                         choices=choices_kladoi,\
+                         validators=[DataRequired()],\
+                         coerce=int, id='select_klados')
     smeae_pinakas = SelectField('Πίνακας ΣΜΕΑΕ',\
                                 choices=choices_smeae_pinakes,\
                                 coerce=int,\
@@ -114,14 +118,6 @@ class MainForm(FlaskForm):
                         choices=choices_smeae_kathgories,\
                         coerce=int,\
                         id='select_smeae_kathgoria')
-    klados = SelectField('Κλάδος',\
-                         choices=choices_kladoi,\
-                         validators=[DataRequired()],\
-                         coerce=int, id='select_klados')
-    hmeromhnia = SelectField('Ημερομηνία',\
-                             choices=choices_hmeromhnies,\
-                             coerce=int,\
-                             id='select_hmeromhnia')
     perioxh = SelectField('Περιοχή',\
                              choices=choices_perioxes,\
                              coerce=int,\
@@ -134,6 +130,10 @@ class MainForm(FlaskForm):
                              choices=choices_athlimata,\
                              coerce=int,\
                              id='select_athlima')
+    hmeromhnia = SelectField('Ημερομηνία',\
+                             choices=choices_hmeromhnies,\
+                             coerce=int,\
+                             id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
 # form end

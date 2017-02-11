@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+######
+###### OUTDATED! -->
+##### Eidikothta obsolete!
+######
+#######
 import re
 import os
 from bs4 import BeautifulSoup
