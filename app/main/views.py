@@ -75,6 +75,17 @@ def index():
                                           filter(Pinakas.klados_id.contains(klados_id)).\
                                           first().url_pinaka
 
+        path_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                          kathgoria_id=kathgoria_id,\
+                                          hmeromhnia_id=hmeromhnia_id,\
+                                          smeae_pinakas_id=smeae_pinakas_id,\
+                                          smeae_kathgoria_id=smeae_kathgoria_id,\
+                                          perioxh_id=perioxh_id,\
+                                          mousiko_organo_id=mousiko_organo_id,\
+                                          athlima_id=athlima_id).\
+                                          filter(Pinakas.klados_id.contains(klados_id)).\
+                                          first().path_pinaka
+
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
         session['klados_id'] = klados_id
@@ -86,6 +97,7 @@ def index():
         session['athlima_id'] = athlima_id
         session['real_eidikothta_id'] = real_eidikothta_id
         session['url_pinaka'] = url_pinaka
+        session['path_pinaka'] = path_pinaka
 
         if current_app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
@@ -98,7 +110,8 @@ def index():
                                   'Μουσικό όργανο id: ' + str(mousiko_organo_id),\
                                   'Άθλημα id: ' + str(athlima_id),\
                                   'Real ειδικότητα id ' + str(real_eidikothta_id),\
-                                  url_pinaka))
+                                  url_pinaka,\
+                                  path_pinaka))
             send_email(current_app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
         return redirect(url_for('main.result'))
@@ -118,7 +131,8 @@ def result():
                            mousiko_organo_id=session.get('mousiko_organo_id'),
                            athlima_id=session.get('athlima_id'),
                            real_eidikothta_id=session.get('real_eidikothta_id'),
-                           url_pinaka = session.get('url_pinaka'))
+                           url_pinaka = session.get('url_pinaka'),
+                           path_pinaka = session.get('path_pinaka'))
 
 
 @main.route('/_get_kathgories/')
