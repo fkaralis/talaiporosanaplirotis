@@ -86,6 +86,8 @@ def index():
                                           filter(Pinakas.klados_id.contains(klados_id)).\
                                           first().path_pinaka
 
+        filename = url_pinaka.split('/')[-1]
+
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['kathgoria_id'] = kathgoria_id
         session['klados_id'] = klados_id
@@ -98,6 +100,7 @@ def index():
         session['real_eidikothta_id'] = real_eidikothta_id
         session['url_pinaka'] = url_pinaka
         session['path_pinaka'] = path_pinaka
+        session['filename'] = filename
 
         if current_app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
@@ -111,7 +114,8 @@ def index():
                                   'Άθλημα id: ' + str(athlima_id),\
                                   'Real ειδικότητα id ' + str(real_eidikothta_id),\
                                   url_pinaka,\
-                                  path_pinaka))
+                                  path_pinaka,\
+                                  filename))
             send_email(current_app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
         return redirect(url_for('main.result'))
@@ -132,7 +136,8 @@ def result():
                            athlima_id=session.get('athlima_id'),
                            real_eidikothta_id=session.get('real_eidikothta_id'),
                            url_pinaka = session.get('url_pinaka'),
-                           path_pinaka = session.get('path_pinaka'))
+                           path_pinaka = session.get('path_pinaka'),
+                           filename = session.get('filename'))
 
 
 @main.route('/_get_kathgories/')

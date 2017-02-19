@@ -17,8 +17,10 @@
     Περιοχή: {{ perioxh_id }}<br>
     Μουσικό όργανο: {{ mousiko_organo_id }}<br>
     Άθλημα: {{ athlima_id }}<br>
-    <a href="{{ url_pinaka }}">Ο πίνακας εδώ !!</a><br>
-    Παθ πίνακα: {{ path_pinaka }}<br>
+    URL: <a href="{{ url_pinaka }}">Στο e-aitisi.sch.gr</a><br>
+    Path: {{ path_pinaka }}<br>
+    Filename: {{ filename }}<br>
+    Αρχείο: <a href="{{ url_for('static', filename=path_pinaka + filename) }}" download>Στα data μου</a><br>
 
 </div>
 {% endblock %}
