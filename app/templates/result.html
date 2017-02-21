@@ -22,10 +22,14 @@
     Filename: {{ filename }}<br>
     Αρχείο: <a href="{{ url_for('static', filename=path_pinaka + filename) }}" download>Στα data μου</a><br>
 
+    <div class="row" align="center">
+        <div class="btn-group">
+            <a href="#" class="btn-lg btn-primary">Προβολή</a>
+            <a href="#" class="btn-lg btn-success">Αποθήκευση</a>
+        </div>
+    </div>
 
 
-    <button type="button" class="btn btn-primary">Primary</button>
-    <button type="button" class="btn btn-success">Success</button>
 </div>
 {% endblock %}
 
