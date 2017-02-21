@@ -23,9 +23,9 @@
     Αρχείο: <a href="{{ url_for('static', filename=path_pinaka + filename) }}" download>Στα data μου</a><br>
 
     <div class="row" align="center">
-        <div class="btn-group">
-            <a href="#" class="btn-lg btn-primary">Προβολή</a>
-            <a href="#" class="btn-lg btn-success">Αποθήκευση</a>
+        <div class="btn-group btn-group-lg">
+            <a href="{{ url_for('main._view_pinakas') }}" class="btn btn-primary">Προβολή</a>
+            <a href="{{ url_for('main._download_pinakas') }}" class="btn btn-success">Αποθήκευση</a>
         </div>
     </div>
 
