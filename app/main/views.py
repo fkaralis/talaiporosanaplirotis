@@ -34,34 +34,66 @@ def index():
 
     if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
-        print('sx. etos', sxoliko_etos_id)
+        sxoliko_etos_lektiko = Sxoliko_etos.query.filter_by(id=sxoliko_etos_id).\
+                                first().lektiko_sxolikoy_etoys
+        print('sx. etos', sxoliko_etos_id, sxoliko_etos_lektiko)
+
         kathgoria_id = form.kathgoria.data
-        print('kathgoria', kathgoria_id)
+        kathgoria_lektiko = Kathgoria.query.filter_by(id=kathgoria_id).\
+                            first().greek_lektiko_kathgorias
+        print('kathgoria', kathgoria_id, kathgoria_lektiko)
+
         klados_id = str(form.klados.data)
-        print('klados', klados_id)
+        klados_kodikos = Klados.query.filter_by(id=klados_id).\
+                            first().kodikos_kladoy
+        klados_lektiko = Klados.query.filter_by(id=klados_id).\
+                            first().lektiko_kladoy
+        print('klados', klados_id, klados_kodikos, klados_lektiko)
 
         if form.smeae_pinakas.data:
             smeae_pinakas_id = form.smeae_pinakas.data
-            print('sm pin', smeae_pinakas_id)
+            smeae_pinakas_lektiko = Smeae_pinakas.query.filter_by(id=smeae_pinakas_id).\
+                                    first().lektiko
+            print('sm pin', smeae_pinakas_id, smeae_pinakas_lektiko)
+
         if form.smeae_kathgoria.data:
             smeae_kathgoria_id = form.smeae_kathgoria.data
-            print('sm kat', smeae_kathgoria_id)
+            smeae_kathgoria_lektiko = Smeae_kathgoria.query.filter_by(id=smeae_kathgoria_id).\
+                                        first().lektiko
+            print('sm kat', smeae_kathgoria_id, smeae_kathgoria_lektiko)
+
         if form.perioxh.data:
             perioxh_id = form.perioxh.data
-            print('perioxh', perioxh_id)
+            perioxh_lektiko = Perioxh.query.filter_by(id=perioxh_id).\
+                                first().lektiko
+            print('perioxh', perioxh_id, perioxh_lektiko)
+
         if form.mousiko_organo.data:
             mousiko_organo_id = form.mousiko_organo.data
-            print('mous org', mousiko_organo_id)
+            mousiko_organo_lektiko = Mousiko_organo.query.filter_by(id=mousiko_organo_id).\
+                                        first().lektiko
+            print('mous org', mousiko_organo_id, mousiko_organo_lektiko)
+
         if form.athlima.data:
             athlima_id = form.athlima.data
-            print('athlima', athlima_id)
+            athlima_lektiko = Athlima.query.filter_by(id=athlima_id).\
+                                    first().lektiko
+            print('athlima', athlima_id, athlima_lektiko)
+
         if form.hmeromhnia.data:
             hmeromhnia_id = form.hmeromhnia.data
-            print('hmnia', hmeromhnia_id)
+            hmeromhnia_real = Hmeromhnia.query.filter_by(id=hmeromhnia_id).\
+                                first().real_hmeromhnia
+            hmeromhnia_lektiko = '{:%d-%b-%Y}'.format(hmeromhnia_real)
+            print('hmnia', hmeromhnia_id, hmeromhnia_real, hmeromhnia_lektiko)
         else: print('hmnia clear')
 
         real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().id
-        print('real eid', real_eidikothta_id)
+        real_eidikothta_kodikos = Real_eidikothta.query.filter_by(id=real_eidikothta_id).\
+                                    first().kodikos_real_eidikothtas
+        real_eidikothta_lektiko = Real_eidikothta.query.filter_by(id=real_eidikothta_id).\
+                                    first().lektiko_real_eidikothtas
+        print('real eid', real_eidikothta_id, real_eidikothta_kodikos, real_eidikothta_lektiko)
 
 
         url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
@@ -452,6 +484,20 @@ def _get_hmeromhnies():
     choices_hmeromhnies.insert(0, (0, '--Επιλογή ημ/νίας--'))
 
     return jsonify(choices_hmeromhnies)
+
+
+@main.route('/_view_pinakas/')
+def _view_pinakas():
+    print('Προβολή')
+
+    return ('', 204)
+
+
+@main.route('/_download_pinakas/')
+def _download_pinakas():
+    print('Αποθήκευση')
+
+    return ('', 204)
 
 
 # tutorial leftover
