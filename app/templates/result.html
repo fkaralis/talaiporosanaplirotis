@@ -7,17 +7,17 @@
     <div class="page-header">
         <h1>Λοιπόν,</h1>
     </div>
-    Σχ. έτος: {{ sxoliko_etos_id }}<br>
-    Κατηγορία: {{ kathgoria_id }}<br>
-    Κλάδος: {{ klados_id }}<br>
-    Ειδικότητα: {{ real_eidikothta_id }}<br>
-    Ημ/νία: {{ hmeromhnia_id }}<br>
-    Πίνακας ΣΜΕΑΕ: {{ smeae_pinakas_id }}<br>
-    Κατηγορία ΣΜΕΑΕ: {{ smeae_kathgoria_id }}<br>
-    Περιοχή: {{ perioxh_id }}<br>
-    Μουσικό όργανο: {{ mousiko_organo_id }}<br>
-    Άθλημα: {{ athlima_id }}<br>
-    URL: <a href="{{ url_pinaka }}">Στο e-aitisi.sch.gr</a><br>
+    Σχ. έτος: {{ sxoliko_etos_id }} {{ sxoliko_etos_lektiko }}<br>
+    Κατηγορία: {{ kathgoria_id }} {{ kathgoria_lektiko }}<br>
+    Κλάδος: {{ klados_id }} {{ klados_kodikos }} {{ klados_lektiko }}<br>
+    Ειδικότητα: {{ real_eidikothta_id }} {{ real_eidikothta_kodikos }} {{ real_eidikothta_lektiko }}<br>
+    Ημ/νία: {{ hmeromhnia_id }} {{ hmeromhnia_real }} {{ hmeromhnia_lektiko }}<br>
+    Πίνακας ΣΜΕΑΕ: {{ smeae_pinakas_id }} {{ smeae_pinakas_lektiko }}<br>
+    Κατηγορία ΣΜΕΑΕ: {{ smeae_kathgoria_id }} {{ smeae_kathgoria_lektiko }}<br>
+    Περιοχή: {{ perioxh_id }} {{ perioxh_lektiko }}<br>
+    Μουσικό όργανο: {{ mousiko_organo_id }} {{ mousiko_organo_lektiko }}<br>
+    Άθλημα: {{ athlima_id }} {{ athlima_lektiko }}<br>
+    URL: <a href="{{ url_pinaka }}">{{ url_pinaka }}</a><br>
     Path: {{ path_pinaka }}<br>
     Filename: {{ filename }}<br>
     Αρχείο: <a href="{{ url_for('static', filename=path_pinaka + filename) }}" download>Στα data μου</a><br>

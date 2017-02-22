@@ -100,7 +100,7 @@ def index():
             print('hmnia', hmeromhnia_id, hmeromhnia_real, hmeromhnia_lektiko)
         else: print('hmnia clear')
 
-        real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().id
+        real_eidikothta_id = Klados.query.filter_by(id=klados_id).first().real_eidikothta_id
         real_eidikothta_kodikos = Real_eidikothta.query.filter_by(id=real_eidikothta_id).\
                                     first().kodikos_real_eidikothtas
         real_eidikothta_lektiko = Real_eidikothta.query.filter_by(id=real_eidikothta_id).\
@@ -139,6 +139,7 @@ def index():
         session['kathgoria_lektiko'] = kathgoria_lektiko
 
         session['klados_id'] = klados_id
+        session['klados_kodikos'] = klados_kodikos
         session['klados_lektiko'] = klados_lektiko
 
         session['hmeromhnia_id'] = hmeromhnia_id
