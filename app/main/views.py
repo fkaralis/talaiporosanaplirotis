@@ -26,11 +26,23 @@ def index():
     form = MainForm()
 
     smeae_pinakas_id = 0
+    smeae_pinakas_lektiko = ''
+
     smeae_kathgoria_id = 0
+    smeae_kathgoria_lektiko = ''
+
     perioxh_id = 0
+    perioxh_lektiko = ''
+
     mousiko_organo_id = 0
+    mousiko_organo_lektiko = ''
+
     athlima_id = 0
+    athlima_lektiko = ''
+
     hmeromhnia_id = 1
+    hmeromhnia_real = ''
+    hmeromhnia_lektiko = ''
 
     if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
@@ -121,30 +133,54 @@ def index():
         filename = url_pinaka.split('/')[-1]
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
+        session['sxoliko_etos_lektiko']  = sxoliko_etos_lektiko
+
         session['kathgoria_id'] = kathgoria_id
+        session['kathgoria_lektiko'] = kathgoria_lektiko
+
         session['klados_id'] = klados_id
+        session['klados_lektiko'] = klados_lektiko
+
         session['hmeromhnia_id'] = hmeromhnia_id
+        session['hmeromhnia_real'] = hmeromhnia_real
+        session['hmeromhnia_lektiko'] = hmeromhnia_lektiko
+
         session['smeae_pinakas_id'] = smeae_pinakas_id
+        session['smeae_pinakas_lektiko'] = smeae_pinakas_lektiko
+
         session['smeae_kathgoria_id'] = smeae_kathgoria_id
+        session['smeae_kathgoria_lektiko'] = smeae_kathgoria_lektiko
+
         session['perioxh_id'] = perioxh_id
+        session['perioxh_lektiko'] = perioxh_lektiko
+
         session['mousiko_organo_id'] = mousiko_organo_id
+        session['mousiko_organo_lektiko'] = mousiko_organo_lektiko
+
         session['athlima_id'] = athlima_id
+        session['athlima_lektiko'] = athlima_lektiko
+
         session['real_eidikothta_id'] = real_eidikothta_id
+        session['real_eidikothta_kodikos'] = real_eidikothta_kodikos
+        session['real_eidikothta_lektiko'] = real_eidikothta_lektiko
+
         session['url_pinaka'] = url_pinaka
+
         session['path_pinaka'] = path_pinaka
+
         session['filename'] = filename
 
         if current_app.config['TALAIPANAP_ADMIN']:
-            msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id),\
-                                  'Κατηγορία id ' + str(kathgoria_id),\
-                                  'Κλάδος id ' + str(klados_id),\
-                                  'Ημερομηνία id ' + str(hmeromhnia_id),\
-                                  'Πίνακας ΣΜΕΑΕ id: ' + str(smeae_pinakas_id),\
-                                  'Κατηγορία ΣΜΕΑΕ id: ' + str(smeae_kathgoria_id),\
-                                  'Περιοχή id' + str(perioxh_id),\
-                                  'Μουσικό όργανο id: ' + str(mousiko_organo_id),\
-                                  'Άθλημα id: ' + str(athlima_id),\
-                                  'Real ειδικότητα id ' + str(real_eidikothta_id),\
+            msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id) + sxoliko_etos_lektiko,\
+                                  'Κατηγορία id ' + str(kathgoria_id) + kathgoria_lektiko,\
+                                  'Κλάδος id ' + str(klados_id) + klados_kodikos + klados_lektiko,\
+                                  'Ημερομηνία id ' + str(hmeromhnia_id) + hmeromhnia_real + hmeromhnia_lektiko,\
+                                  'Πίνακας ΣΜΕΑΕ id: ' + str(smeae_pinakas_id) + smeae_pinakas_lektiko,\
+                                  'Κατηγορία ΣΜΕΑΕ id: ' + str(smeae_kathgoria_id) + smeae_kathgoria_lektiko,\
+                                  'Περιοχή id' + str(perioxh_id) + perioxh_lektiko,\
+                                  'Μουσικό όργανο id: ' + str(mousiko_organo_id) + mousiko_organo_lektiko,\
+                                  'Άθλημα id: ' + str(athlima_id) + athlima_lektiko,\
+                                  'Real ειδικότητα id ' + str(real_eidikothta_id) + real_eidikothta_kodikos + real_eidikothta_lektiko,\
                                   url_pinaka,\
                                   path_pinaka,\
                                   filename))
@@ -157,16 +193,30 @@ def index():
 
 @main.route('/result', methods=['GET', 'POST'])
 def result():
-    return render_template('result.html', sxoliko_etos_id=session.get('sxoliko_etos_id'),
+    return render_template('result.html',
+                           sxoliko_etos_id=session.get('sxoliko_etos_id'),
+                           sxoliko_etos_lektiko=session.get('sxoliko_etos_lektiko'),
                            kathgoria_id=session.get('kathgoria_id'),
+                           kathgoria_lektiko=session.get('kathgoria_lektiko'),
                            klados_id=session.get('klados_id'),
+                           klados_kodikos=session.get('klados_kodikos'),
+                           klados_lektiko=session.get('klados_lektiko'),
                            hmeromhnia_id=session.get('hmeromhnia_id'),
+                           hmeromhnia_real=session.get('hmeromhnia_real'),
+                           hmeromhnia_lektiko=session.get('hmeromhnia_lektiko'),
                            smeae_pinakas_id=session.get('smeae_pinakas_id'),
+                           smeae_pinakas_lektiko=session.get('smeae_pinakas_lektiko'),
                            smeae_kathgoria_id=session.get('smeae_kathgoria_id'),
+                           smeae_kathgoria_lektiko=session.get('smeae_kathgoria_lektiko'),
                            perioxh_id=session.get('perioxh_id'),
+                           perioxh_lektiko=session.get('perioxh_lektiko'),
                            mousiko_organo_id=session.get('mousiko_organo_id'),
+                           mousiko_organo_lektiko=session.get('mousiko_organo_lektiko'),
                            athlima_id=session.get('athlima_id'),
+                           athlima_lektiko=session.get('athlima_lektiko'),
                            real_eidikothta_id=session.get('real_eidikothta_id'),
+                           real_eidikothta_kodikos=session.get('real_eidikothta_kodikos'),
+                           real_eidikothta_lektiko=session.get('real_eidikothta_lektiko'),
                            url_pinaka = session.get('url_pinaka'),
                            path_pinaka = session.get('path_pinaka'),
                            filename = session.get('filename'))
