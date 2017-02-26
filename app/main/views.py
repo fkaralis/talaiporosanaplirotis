@@ -537,16 +537,22 @@ def _get_hmeromhnies():
     return jsonify(choices_hmeromhnies)
 
 
-@main.route('/_view_pinakas/')
+@main.route('/_view_pinakas/', methods=['GET'])
 def _view_pinakas():
-    print('Προβολή')
+    path_filename = request.args.get('path_filename')
+    filename_final = request.args.get('filename_final')
+    print('Προβολή', path_filename, filename_final)
+
 
     return ('', 204)
 
 
-@main.route('/_download_pinakas/')
+@main.route('/_download_pinakas/', methods=['GET'])
 def _download_pinakas():
-    print('Αποθήκευση')
+    path_filename = request.args.get('path_filename')
+    filename_final = request.args.get('filename_final')
+    print('Αποθήκευση', path_filename, filename_final)
+
 
     return ('', 204)
 

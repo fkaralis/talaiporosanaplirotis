@@ -29,8 +29,8 @@
     <b>Ο πίνακας στο e-aitisi.sch.gr:</b> <a href="{{ url_pinaka }}">{{ url_pinaka }}</a><br>
     <b>Ο φάκελος στη βάση:</b> {{ path_pinaka }}<br>
 
-    {% set full_filename = url_for('static', filename=path_pinaka + filename) %}
-    <b>Διαδρομή αρχείου στη βάση:</b> <a href="{{ full_filename }}" download>{{ full_filename }}</a><br>
+    {% set path_filename = url_for('static', filename=path_pinaka + filename) %}
+    <b>Διαδρομή αρχείου στη βάση:</b> <a href="{{ path_filename }}" download>{{ path_filename }}</a><br>
 
     <b>Αρχικό όνομα αρχείου:</b> {{ filename }}<br>
     {% if hmeromhnia_id != 1: %}
@@ -42,8 +42,8 @@
 
     <div class="row" align="center">
         <div class="btn-group btn-group-lg">
-            <a href="{{ url_for('main._view_pinakas') }}" class="btn btn-primary" id="pinakas_view">Προβολή</a>
-            <a href="{{ url_for('main._download_pinakas') }}" class="btn btn-success" id="pinakas_save">Αποθήκευση</a>
+            <a href="{{ url_for('main._view_pinakas', path_filename=path_filename, filename_final=filename_final) }}" class="btn btn-primary" id="pinakas_view">Προβολή</a>
+            <a href="{{ url_for('main._download_pinakas', path_filename=path_filename, filename_final=filename_final) }}" class="btn btn-success" id="pinakas_save">Αποθήκευση</a>
         </div>
     </div>
 
@@ -54,17 +54,14 @@
 {{ super() }}
 <script charset="utf-8" type="text/javascript">
 
-    var filename_final = "{{ filename_final }}";
-    alert('sasfd');
-
     $('#pinakas_view').click(function() {
 
-            alert('pinakas_view! "{{ filename_final }}"');
+            alert('pinakas_view!');
         });
 
     $('#pinakas_save').click(function() {
 
-            alert('pinakas_save! "{{ filename_final }}"');
+            alert('pinakas_save!');
         });
 
 </script>
