@@ -11,8 +11,10 @@
     <b>Κατηγορία:</b> {{ kathgoria_id }} {{ kathgoria_lektiko }}<br>
     <b>Κλάδος:</b> {{ klados_id }} {{ klados_kodikos }} {{ klados_lektiko }}<br>
     <b>Ειδικότητα:</b> {{ real_eidikothta_id }} {{ real_eidikothta_kodikos }} {{ real_eidikothta_lektiko }}<br>
-    <b>Ημ/νία:</b> {{ hmeromhnia_id }} {{ hmeromhnia_real }} {{ hmeromhnia_lektiko }}<br>
-    {% if smeae_pinakas_id != 0: %}
+
+    {% if hmeromhnia_id != 1: %}
+        <b>Ημ/νία:</b> {{ hmeromhnia_id }} {{ hmeromhnia_real }} {{ hmeromhnia_lektiko }}<br>
+    {% elif smeae_pinakas_id != 0: %}
         <b>Πίνακας ΣΜΕΑΕ:</b> {{ smeae_pinakas_id }} {{ smeae_pinakas_lektiko }}<br>
     {% elif smeae_kathgoria_id != 0: %}
         <b>Κατηγορία ΣΜΕΑΕ:</b> {{ smeae_kathgoria_id }} {{ smeae_kathgoria_lektiko }}<br>
@@ -31,20 +33,42 @@
     <b>Διαδρομή αρχείου στη βάση:</b> <a href="{{ full_filename }}" download>{{ full_filename }}</a><br>
 
     <b>Αρχικό όνομα αρχείου:</b> {{ filename }}<br>
-    {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, sxoliko_etos_lektiko]) %}
+    {% if hmeromhnia_id != 1: %}
+        {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, hmeromhnia_lektiko]) %}
+    {% else: %}
+        {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, sxoliko_etos_lektiko]) %}
+    {% endif %}
     <b>Τελικό όνομα αρχείου:</b> {{ filename_final }}<br>
 
     <div class="row" align="center">
         <div class="btn-group btn-group-lg">
-            <a href="{{ url_for('main._view_pinakas') }}" class="btn btn-primary">Προβολή</a>
-            <a href="{{ url_for('main._download_pinakas') }}" class="btn btn-success">Αποθήκευση</a>
+            <a href="{{ url_for('main._view_pinakas') }}" class="btn btn-primary" id="pinakas_view">Προβολή</a>
+            <a href="{{ url_for('main._download_pinakas') }}" class="btn btn-success" id="pinakas_save">Αποθήκευση</a>
         </div>
     </div>
 
 </div>
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script charset="utf-8" type="text/javascript">
 
+    var filename_final = "{{ filename_final }}";
+    alert('sasfd');
+
+    $('#pinakas_view').click(function() {
+
+            alert('pinakas_view! "{{ filename_final }}"');
+        });
+
+    $('#pinakas_save').click(function() {
+
+            alert('pinakas_save! "{{ filename_final }}"');
+        });
+
+</script>
+{% endblock %}
 
 
 
