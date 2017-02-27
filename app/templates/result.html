@@ -38,13 +38,13 @@
     {% else: %}
         {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, sxoliko_etos_lektiko]) %}
     {% endif %}
-    <b>Τελικό όνομα αρχείου:</b> {{ filename_final }}<br>
+    <b>Τελικό όνομα αρχείου:</b> {{ filename_final }}<br><br>
+
+
+    {% set suffix = '.'.join(filename.split('.')[1:]) %}
 
     <div class="row" align="center">
-        <div class="btn-group btn-group-lg">
-            <a href="{{ url_for('main._view_pinakas', path_filename=path_filename, filename_final=filename_final) }}" class="btn btn-primary" id="pinakas_view">Προβολή</a>
-            <a href="{{ url_for('main._download_pinakas', path_filename=path_filename, filename_final=filename_final) }}" class="btn btn-success" id="pinakas_save">Αποθήκευση</a>
-        </div>
+        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ '.'.join([filename_final, suffix]) }}">Αποθήκευση</a>
     </div>
 
 </div>
