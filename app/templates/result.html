@@ -40,32 +40,25 @@
     {% endif %}
     <b>Τελικό όνομα αρχείου:</b> {{ filename_final }}<br><br>
 
+    {% if filename.endswith('gz'): %}
+        {% set suffix = '.html.gz' %}
+    {% elif filename.endswith('html'): %}
+        {% set suffix = '.html' %}
+    {% elif filename.endswith('xls'): %}
+        {% set suffix = '.xls' %}
+    {% elif filename.endswith('xlsx'): %}
+        {% set suffix = '.xlsx' %}
+    {% endif %}
 
-    {% set suffix = '.'.join(filename.split('.')[1:]) %}
+    {{ suffix }}
 
     <div class="row" align="center">
-        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ '.'.join([filename_final, suffix]) }}">Αποθήκευση</a>
+        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ filename_final + suffix }}">Αποθήκευση</a>
     </div>
 
 </div>
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
-<script charset="utf-8" type="text/javascript">
-
-    $('#pinakas_view').click(function() {
-
-            alert('pinakas_view!');
-        });
-
-    $('#pinakas_save').click(function() {
-
-            alert('pinakas_save!');
-        });
-
-</script>
-{% endblock %}
 
 
 
