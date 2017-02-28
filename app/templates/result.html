@@ -7,53 +7,26 @@
     <div class="page-header">
         <h1>Εύρεση πίνακα</h1>
     </div>
-    <b>Σχολικό έτος:</b> {{ sxoliko_etos_id }} {{ sxoliko_etos_lektiko }}<br>
-    <b>Κατηγορία:</b> {{ kathgoria_id }} {{ kathgoria_lektiko }}<br>
-    <b>Κλάδος:</b> {{ klados_id }} {{ klados_kodikos }} {{ klados_lektiko }}<br>
-    <b>Ειδικότητα:</b> {{ real_eidikothta_id }} {{ real_eidikothta_kodikos }} {{ real_eidikothta_lektiko }}<br>
+    <b>Σχολικό έτος:</b> {{ sxoliko_etos_lektiko }}<br>
+    <b>Κατηγορία:</b> {{ kathgoria_lektiko }}<br>
+    <b>Κλάδος:</b> {{ klados_kodikos }} {{ klados_lektiko }}<br>
 
     {% if hmeromhnia_id != 1: %}
-        <b>Ημ/νία:</b> {{ hmeromhnia_id }} {{ hmeromhnia_real }} {{ hmeromhnia_lektiko }}<br>
+        <b>Ημ/νία:</b> {{ hmeromhnia_lektiko }}<br>
     {% elif smeae_pinakas_id != 0: %}
-        <b>Πίνακας ΣΜΕΑΕ:</b> {{ smeae_pinakas_id }} {{ smeae_pinakas_lektiko }}<br>
+        <b>Πίνακας ΣΜΕΑΕ:</b> {{ smeae_pinakas_lektiko }}<br>
     {% elif smeae_kathgoria_id != 0: %}
-        <b>Κατηγορία ΣΜΕΑΕ:</b> {{ smeae_kathgoria_id }} {{ smeae_kathgoria_lektiko }}<br>
+        <b>Κατηγορία ΣΜΕΑΕ:</b> {{ smeae_kathgoria_lektiko }}<br>
     {% elif perioxh_id != 0: %}
-        <b>Περιοχή:</b> {{ perioxh_id }} {{ perioxh_lektiko }}<br>
+        <b>Περιοχή:</b> {{ perioxh_lektiko }}<br>
     {% elif mousiko_organo_id != 0: %}
-        <b>Μουσικό όργανο:</b> {{ mousiko_organo_id }} {{ mousiko_organo_lektiko }}<br>
+        <b>Μουσικό όργανο:</b> {{ mousiko_organo_lektiko }}<br>
     {% elif athlima_id != 0: %}
-        <b>Άθλημα:</b> {{ athlima_id }} {{ athlima_lektiko }}<br>
+        <b>Άθλημα:</b> {{ athlima_lektiko }}<br>
     {% endif %}<br>
 
-    <b>Ο πίνακας στο e-aitisi.sch.gr:</b> <a href="{{ url_pinaka }}">{{ url_pinaka }}</a><br>
-    <b>Ο φάκελος στη βάση:</b> {{ path_pinaka }}<br>
-
-    {% set path_filename = url_for('static', filename=path_pinaka + filename) %}
-    <b>Διαδρομή αρχείου στη βάση:</b> <a href="{{ path_filename }}" download>{{ path_filename }}</a><br>
-
-    <b>Αρχικό όνομα αρχείου:</b> {{ filename }}<br>
-    {% if hmeromhnia_id != 1: %}
-        {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, hmeromhnia_lektiko]) %}
-    {% else: %}
-        {% set filename_final = ' '.join([klados_kodikos, kathgoria_lektiko, sxoliko_etos_lektiko]) %}
-    {% endif %}
-    <b>Τελικό όνομα αρχείου:</b> {{ filename_final }}<br><br>
-
-    {% if filename.endswith('gz'): %}
-        {% set suffix = '.html.gz' %}
-    {% elif filename.endswith('html'): %}
-        {% set suffix = '.html' %}
-    {% elif filename.endswith('xls'): %}
-        {% set suffix = '.xls' %}
-    {% elif filename.endswith('xlsx'): %}
-        {% set suffix = '.xlsx' %}
-    {% endif %}
-
-    {{ suffix }}
-
     <div class="row" align="center">
-        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ filename_final + suffix }}">Αποθήκευση</a>
+        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
     </div>
 
 </div>

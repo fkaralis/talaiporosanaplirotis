@@ -44,6 +44,8 @@ def index():
     hmeromhnia_real = ''
     hmeromhnia_lektiko = ''
 
+    download_filename = ''
+
     if form.is_submitted():
         sxoliko_etos_id = form.sxoliko_etos.data
         sxoliko_etos_lektiko = Sxoliko_etos.query.filter_by(id=sxoliko_etos_id).\
@@ -62,35 +64,43 @@ def index():
                             first().lektiko_kladoy
         print('klados', klados_id, klados_kodikos, klados_lektiko)
 
+        #building download_filename
+        download_filename = klados_kodikos + ' ' + kathgoria_lektiko
+
         if form.smeae_pinakas.data:
             smeae_pinakas_id = form.smeae_pinakas.data
             smeae_pinakas_lektiko = Smeae_pinakas.query.filter_by(id=smeae_pinakas_id).\
                                     first().lektiko
             print('sm pin', smeae_pinakas_id, smeae_pinakas_lektiko)
+            download_filename += ' ' + smeae_pinakas_lektiko
 
         if form.smeae_kathgoria.data:
             smeae_kathgoria_id = form.smeae_kathgoria.data
             smeae_kathgoria_lektiko = Smeae_kathgoria.query.filter_by(id=smeae_kathgoria_id).\
                                         first().lektiko
             print('sm kat', smeae_kathgoria_id, smeae_kathgoria_lektiko)
+            download_filename += ' ' + smeae_kathgoria_lektiko
 
         if form.perioxh.data:
             perioxh_id = form.perioxh.data
             perioxh_lektiko = Perioxh.query.filter_by(id=perioxh_id).\
                                 first().lektiko
             print('perioxh', perioxh_id, perioxh_lektiko)
+            download_filename += ' ' + perioxh_lektiko
 
         if form.mousiko_organo.data:
             mousiko_organo_id = form.mousiko_organo.data
             mousiko_organo_lektiko = Mousiko_organo.query.filter_by(id=mousiko_organo_id).\
                                         first().lektiko
             print('mous org', mousiko_organo_id, mousiko_organo_lektiko)
+            download_filename += ' ' + mousiko_organo_lektiko
 
         if form.athlima.data:
             athlima_id = form.athlima.data
             athlima_lektiko = Athlima.query.filter_by(id=athlima_id).\
                                     first().lektiko
             print('athlima', athlima_id, athlima_lektiko)
+            download_filename += ' ' + athlima_lektiko
 
         if form.hmeromhnia.data:
             hmeromhnia_id = form.hmeromhnia.data
@@ -132,6 +142,24 @@ def index():
 
         filename = url_pinaka.split('/')[-1]
 
+        path_filename = url_for('static', filename=path_pinaka + filename)
+        print('path_filename', path_filename)
+
+        # build download filename
+        if hmeromhnia_id != 1:
+            download_filename += ' ' + hmeromhnia_lektiko
+        else:
+            download_filename += ' ' + sxoliko_etos_lektiko
+        print('download_filename', download_filename)
+
+        # build download filename suffix
+        filename_parts = filename.split('.')
+        suffixes = ['html', 'gz', 'xls', 'xlsx']
+        for i in filename_parts:
+            if i in suffixes:
+                download_filename += '.' + i
+        print('suffixed download_filename', download_filename)
+
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['sxoliko_etos_lektiko']  = sxoliko_etos_lektiko
 
@@ -170,6 +198,8 @@ def index():
         session['path_pinaka'] = path_pinaka
 
         session['filename'] = filename
+        session['path_filename'] = path_filename
+        session['download_filename'] = download_filename
 
         if current_app.config['TALAIPANAP_ADMIN']:
             msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id) + sxoliko_etos_lektiko,\
@@ -184,7 +214,9 @@ def index():
                                   'Real ειδικότητα id ' + str(real_eidikothta_id) + real_eidikothta_kodikos + real_eidikothta_lektiko,\
                                   url_pinaka,\
                                   path_pinaka,\
-                                  filename))
+                                  filename,\
+                                  path_filename,\
+                                  download_filename))
             send_email(current_app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
 
         return redirect(url_for('main.result'))
@@ -220,7 +252,9 @@ def result():
                            real_eidikothta_lektiko=session.get('real_eidikothta_lektiko'),
                            url_pinaka = session.get('url_pinaka'),
                            path_pinaka = session.get('path_pinaka'),
-                           filename = session.get('filename'))
+                           filename = session.get('filename'),
+                           path_filename = session.get('path_filename'),
+                           download_filename = session.get('download_filename'))
 
 
 @main.route('/_get_kathgories/')
