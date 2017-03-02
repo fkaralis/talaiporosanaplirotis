@@ -47,7 +47,7 @@ $(function() {
             sxoliko_etos: dropdown.sxoliko_etos.val()
         };
 
-        alert(send.sxoliko_etos);
+        //alert(send.sxoliko_etos);
 
         dropdown.kathgoria.empty();
         dropdown.klados.empty();
@@ -79,7 +79,7 @@ $(function() {
             kathgoria: dropdown.kathgoria.val()
         };
 
-        alert(send.sxoliko_etos + "\n" + send.kathgoria);
+        //alert(send.sxoliko_etos + "\n" + send.kathgoria);
 
 
         hideDisableSetDefault('kathgoria select');
@@ -110,14 +110,14 @@ $(function() {
             klados: dropdown.klados.val()
         };
 
-        alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
+        //alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
 
         hideDisableSetDefault('klados select');
 
         $.getJSON("{{ url_for('main._get_fields') }}", send, function(data) {
-            alert(data)
+            //alert(data)
             data.forEach(function(item) {
-                alert(item[0] + " " + item[1])
+                //alert(item[0] + " " + item[1])
                 var send = { ids: item[1] };
 
                 if (item[0] == 'smeae_pinakes') {
@@ -215,7 +215,7 @@ $(function() {
                             );
                         });
                     });
-                    alert('hmnia after hmnies update' + dropdown.hmeromhnia.val());
+                    //alert('hmnia after hmnies update' + dropdown.hmeromhnia.val());
                 };
             });
         });
@@ -230,8 +230,8 @@ $(function() {
             field: arguments[0]
         };
 
-        alert('perioxh ' + dropdown.perioxh.val());
-        alert('hmnia after rest fields select' + dropdown.hmeromhnia.val());
+        //alert('perioxh ' + dropdown.perioxh.val());
+        //alert('hmnia after rest fields select' + dropdown.hmeromhnia.val());
 
         if (dropdown.smeae_pinakas.disabled == false) {
             send["smeae_pinakas"] = dropdown.smeae_pinakas.val()
@@ -254,20 +254,20 @@ $(function() {
 
 
         for (key in send) {
-            alert('sending ' + key + ' ' + send[key]);
+            //alert('sending ' + key + ' ' + send[key]);
         };
 
         $.getJSON("{{ url_for('main._update_fields') }}", send, function(data) {
-            alert('updated fields');
+            //alert('updated fields');
             data.forEach(function(item) {
-                alert(item[0] + " " + item[1])
+                //alert(item[0] + " " + item[1])
                 var send = { ids: item[1] };
 
                 if (item[0] == 'hmeromhnies') {
                     dropdown.hmeromhnia.empty();
                     $.getJSON("{{ url_for('main._get_hmeromhnies') }}", send, function(data) {
                         data.forEach(function(item) {
-                            alert(item[0] + " " + item[1])
+                            //alert(item[0] + " " + item[1])
                             dropdown.hmeromhnia.append(
                                 $('<option>', {
                                     value: item[0],
@@ -319,59 +319,68 @@ $(function() {
     });
 
     dropdown.hmeromhnia.on('change', function() {
-        alert('selected hmnia ' + dropdown.hmeromhnia.val());
+        //alert('selected hmnia ' + dropdown.hmeromhnia.val());
     });
 
     $('#submit').click(function() {
 
         if (dropdown.sxoliko_etos.val() == 0 || dropdown.sxoliko_etos.val() == null) {
-            alert('select some sxoliko_etos bitxh! ' + dropdown.sxoliko_etos.val());
+            //alert('select sxoliko_etos: ' + dropdown.sxoliko_etos.val());
+            alert('Επιλέξτε σχολικό έτος');
             return false;
         }
 
         if (dropdown.kathgoria.val() == 0 || dropdown.kathgoria.val() == null) {
-            alert('select some kathgoria bitxh! ' + dropdown.kathgoria.val());
+            //alert('select kathgoria: ' + dropdown.kathgoria.val());
+            alert('Επιλέξτε κατηγορία');
             return false;
         }
 
         if (dropdown.klados.val() == 0 || dropdown.klados.val() == null) {
-            alert('select some klados bitxh! ' + dropdown.klados.val());
+            //alert('select klados: ' + dropdown.klados.val());
+            alert('Επιλέξτε κλάδο');
             return false;
         }
 
         if (dropdown.smeae_pinakas.disabled == false && dropdown.smeae_pinakas.val() == 0) {
-            alert('select some smeae pianakas bitxh! ' + dropdown.smeae_pinakas.val());
+            //alert('select smeae pianakas: ' + dropdown.smeae_pinakas.val());
+            alert('Επιλέξτε πίνακα ΣΜΕΑΕ');
             return false;
         }
 
         if (dropdown.smeae_kathgoria.disabled == false && dropdown.smeae_kathgoria.val() == 0) {
-            alert('select some smeae_kathgoria bitxh! ' + dropdown.smeae_kathgoria.val());
+            //alert('select smeae_kathgoria: ' + dropdown.smeae_kathgoria.val());
+            alert('Επιλέξτε κατηγορία ΣΜΕΑΕ');
             return false;
         }
 
         if (dropdown.perioxh.disabled == false && dropdown.perioxh.val() == 0) {
-            alert('select some perioxh bitxh! ' + dropdown.perioxh.val());
+            //alert('select perioxh: ' + dropdown.perioxh.val());
+            alert('Επιλέξτε περιοχή');
             return false;
         }
 
         if (dropdown.mousiko_organo.disabled == false && dropdown.mousiko_organo.val() == 0) {
-            alert('select some mousiko_organo bitxh! ' + dropdown.mousiko_organo.val());
+            //alert('select some mousiko_organo bitxh! ' + dropdown.mousiko_organo.val());
+            alert('Επιλέξτε μουσικό όργανο');
             return false;
         }
 
         if (dropdown.athlima.disabled == false && dropdown.athlima.val() == 0) {
-            alert('select some athlima bitxh! ' + dropdown.athlima.val());
+            //alert('select athlima: ' + dropdown.athlima.val());
+            alert('Επιλέξτε άθλημα');
             return false;
         }
 
         if (dropdown.hmeromhnia.val() == 0) {
-            alert('select some hmeromhnia bitxh! ' + dropdown.hmeromhnia.val());
+            //alert('select hmeromhnia: ' + dropdown.hmeromhnia.val());
+            alert('Επιλέξτε ημερομηνία');
             return false;
         }
 
         if (dropdown.hmeromhnia.val() == null) {
             // setting hmeromhnia to default
-            alert('hmeromhnia ' + dropdown.hmeromhnia.val());
+            //alert('hmeromhnia ' + dropdown.hmeromhnia.val());
             $('#select_hmeromhnia').append($('<option>', {
                 value: 1,
                 text: 'default'
@@ -411,7 +420,7 @@ $(function() {
         dropdown.athlima.disabled = true;
         $('#select_athlima').val([0]);
 
-        alert('hmnia after ' + infunc + ' ' + dropdown.hmeromhnia.val());
+        //alert('hmnia after ' + infunc + ' ' + dropdown.hmeromhnia.val());
     }
 
 });
