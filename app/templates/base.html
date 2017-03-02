@@ -8,10 +8,11 @@
       type="image/x-con">
 <link rel="icon" href="{{ url_for('static', filename = 'favicon.png') }}"
       type="image/x-con">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'custom.css') }}">
 {% endblock %}
 
 {% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
+<div class="navbar navbar-custom" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle"

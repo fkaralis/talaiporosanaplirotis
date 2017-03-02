@@ -1,0 +1,24 @@
+.bg-pink
+{
+  background-color: #FF0000;
+}
+
+.bg-darkorchid
+{
+  background-color: #9932CC;
+}
+
+.bg-royalblue
+{
+  background-color: #4169E1;
+
+}
+
+.navbar-custom
+{
+  background-color: blue;
+}
+
+.navbar-custom a {
+    color: white;
+}
