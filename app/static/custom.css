@@ -1,24 +1,28 @@
-.bg-pink
+.bg-blue
 {
-  background-color: #FF0000;
+    background-color: blue;
 }
 
-.bg-darkorchid
-{
-  background-color: #9932CC;
+.lf-white li a {
+    color: white;
 }
 
-.bg-royalblue
-{
-  background-color: #4169E1;
-
-}
-
-.navbar-custom
-{
+.navbar-inverse {
   background-color: blue;
 }
 
-.navbar-custom a {
-    color: white;
+.navbar-inverse .container a {
+  color: white;
 }
+
+.navbar-inverse .container li a {
+  color: white;
+}
+
+
+.navbar-inverse .container .navbar-toggle {
+  background-color: blue;
+}
+
+
+
