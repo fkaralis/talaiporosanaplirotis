@@ -13,15 +13,20 @@
 
     {% if hmeromhnia_id != 1: %}
         <b>Ημ/νία:</b> {{ hmeromhnia_lektiko }}<br>
-    {% elif smeae_pinakas_id != 0: %}
+    {% endif %}
+    {% if smeae_pinakas_id != 0: %}
         <b>Πίνακας ΣΜΕΑΕ:</b> {{ smeae_pinakas_lektiko }}<br>
-    {% elif smeae_kathgoria_id != 0: %}
+    {% endif %}
+    {% if smeae_kathgoria_id != 0: %}
         <b>Κατηγορία ΣΜΕΑΕ:</b> {{ smeae_kathgoria_lektiko }}<br>
-    {% elif perioxh_id != 0: %}
+    {% endif %}
+    {% if perioxh_id != 0: %}
         <b>Περιοχή:</b> {{ perioxh_lektiko }}<br>
-    {% elif mousiko_organo_id != 0: %}
+    {% endif %}
+    {% if mousiko_organo_id != 0: %}
         <b>Μουσικό όργανο:</b> {{ mousiko_organo_lektiko }}<br>
-    {% elif athlima_id != 0: %}
+    {% endif %}
+    {% if athlima_id != 0: %}
         <b>Άθλημα:</b> {{ athlima_lektiko }}<br>
     {% endif %}<br>
 
