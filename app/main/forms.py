@@ -5,7 +5,6 @@ from wtforms import SelectMultipleField
 from wtforms import SubmitField
 from wtforms.validators import Required
 from wtforms.validators import DataRequired
-from wtforms import ValidationError
 from .. import db
 from ..models import User, Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
 Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
@@ -137,13 +136,3 @@ class MainForm(FlaskForm):
     submit = SubmitField('Yποβολή')
 #
 # MainForm end
-
-
-class RegistrationForm(Form):
-    onoma = StringField('Όνομα', validators=[Required()])
-    email = StringField('Email', validators[Required(), Email()])
-    submit = SubmitField('Εγγραφή')
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Το e-mail αυτό υπάρχει ήδη')
