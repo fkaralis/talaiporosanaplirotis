@@ -5,6 +5,7 @@ from wtforms import SelectMultipleField
 from wtforms import SubmitField
 from wtforms.validators import Required
 from wtforms.validators import DataRequired
+from wtforms import ValidationError
 from .. import db
 from ..models import User, Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
 Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
@@ -94,7 +95,6 @@ choices_athlimata.insert(0, (0, '--Επιλογή αθλήματος--'))
 ## end choices
 
 
-# form class
 class MainForm(FlaskForm):
     sxoliko_etos = SelectField('Σχολικό έτος',\
                                choices=choices_sxolika_eth,\
@@ -136,4 +136,14 @@ class MainForm(FlaskForm):
                              id='select_hmeromhnia')
     submit = SubmitField('Yποβολή')
 #
-# form end
+# MainForm end
+
+
+class RegistrationForm(Form):
+    onoma = StringField('Όνομα', validators=[Required()])
+    email = StringField('Email', validators[Required(), Email()])
+    submit = SubmitField('Εγγραφή')
+
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Το e-mail αυτό υπάρχει ήδη')
