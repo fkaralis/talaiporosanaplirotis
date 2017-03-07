@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms import PasswordField
 from wtforms import BooleanField
@@ -6,16 +6,17 @@ from wtforms import SubmitField
 from wtforms.validators import Required
 from wtforms.validators import Email
 from wtforms import ValidationError
+from ..models import User
 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = StringField('Email', validators=[Required(), Email()])
     password = PasswordField('Κωδικός', validators=[Required()])
     remember_me = BooleanField('Διατήρηση σύνδεσης')
     submit = SubmitField('Είσοδος')
 
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     onoma = StringField('Όνομα', validators=[Required()])
     email = StringField('Email', validators=[Required(), Email()])
     submit = SubmitField('Εγγραφή')

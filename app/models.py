@@ -10,21 +10,10 @@ class User(db.Model):
     id = Column("id", Integer, primary_key=True, nullable=False)
     onoma = Column("onoma", String, nullable=False)
     email = Column("email", String, unique=True, nullable=False)
-    password_hash = Column("password_hash", String, nullable=False)
 
     def __repr__(self):
         return '<User %r %r>' % (self.onoma, self.email)
 
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
-
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
 
 
