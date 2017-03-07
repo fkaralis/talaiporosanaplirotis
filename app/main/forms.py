@@ -6,7 +6,7 @@ from wtforms import SubmitField
 from wtforms.validators import Required
 from wtforms.validators import DataRequired
 from .. import db
-from ..models import Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
+from ..models import User, Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
 Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
 Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_greeklish
 

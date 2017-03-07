@@ -4,6 +4,16 @@ from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 
 
+class User(db.Model):
+    __tablename__ = 'user'
+    id = Column("id", Integer, primary_key=True, nullable=False)
+    onoma = Column("onoma", String)
+    email = Column("email", String, unique=True, nullable=False)
+
+    def __repr__(self):
+        return '<User %r %r>' % (self.onoma, self.email)
+
+
 class Kathgoria(db.Model):
     __tablename__ = "kathgoria"
 

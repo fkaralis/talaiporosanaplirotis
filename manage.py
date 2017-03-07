@@ -2,7 +2,7 @@
 import os
 from app import create_app
 from app import db
-from app.models import Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
+from app.models import User, Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
 Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
 Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_greeklish
 from flask_script import Manager
