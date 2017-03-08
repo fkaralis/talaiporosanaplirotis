@@ -22,10 +22,11 @@
                 <span class ="icon-bar"></span>
                 <span class ="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">TalaiporosAnaplirotis</a>
+            <a class="navbar-brand" href="#">TalaiporosAnaplirotis</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+                <li><a href="/">Αρχική</a></li>
                 <li><a href="{{ url_for('auth.register') }}">Εγγραφή</a></li>
             </ul>
         </div>
@@ -36,7 +37,7 @@
 {% block content %}
     <div class="container">
         {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
+        <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
@@ -51,6 +52,15 @@
 
 {{ moment.include_moment() }}
 {{ moment.lang('el') }}
+
+<script charset="utf-8" type="text/javascript">
+window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove();
+    });
+}, 2000);
+</script>
+
 {% endblock %}
 
 
