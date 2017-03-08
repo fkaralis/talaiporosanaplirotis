@@ -20,5 +20,4 @@ def register():
                     onoma=form.onoma.data)
         db.session.add(user)
         flash('Επιτυχής εγγραφή')
-        return redirect(url_for('main.index'))
     return render_template('auth/register.html', form=form)

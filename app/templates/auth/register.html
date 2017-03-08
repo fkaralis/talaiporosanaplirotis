@@ -1,13 +1,26 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}TalaiporosAnaplirotis Εγγραφή{% endblock %}
+{% block title %}Εγγραφή - TalaipAnap{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h3>Εγγραφή</h1>
+    <h1>Εγγραφή</h1>
 </div>
-<div class="col-md-4">
-    {{ wtf.quick_form(form) }}
+
+<div class="row" align="center" style="font-size:20px">
+    <p>Για να λαμβάνετε πρώτοι τις προσλήψεις στο e-mail σας</p><span class="hidden-sm hidden-xs"></span>
+</div>
+
+<div class="row" style="font-size:25px">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+<div class="row"  align="center" style="color:grey">
+    <p><span class="hidden-sm hidden-xs"><br></span><br><i>(Δεν προσφέρονται ενημερώσεις από τον αιρετό κ. Μπράτη)</i></p>
 </div>
 {% endblock %}

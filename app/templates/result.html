@@ -1,39 +1,65 @@
 {% extends "base.html" %}
 
-{% block title %}Αποτέλεσμα αναζήτησης{% endblock %}
+{% block title %}Αποτέλεσμα αναζήτησης - TalaipAnap{% endblock %}
 
 {% block page_content %}
 <div class="container">
     <div class="page-header">
         <h1>Εύρεση πίνακα</h1>
     </div>
-    <b>Σχολικό έτος:</b> {{ sxoliko_etos_lektiko }}<br>
-    <b>Κατηγορία:</b> {{ kathgoria_lektiko }}<br>
-    <b>Κλάδος:</b> {{ klados_kodikos }} {{ klados_lektiko }}<br>
+    <div class="row" style="font-size:20px">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <table class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td><b>Σχολικό έτος:</b></td><td>{{ sxoliko_etos_lektiko }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Κατηγορία:</b></td><td>{{ kathgoria_lektiko }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Κλάδος:</b></td><td>{{ klados_kodikos }} {{ klados_lektiko }}</td>
+                    </tr>
 
-    {% if hmeromhnia_id != 1: %}
-        <b>Ημ/νία:</b> {{ hmeromhnia_lektiko }}<br>
-    {% endif %}
-    {% if smeae_pinakas_id != 0: %}
-        <b>Πίνακας ΣΜΕΑΕ:</b> {{ smeae_pinakas_lektiko }}<br>
-    {% endif %}
-    {% if smeae_kathgoria_id != 0: %}
-        <b>Κατηγορία ΣΜΕΑΕ:</b> {{ smeae_kathgoria_lektiko }}<br>
-    {% endif %}
-    {% if perioxh_id != 0: %}
-        <b>Περιοχή:</b> {{ perioxh_lektiko }}<br>
-    {% endif %}
-    {% if mousiko_organo_id != 0: %}
-        <b>Μουσικό όργανο:</b> {{ mousiko_organo_lektiko }}<br>
-    {% endif %}
-    {% if athlima_id != 0: %}
-        <b>Άθλημα:</b> {{ athlima_lektiko }}<br>
-    {% endif %}<br>
-
-    <div class="row" align="center">
-        <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
+                    {% if hmeromhnia_id != 1: %}
+                        <tr>
+                            <td><b>Ημ/νία:</b></td><td>{{ hmeromhnia_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if smeae_pinakas_id != 0: %}
+                        <tr>
+                            <td><b>Πίνακας ΣΜΕΑΕ:</b></td><td>{{ smeae_pinakas_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if smeae_kathgoria_id != 0: %}
+                        <tr>
+                            <td><b>Κατηγορία ΣΜΕΑΕ:</b></td><td>{{ smeae_kathgoria_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if perioxh_id != 0: %}
+                        <tr>
+                            <td><b>Περιοχή:</b></td><td>{{ perioxh_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if mousiko_organo_id != 0: %}
+                        <tr>
+                            <td><b>Μουσικό όργανο:</b></td><td>{{ mousiko_organo_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if athlima_id != 0: %}
+                        <tr>
+                            <td><b>Άθλημα:</b></td><td>{{ athlima_lektiko }}</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            <div class="row" align="center">
+                <a href="{{ path_filename }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
     </div>
-
 </div>
 {% endblock %}
 

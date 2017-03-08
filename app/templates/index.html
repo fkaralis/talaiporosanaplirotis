@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Index{% endblock %}
+{% block title %}Αρχική - TalaipAnap{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h3>Γεια σου ταλαίπωρε</h3>
+    <h1>Αναζήτηση πίνακα</h1>
 </div>
 
-{{ wtf.quick_form(form) }}
-
+<div class="row" style="font-size:25px">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+    {{ wtf.quick_form(form) }}
+    </div>
+    <div class="col-md-4"></div>
+</div>
 {% endblock %}
 
 {% block scripts %}
