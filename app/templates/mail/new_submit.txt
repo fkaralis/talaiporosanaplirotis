@@ -1,0 +1,15 @@
+Σχολικό έτος {{ sxoliko_etos_id }} {{ sxoliko_etos_lektiko }}
+Κατηγορία {{ kathgoria_id }} {{ kathgoria_lektiko }}
+Κλάδος {{ klados_id }} {{ klados_kodikos }} {{ klados_lektiko }}
+Ημερομηνία  {{ hmeromhnia_id }} {{ hmeromhnia_real }} {{ hmeromhnia_lektiko }}
+Πίνακας ΣΜΕΑΕ {{ smeae_pinakas_id }} {{ smeae_pinakas_lektiko }}
+Κατηγορία ΣΜΕΑΕ {{ smeae_kathgoria_id }} {{ smeae_kathgoria_lektiko }}
+Περιοχή {{ perioxh_id }} {{ perioxh_lektiko }}
+Μουσικό όργανο {{ mousiko_organo_id }} {{ mousiko_organo_lektiko }}
+Άθλημα {{ athlima_id }} {{ athlima_lektiko }}
+Real ειδικότητα {{ real_eidikothta_id }} {{ real_eidikothta_kodikos }} {{ real_eidikothta_lektiko }}
+{{ url_pinaka }}
+{{ path_pinaka }}
+{{ filename }}
+{{ path_filename }}
+{{ download_filename }}

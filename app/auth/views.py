@@ -6,6 +6,7 @@ from . import auth
 from .. import db
 from ..models import User
 from .forms import RegistrationForm
+from ..email import send_email
 
 @auth.route('/login')
 def login():
@@ -19,5 +20,8 @@ def register():
         user = User(email=form.email.data,
                     onoma=form.onoma.data)
         db.session.add(user)
-        flash('Επιτυχής εγγραφή')
+        send_email(user.email, 'Καλωσόρισες στο TalaiporosAnaplirotis', 'auth/email/welcome', user=user)
+        flash('Επιτυχής εγγραφή, εστάλη e-mail')
+        db.session.commit()
+
     return render_template('auth/register.html', form=form)

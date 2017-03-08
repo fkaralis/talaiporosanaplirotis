@@ -202,22 +202,22 @@ def index():
         session['download_filename'] = download_filename
 
         if current_app.config['TALAIPANAP_ADMIN']:
-            msg_body = '\n'.join(('Σχολικό έτος id ' + str(sxoliko_etos_id) + sxoliko_etos_lektiko,\
-                                  'Κατηγορία id ' + str(kathgoria_id) + kathgoria_lektiko,\
-                                  'Κλάδος id ' + str(klados_id) + klados_kodikos + klados_lektiko,\
-                                  'Ημερομηνία id ' + str(hmeromhnia_id) + hmeromhnia_real + hmeromhnia_lektiko,\
-                                  'Πίνακας ΣΜΕΑΕ id: ' + str(smeae_pinakas_id) + smeae_pinakas_lektiko,\
-                                  'Κατηγορία ΣΜΕΑΕ id: ' + str(smeae_kathgoria_id) + smeae_kathgoria_lektiko,\
-                                  'Περιοχή id' + str(perioxh_id) + perioxh_lektiko,\
-                                  'Μουσικό όργανο id: ' + str(mousiko_organo_id) + mousiko_organo_lektiko,\
-                                  'Άθλημα id: ' + str(athlima_id) + athlima_lektiko,\
-                                  'Real ειδικότητα id ' + str(real_eidikothta_id) + real_eidikothta_kodikos + real_eidikothta_lektiko,\
-                                  url_pinaka,\
-                                  path_pinaka,\
-                                  filename,\
-                                  path_filename,\
-                                  download_filename))
-            send_email(current_app.config['TALAIPANAP_ADMIN'], 'New submit', msg_body)
+            send_email(current_app.config['TALAIPANAP_ADMIN'], ' New submit', 'mail/new_submit',\
+                       sxoliko_etos_id=str(sxoliko_etos_id), sxoliko_etos_lektiko=sxoliko_etos_lektiko,\
+                       kathgoria_id=str(kathgoria_id), kathgoria_lektiko=kathgoria_lektiko,\
+                       klados_id=str(klados_id), klados_kodikos=klados_kodikos, klados_lektiko=klados_lektiko,\
+                       hmeromhnia_id=str(hmeromhnia_id), hmeromhnia_real=str(hmeromhnia_real), hmeromhnia_lektiko=hmeromhnia_lektiko,\
+                       smeae_pinakas_id=str(smeae_pinakas_id), smeae_pinakas_lektiko=smeae_pinakas_lektiko,\
+                       smeae_kathgoria_id=str(smeae_kathgoria_id), smeae_kathgoria_lektiko=smeae_kathgoria_lektiko,\
+                       perioxh_id=str(perioxh_id), perioxh_lektiko=perioxh_lektiko,\
+                       mousiko_organo_id=str(mousiko_organo_id), mousiko_organo_lektiko=mousiko_organo_lektiko,\
+                       athlima_id=str(athlima_id), athlima_lektiko=athlima_lektiko,\
+                       real_eidikothta_id=str(real_eidikothta_id), real_eidikothta_kodikos=real_eidikothta_kodikos, real_eidikothta_lektiko=real_eidikothta_lektiko,\
+                       url_pinaka=url_pinaka,\
+                       path_pinaka=path_pinaka,\
+                       filename=filename,\
+                       path_filename=path_filename,\
+                       download_filename=download_filename)
 
         return redirect(url_for('main.result'))
 
