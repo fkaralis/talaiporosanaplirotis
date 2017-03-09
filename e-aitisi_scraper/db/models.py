@@ -23,8 +23,8 @@ class Kathgoria(Base):
     pinakes = relationship("Pinakas", back_populates="kathgoria")
 
     def __repr__(self):
-        return '\nΚατηγορία id %r\nλεκτικό %r' %\
-            (self.kathgoria_id, self.lektiko_kathgorias)
+        return '\nΚατηγορία id %r\nλεκτικό %r \ngreek λεκτικό %r' %\
+            (self.id, self.lektiko_kathgorias, self.greek_lektiko_kathgorias)
 
 
 
@@ -37,7 +37,7 @@ class Real_eidikothta(Base):
 
     def __repr__(self):
         return '\nΠραγματική ειδικότητα\nid %r\nκωδικός %r\nλεκτικό %r' %\
-            (self.real_eidikothta_id, self.kodikos_real_eidikothtas, self.lektiko_real_eidikothtas)
+            (self.id, self.kodikos_real_eidikothtas, self.lektiko_real_eidikothtas)
 
 
 
@@ -54,7 +54,7 @@ class Klados(Base):
 
     def __repr__(self):
         return '\nΚλάδος id %r\nκωδικός %r\nλεκτικό %r\nreal %r' %\
-            (self.klados_id, self.kodikos_kladoy, self.lektiko_kladoy, self.real_eidikothta_id)
+            (self.id, self.kodikos_kladoy, self.lektiko_kladoy, self.real_eidikothta_id)
 
 
 
@@ -69,7 +69,7 @@ class Sxoliko_etos(Base):
 
     def __repr__(self):
         return '\nΣχολικό έτος\nid %r\nλεκτικό %r' %\
-            (self.sxoliko_etos_id, self.lektiko_sxolikoy_etoys)
+            (self.id, self.lektiko_sxolikoy_etoys)
 
 
 
@@ -85,7 +85,7 @@ class Hmeromhnia(Base):
 
     def __repr__(self):
         return '\nΗμερομηνία id %r\nλεκτικό %r\nπρ. ημ/νία %r' %\
-            (self.hmeromhnia_id, self.lektiko_hmeromhnias, self.real_hmeromhnia)
+            (self.id, self.lektiko_hmeromhnias, self.real_hmeromhnia)
 
 
 
@@ -228,7 +228,7 @@ class Pinakas(Base):
 
     def __repr__(self):
         return '\nΠίνακας id %r\nλεκτικό %r\nσχ.έτος %r\nκατηγορία %r\nειδικότητα %r\nημ/νια %r\npath %r\nurl %r' %\
-            (self.pinakas_id, self.lektiko_pinaka, self.sxoliko_etos_id, self.kathgoria_id, \
+            (self.id, self.lektiko_pinaka, self.sxoliko_etos_id, self.kathgoria_id, \
              self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
 
 

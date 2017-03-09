@@ -23,14 +23,16 @@ logger = logging.getLogger("crawler")
 from parser import Parser
 
 def main(year):
+    basic_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/'
     school_year = "%s-%d" % (year, int(year) + 1)
+    full_path = basic_path + school_year
     logger.info("Starting parsing: %s", school_year)
 
     parser = Parser(year)
     suffix = '/index' + year + '.html'
 
     # ensure that destination dir exists
-    os.makedirs(school_year, exist_ok=True)
+    os.makedirs(full_path, exist_ok=True)
 
     # parse initial url
     url = 'http://e-aitisi.sch.gr'
@@ -44,7 +46,7 @@ def main(year):
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) != 2 or not (int(sys.argv[1]) >= 2003 and int(sys.argv[1]) <= 2016): 
+        if len(sys.argv) != 2 or not (int(sys.argv[1]) >= 2003 and int(sys.argv[1]) <= 2016):
             print("Usage: 'python crawler.py YYYY' where YYYY is an integer representing a year from 2003 to 2016 (e.g. \'2014\').")
             sys.exit(1)
         year = sys.argv[1]

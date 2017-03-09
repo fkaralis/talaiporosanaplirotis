@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#### 10/3/2017
+### finds new tables (checked 2016)
+## go for download.
+
 
 import re
 import os
@@ -41,7 +45,7 @@ class Parser:
         self.tables = {}
 
     def parse_url(self, url, suffix):
-        print('> in parse_url', url, suffix)
+        #print('> in parse_url', url, suffix)
         html = requests.get(url)
         html.encoding = 'ISO-8859-7'
         soup = BeautifulSoup(html.content, 'html.parser')
@@ -58,15 +62,21 @@ class Parser:
 
 
     def parse_link(self, url, tag, suffix):
-        print('> in parse_link', url, tag, suffix)
+        #print('> in parse_link', url, tag, suffix)
+        year = suffix[6:][:-5]
+        sxoliko_etos = year + '-' + str(int(year) + 1)
+
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
 
         if (url.endswith('xls') or url.endswith('xlsx') or url.endswith('gz')):
             filename = url.rsplit('/')[-1]
-            self.download_table(url, suffix)
-            self.tables[len(self.tables)+1] = url
-            logger.info("Found table: %s %s <%r>", filename, url, tag.contents)
+            if self.table_exists(filename, url, sxoliko_etos):
+                logger.info("Table exists %s <%r>", url, tag.contents)
+            else:
+                self.download_table(url, suffix)
+                self.tables[len(self.tables)+1] = url
+                logger.info("Found new table: %s %s <%r>", filename, url, tag.contents)
 
         elif ((url.endswith('.html') and 'index' not in url)):
             if any(url.endswith(suf) for suf in ['DE.html','TE.html']):    # 2006 and back, DE and TE indexes
@@ -75,25 +85,27 @@ class Parser:
                 logger.info("------------------\nFound link: %s <%r>", url, tag.contents)
             else:
                 filename = url.rsplit('/')[-1]
+                if self.table_exists(filename, url, sxoliko_etos):
+                    logger.info("Table exists %s <%r>", url, tag.contents)
+                else:
+                    # only html tables (2012 and back)
+                    valid_names = [
+                        'eniaioidior',
+                        'eniaios_diorismwn',
+                        'triantamino',
+                        'eikositetramino',
+                        'specialcat',
+                        'eniaiosp_2012',
+                        'eniaiosp_zero_2012',
+                        'eniaiosd_2012',
+                        'eniaiosd_zero_2012',
+                        'eniaios_bthmias_2003',
+                    ]
+                    if any(name in url for name in valid_names):
+                        self.download_table(url, suffix)
 
-                # only html tables (2012 and back)
-                valid_names = [
-                    'eniaioidior',
-                    'eniaios_diorismwn',
-                    'triantamino',
-                    'eikositetramino',
-                    'specialcat',
-                    'eniaiosp_2012',
-                    'eniaiosp_zero_2012',
-                    'eniaiosd_2012',
-                    'eniaiosd_zero_2012',
-                    'eniaios_bthmias_2003',
-                ]
-                if any(name in url for name in valid_names):
-                    self.download_table(url, suffix)
-
-                self.tables[len(self.tables)+1] = url
-                logger.info("Found html table: %s %s <%r>", filename, url, tag.contents)
+                    self.tables[len(self.tables)+1] = url
+                    logger.info("Found new html table: %s %s <%r>", filename, url, tag.contents)
 
 
         elif ('index' in url and 'old' not in url) or url.endswith('/'):
@@ -110,44 +122,38 @@ class Parser:
             logger.info("Not xls, html or gz %s <%r>", url, tag.contents)
 
 
-    def create_url(self, url, href):
-        print('> in create_url', url, href)
-        if url.endswith('/index.html'):
-            url = url[:-11]
-        return url + '/' + href
-
-    def fix_url(self, url, suffix):
-        if suffix in url:       # initial index.html
-            url_parts = url.split(suffix)
-            url = ''.join(url_parts)
-
-        rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html',
-                               '/indexABg.html', '/indexCg.html', '/indexGg.html']
-        if any(x in url for x in rogue_suffixes):       # 2003-4
-            splitter = re.search('/index.+?\.html', url).group(0)
-            url_parts = url.split(splitter)
-            url = ''.join(url_parts)
-        if '-index.html' in url:        # ~2010 tadmon(TAD/ETAD)
-            splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
-            url_parts = url.split(splitter)
-            url = ''.join(url_parts)
-        if '_13/indexdior.html' in url:     # 2013
-            splitter = re.search('/indexdior.html', url).group(0)
-            url_parts = url.split(splitter)
-            url = ''.join(url_parts)
-
-        return url
-
     def download_table(self, url, suffix):
+        #print('> in download_table', url, suffix)
+        #kladoi = session.query(Klados).filter_by().all()
         # get attributes for Pinakas
         # and fill DB Hmeromhnia, Kathgoria, Eidikothta, Sxoliko_etos
 
+        # Sxoliko etos
+        year = suffix[6:][:-5]
+        sxoliko_etos = year + '-' + str(int(year) + 1)
+        new_sxoliko_etos, _ = get_one_or_create(
+            session,
+            Sxoliko_etos,
+            lektiko_sxolikoy_etoys=sxoliko_etos
+        )
+        #print('new_sxoliko_etos', new_sxoliko_etos)
+
         # lektiko_pinaka
         filename = url.rsplit('/')[-1]
+        #print('filename', filename)
 
         # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
         path_pinaka_parts = path_pinaka.rsplit('/')
+        #print('path_pinaka', path_pinaka)
+
+        # create path if not exists
+        full_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/' + sxoliko_etos + path_pinaka
+        #print('full_path', full_path)
+        os.makedirs(full_path, exist_ok=True)
+
+        full_filename = ('').join([full_path, filename])
+        #print('full_filename', full_filename, os.path.isfile(full_filename))
 
         # Hmeromhnia
         if path_pinaka_parts[-2].isdigit():      # date YYYYMMDD in path pinaka
@@ -164,6 +170,7 @@ class Parser:
             lektiko_hmeromhnias=hmeromhnia,
             real_hmeromhnia=datetime.datetime.strptime(hmeromhnia, "%Y%m%d").date()
         )
+        #print('new_hmeromhnia', new_hmeromhnia)
 
         kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
         new_kathgoria, _ = get_one_or_create(
@@ -171,6 +178,7 @@ class Parser:
             Kathgoria,
             lektiko_kathgorias=kathgoria,
         )
+        #print('new_kathgoria', new_kathgoria)
 
         # Eidikothta
         if kathgoria == 'oromisthioi_defterovathmias':      # oromisthioi_defterovathmias --> perioxes protimhseis
@@ -187,21 +195,8 @@ class Parser:
             kodikos_eidikothtas=eidikothta,
         )
 
-        # # Sxoliko etos
-        year = suffix[6:][:-5]
-        sxoliko_etos = year + '-' + str(int(year) + 1)
-        new_sxoliko_etos, _ = get_one_or_create(
-            session,
-            Sxoliko_etos,
-            lektiko_sxolikoy_etoys=sxoliko_etos
-        )
-
         logger.debug("fn: %s; pt: %s; kat: %s; eid: %s; hme: %s",
                      filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
-
-        # create path if not exists
-        full_path = 'data' + '/' + sxoliko_etos + path_pinaka
-        os.makedirs(full_path, exist_ok=True)
 
         # download table and create pinakas in DB
         if not os.path.isfile(full_path + filename):
@@ -305,4 +300,56 @@ class Parser:
             kathgoria = '2o_gymnasio_avlwna'
 
         return kathgoria
+
+    def table_exists(self, filename, url, sxoliko_etos):
+        #print('> in table_exists', filename, url, sxoliko_etos)
+
+        path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
+        path_pinaka_parts = path_pinaka.rsplit('/')
+        #print('path_pinaka', path_pinaka)
+
+        # create path if not exists
+        full_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/' + sxoliko_etos + path_pinaka
+        #print('full_path', full_path)
+        os.makedirs(full_path, exist_ok=True)
+
+        full_filename = ('').join([full_path, filename])
+        #print('full_filename', full_filename, os.path.isfile(full_filename))
+
+        if os.path.isfile(full_filename):
+            print('file exists', full_filename)
+            return True
+        else:
+            print('file NOT exists', full_filename)
+            return False
+
+
+    def create_url(self, url, href):
+        #print('> in create_url', url, href)
+        if url.endswith('/index.html'):
+            url = url[:-11]
+        return url + '/' + href
+
+
+    def fix_url(self, url, suffix):
+        if suffix in url:       # initial index.html
+            url_parts = url.split(suffix)
+            url = ''.join(url_parts)
+
+        rogue_suffixes = ['/indexAB.html', '/indexC.html', '/indexG.html',
+                               '/indexABg.html', '/indexCg.html', '/indexGg.html']
+        if any(x in url for x in rogue_suffixes):       # 2003-4
+            splitter = re.search('/index.+?\.html', url).group(0)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
+        if '-index.html' in url:        # ~2010 tadmon(TAD/ETAD)
+            splitter = re.search('/\d?\D+\d?\D*-index.html', url).group(0)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
+        if '_13/indexdior.html' in url:     # 2013
+            splitter = re.search('/indexdior.html', url).group(0)
+            url_parts = url.split(splitter)
+            url = ''.join(url_parts)
+
+        return url
 
