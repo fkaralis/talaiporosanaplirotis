@@ -27,27 +27,28 @@ metadata = MetaData(naming_convention=convention)
 Base = declarative_base(metadata=metadata)
 
 from .utils import get_one_or_create
-from .models import Kathgoria, Real_eidikothta, Klados, Sxoliko_etos, Hmeromhnia,\
-Pinakas, Smeae_pinakas, Smeae_kathgoria, Perioxh, Mousiko_organo, Athlima,\
-Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_greeklish
+from .models import Athlima, Athlima_greeklish, Hmeromhnia, Kathgoria,\
+Klados, Mousiko_organo, Mousiko_organo_greeklish, Perioxh, Perioxh_greeklish,\
+Pinakas, Real_eidikothta, Smeae_kathgoria, Smeae_kathgoria_greeklish,\
+Smeae_pinakas, Sxoliko_etos
 
 __all__ = [
     "metadata",
     "Base",
     "get_one_or_create",
-    "Kathgoria",
-    "Real_eidikothta",
-    "Klados",
-    "Sxoliko_etos",
-    "Hmeromhnia",
-    "Pinakas",
-    "Smeae_pinakas",
-    "Smeae_kathgoria",
-    "Perioxh",
-    "Mousiko_organo",
     "Athlima",
-    "Smeae_kathgoria_greeklish",
-    "Perioxh_greeklish",
-    "Mousiko_organo_greeklish",
     "Athlima_greeklish",
+    "Hmeromhnia",
+    "Kathgoria",
+    "Klados",
+    "Mousiko_organo",
+    "Mousiko_organo_greeklish",
+    "Perioxh",
+    "Perioxh_greeklish",
+    "Pinakas",
+    "Real_eidikothta",
+    "Smeae_kathgoria",
+    "Smeae_kathgoria_greeklish",
+    "Smeae_pinakas",
+    "Sxoliko_etos",
 ]

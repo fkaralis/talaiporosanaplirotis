@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-######
-###### OUTDATED! -->
-##### Eidikothta obsolete!
-######
-#######
+
 import re
 import os
 from bs4 import BeautifulSoup
@@ -19,7 +15,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
 from db import Base, get_one_or_create
-from db import Kathgoria, Real_eidikothta, Klados, Eidikothta, Sxoliko_etos, Hmeromhnia, Pinakas
+from db import Athlima, Athlima_greeklish, Hmeromhnia, Kathgoria,\
+Klados, Mousiko_organo, Mousiko_organo_greeklish, Perioxh, Perioxh_greeklish,\
+Pinakas, Real_eidikothta, Smeae_kathgoria, Smeae_kathgoria_greeklish,\
+Smeae_pinakas, Sxoliko_etos
 
 
 engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
@@ -42,11 +41,12 @@ class Parser:
         self.tables = {}
 
     def parse_url(self, url, suffix):
+        print('> in parse_url', url, suffix)
         html = requests.get(url)
         html.encoding = 'ISO-8859-7'
         soup = BeautifulSoup(html.content, 'html.parser')
 
-        # fix .html suffixes in middle of url
+        # fix .html suffixes in middle of url, and other irregularities
         url = self.fix_url(url, suffix)
 
         tags = soup('a')
@@ -58,7 +58,7 @@ class Parser:
 
 
     def parse_link(self, url, tag, suffix):
-
+        print('> in parse_link', url, tag, suffix)
         # (entirely useless) fix // in middle of url
         url = re.sub(r'^((?:(?!//).)*//(?:(?!//).)*)//', r'\1/', url)
 
@@ -111,6 +111,7 @@ class Parser:
 
 
     def create_url(self, url, href):
+        print('> in create_url', url, href)
         if url.endswith('/index.html'):
             url = url[:-11]
         return url + '/' + href
