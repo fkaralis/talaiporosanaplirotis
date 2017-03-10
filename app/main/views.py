@@ -570,5 +570,11 @@ def _get_hmeromhnies():
 
     return jsonify(choices_hmeromhnies)
 
+
+
+@main.route('/contact', methods=['GET', 'POST'])
+def contact():
+    return render_template('contact.html')
+
 #
 # view functions end
