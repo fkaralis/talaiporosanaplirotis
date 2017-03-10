@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #### 10/3/2017
-### finds new tables (checked 2016)
-## go for download.
+### finds & downloads new tables & updates DB (checked 2016-2017)
 
-
+import pandas as pd
 import re
 import os
 from bs4 import BeautifulSoup
@@ -74,7 +73,7 @@ class Parser:
             if self.table_exists(filename, url, sxoliko_etos):
                 logger.info("Table exists %s <%r>", url, tag.contents)
             else:
-                self.download_table(url, suffix)
+                self.download_table(filename, url, sxoliko_etos)
                 self.tables[len(self.tables)+1] = url
                 logger.info("Found new table: %s %s <%r>", filename, url, tag.contents)
 
@@ -102,7 +101,7 @@ class Parser:
                         'eniaios_bthmias_2003',
                     ]
                     if any(name in url for name in valid_names):
-                        self.download_table(url, suffix)
+                        self.download_table(filename, url, sxoliko_etos)
 
                     self.tables[len(self.tables)+1] = url
                     logger.info("Found new html table: %s %s <%r>", filename, url, tag.contents)
@@ -122,40 +121,43 @@ class Parser:
             logger.info("Not xls, html or gz %s <%r>", url, tag.contents)
 
 
-    def download_table(self, url, suffix):
+    def download_table(self, filename, url, sxoliko_etos):
         #print('> in download_table', url, suffix)
-        #kladoi = session.query(Klados).filter_by().all()
-        # get attributes for Pinakas
-        # and fill DB Hmeromhnia, Kathgoria, Eidikothta, Sxoliko_etos
 
-        # Sxoliko etos
-        year = suffix[6:][:-5]
-        sxoliko_etos = year + '-' + str(int(year) + 1)
-        new_sxoliko_etos, _ = get_one_or_create(
-            session,
-            Sxoliko_etos,
-            lektiko_sxolikoy_etoys=sxoliko_etos
-        )
-        #print('new_sxoliko_etos', new_sxoliko_etos)
-
+        # collect params for download
         # lektiko_pinaka
-        filename = url.rsplit('/')[-1]
-        #print('filename', filename)
+        print('filename', filename)
 
         # path_pinaka
         path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
         path_pinaka_parts = path_pinaka.rsplit('/')
-        #print('path_pinaka', path_pinaka)
+        print('path_pinaka', path_pinaka)
 
         # create path if not exists
         full_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/' + sxoliko_etos + path_pinaka
-        #print('full_path', full_path)
+        print('full_path', full_path)
         os.makedirs(full_path, exist_ok=True)
 
         full_filename = ('').join([full_path, filename])
-        #print('full_filename', full_filename, os.path.isfile(full_filename))
+        print('full_filename', full_filename, os.path.isfile(full_filename))
 
-        # Hmeromhnia
+        # Download table
+        if not os.path.isfile(full_filename):
+            response = requests.get(url)
+            with open(full_filename, 'wb') as output:
+                output.write(response.content)
+            logger.info('Downloaded')
+        else:
+            logger.info('Pinakas already there')
+
+
+        # find Pinakas attributes
+        # Sxoliko etos
+        sxoliko_etos_id = session.query(Sxoliko_etos).filter_by(lektiko_sxolikoy_etoys=sxoliko_etos).first().id
+        print('sxoliko_etos_id', sxoliko_etos_id)
+
+
+        # Hmeromhnia ----only field to possibly create new
         if path_pinaka_parts[-2].isdigit():      # date YYYYMMDD in path pinaka
             hmeromhnia = path_pinaka_parts[-2]
         elif path_pinaka_parts[-2][:8].isdigit():     # date YYYYMMDD(a/b)
@@ -170,55 +172,119 @@ class Parser:
             lektiko_hmeromhnias=hmeromhnia,
             real_hmeromhnia=datetime.datetime.strptime(hmeromhnia, "%Y%m%d").date()
         )
-        #print('new_hmeromhnia', new_hmeromhnia)
+        print('new_hmeromhnia', new_hmeromhnia)
 
-        kathgoria = self.find_kathgoria(path_pinaka.split('/')[1])
-        new_kathgoria, _ = get_one_or_create(
+        lektiko_kathgorias = self.find_kathgoria(path_pinaka.split('/')[1])
+        kathgoria_id = session.query(Kathgoria).filter_by(lektiko_kathgorias=lektiko_kathgorias).first().id
+        print('kathgoria_id', kathgoria_id)
+
+
+        #Klados
+        try:
+            df = pd.read_excel(full_filename, header=0)
+            for row in df.iterrows():
+                kodikos_kladoy = row[1]['ΚΛΑΔΟΣ']
+                klados_id = session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id
+        except Exception as e:
+            logger.error(e)
+            klados_id = 254 # bad file
+        print('klados_id', klados_id)
+
+
+        #Smeae_pinakas, _kathgoria
+        smeae_pinakas_id = 0 # default
+        smeae_kathgoria_id = 0
+
+        if kathgoria_id in [11, 18, 19]:
+            if '_A/' in path_pinaka:
+                smeae_pinakas_id = 1
+            elif '_B/' in path_pinaka:
+                smeae_pinakas_id = 2
+
+            # populate greeklish lektika lists
+            smeae_kathgories_greeklish_normal_lektika = []
+            smeae_kathgories_greeklish_braille_lektika = []
+            smeae_kathgories_greeklish_eng_lektika = []
+            smeae_kathgories_greeklish_braille_eng_lektika = []
+            smeae_kathgories_greeklish = session.query(Smeae_kathgoria_greeklish).all()
+            for smeae_kathgoria_greeklish in smeae_kathgories_greeklish:
+                if smeae_kathgoria_greeklish.smeae_kathgoria_id == 1:
+                    smeae_kathgories_greeklish_normal_lektika.append(smeae_kathgoria_greeklish.lektiko)
+                elif smeae_kathgoria_greeklish.smeae_kathgoria_id == 2:
+                    smeae_kathgories_greeklish_braille_lektika.append(smeae_kathgoria_greeklish.lektiko)
+                elif smeae_kathgoria_greeklish.smeae_kathgoria_id == 3:
+                    smeae_kathgories_greeklish_eng_lektika.append(smeae_kathgoria_greeklish.lektiko)
+                elif smeae_kathgoria_greeklish.smeae_kathgoria_id == 4:
+                    smeae_kathgories_greeklish_braille_eng_lektika.append(smeae_kathgoria_greeklish.lektiko)
+
+            if any(x in path_pinaka for x in smeae_kathgories_greeklish_normal_lektika):
+                smeae_kathgoria_id = 1;
+            elif any(x in path_pinaka for x in smeae_kathgories_greeklish_braille_lektika):
+                smeae_kathgoria_id = 2;
+            elif any(x in path_pinaka for x in smeae_kathgories_greeklish_eng_lektika):
+                smeae_kathgoria_id = 3;
+            elif any(x in path_pinaka for x in smeae_kathgories_greeklish_braille_eng_lektika):
+                smeae_kathgoria_id = 4;
+
+        print('smeae_pinakas_id', smeae_pinakas_id)
+        print('smeae_kathgoria_id', smeae_kathgoria_id)
+
+
+        #Perioxh
+        perioxh_id = 0 # default
+        perioxes_greeklish = session.query(Perioxh_greeklish).all()
+        for perioxh_greeklish in perioxes_greeklish:
+            if perioxh_greeklish.lektiko in filename:
+                perioxh_id = perioxh_greeklish.perioxh_id
+        print('perioxh_id', perioxh_id)
+
+
+        #Mousiko_organo
+        mousiko_organo_id = 0 # default
+        mousika_organa_greeklish = session.query(Mousiko_organo_greeklish).all()
+        for mousiko_organo_greeklish in mousika_organa_greeklish:
+            if mousiko_organo_greeklish.lektiko in filename:
+                mousiko_organo_id = mousiko_organo_greeklish.mousiko_organo_id
+        print('mousiko_organo_id', mousiko_organo_id)
+
+
+        #Athlima
+        athlima_id = 0 # default
+        athlimata_greeklish = session.query(Athlima_greeklish).all()
+        for athlima_greeklish in athlimata_greeklish:
+            if athlima_greeklish.lektiko in filename:
+                athlima_id = athlima_greeklish.athlima_id
+        print('athlima_id', athlima_id)
+
+
+        logger.debug("filename: %s; sx.etos_id: %s; kathgoria_id: %s; hmnia_id: %s;\
+                     full_path: %s; url: %s; klados_id: %s; smeae_pinakas_id: %s; smeae_kathgoria_id: %s;\
+                     perioxh_id: %s; perioxh_id: %s; athlima_id: %s; ",
+                     filename, sxoliko_etos_id, kathgoria_id, new_hmeromhnia.id,\
+                     full_path, url, klados_id, smeae_pinakas_id, smeae_kathgoria_id,\
+                     perioxh_id, mousiko_organo_id, athlima_id)
+
+        # Create pinakas
+        get_one_or_create(
             session,
-            Kathgoria,
-            lektiko_kathgorias=kathgoria,
-        )
-        #print('new_kathgoria', new_kathgoria)
-
-        # Eidikothta
-        if kathgoria == 'oromisthioi_defterovathmias':      # oromisthioi_defterovathmias --> perioxes protimhseis
-            eidikothta = path_pinaka_parts[-2]
-        elif url.endswith('xls'):   # usual case
-            eidikothta = filename[:-4]
-        elif  (url.endswith('xlsx') or (url.endswith('html') and 'index' not in url)):
-            eidikothta = filename[:-5]
-        elif url.endswith('gz'):
-            eidikothta = filename[:-10]
-        new_eidikothta, _ = get_one_or_create(
-            session,
-            Eidikothta,
-            kodikos_eidikothtas=eidikothta,
+            Pinakas,
+            lektiko_pinaka=filename,
+            sxoliko_etos_id=sxoliko_etos_id,
+            kathgoria_id=kathgoria_id,
+            hmeromhnia_id=new_hmeromhnia.id,
+            path_pinaka=full_path,
+            url_pinaka=url,
+            klados_id=klados_id,
+            smeae_pinakas_id=smeae_pinakas_id,
+            smeae_kathgoria_id=smeae_kathgoria_id,
+            perioxh_id=perioxh_id,
+            mousiko_organo_id=mousiko_organo_id,
+            athlima_id=athlima_id,
         )
 
-        logger.debug("fn: %s; pt: %s; kat: %s; eid: %s; hme: %s",
-                     filename, path_pinaka, kathgoria, eidikothta, hmeromhnia)
+        session.commit()
 
-        # download table and create pinakas in DB
-        if not os.path.isfile(full_path + filename):
-            response = requests.get(url)
-            with open(full_path + filename, 'wb') as output:
-                output.write(response.content)
-            logger.info('Downloaded')
-            # fill Pinakas
-            get_one_or_create(
-                session,
-                Pinakas,
-                lektiko_pinaka=filename,
-                sxoliko_etos_id=new_sxoliko_etos.id,
-                kathgoria_id=new_kathgoria.id,
-                eidikothta_id=new_eidikothta.id,
-                hmeromhnia_id=new_hmeromhnia.id,
-                path_pinaka=full_path,
-                url_pinaka=url
-            )
 
-        else:
-            logger.info('Pinakas already there')
 
 
     def find_kathgoria(self, kathgoria):
@@ -301,6 +367,7 @@ class Parser:
 
         return kathgoria
 
+
     def table_exists(self, filename, url, sxoliko_etos):
         #print('> in table_exists', filename, url, sxoliko_etos)
 
@@ -317,7 +384,6 @@ class Parser:
         #print('full_filename', full_filename, os.path.isfile(full_filename))
 
         if os.path.isfile(full_filename):
-            print('file exists', full_filename)
             return True
         else:
             print('file NOT exists', full_filename)
