@@ -1,6 +1,6 @@
 from . import db
 
-from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Text, Date, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -8,11 +8,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class User(db.Model):
     __tablename__ = 'user'
     id = Column("id", Integer, primary_key=True, nullable=False)
-    onoma = Column("onoma", String, nullable=False)
     email = Column("email", String, unique=True, nullable=False)
+    onoma = Column("onoma", String, nullable=False)
 
     def __repr__(self):
-        return '<User %r %r>' % (self.onoma, self.email)
+        return '<User id %r email %r onoma %r>' % (self.id, self.email, self.onoma)
 
 
 

@@ -9,16 +9,9 @@ from wtforms import ValidationError
 from ..models import User
 
 
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[Required(), Email()])
-    password = PasswordField('Κωδικός', validators=[Required()])
-    remember_me = BooleanField('Διατήρηση σύνδεσης')
-    submit = SubmitField('Είσοδος')
-
-
 class RegistrationForm(FlaskForm):
-    onoma = StringField('Όνομα', validators=[Required()])
     email = StringField('Email', validators=[Required(), Email()])
+    onoma = StringField('Όνομα', validators=[Required()])
     submit = SubmitField('Εγγραφή')
 
     def validate_email(self, field):
