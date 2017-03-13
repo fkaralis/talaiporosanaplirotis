@@ -12,7 +12,7 @@
 }
 
 .navbar-inverse {
-  background-color: blue;
+  background-color: #6495ED;
 }
 
 .navbar-inverse .container a {
@@ -25,6 +25,5 @@
 
 
 .navbar-inverse .container .navbar-toggle {
-  background-color: blue;
+  background-color: #6495ED;
 }
-
