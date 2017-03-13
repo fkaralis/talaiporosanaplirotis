@@ -22,8 +22,12 @@ logger = logging.getLogger("crawler")
 
 from parser import Parser
 
+# talaiporosanaplirotis path
+basedir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+
 def main(year):
-    basic_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/'
+
+    basic_path = os.path.join(basedir, 'app', 'static', 'data')
     school_year = "%s-%d" % (year, int(year) + 1)
     full_path = basic_path + school_year
     logger.info("Starting parsing: %s", school_year)

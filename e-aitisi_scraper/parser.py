@@ -24,7 +24,11 @@ Pinakas, Real_eidikothta, Smeae_kathgoria, Smeae_kathgoria_greeklish,\
 Smeae_pinakas, Sxoliko_etos
 
 
-engine = create_engine('sqlite:///talaiporosanaplirotis.sqlite')
+# talaiporosanaplirotis path
+basedir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+#print(basedir)
+
+engine = create_engine('sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper', 'talaiporosanaplirotis.sqlite'))
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -371,13 +375,15 @@ class Parser:
     def table_exists(self, filename, url, sxoliko_etos):
         #print('> in table_exists', filename, url, sxoliko_etos)
 
-        path_pinaka = url[22:][:-len(filename)]     # len('http://e-aitisi.sch.gr') == 22
-        path_pinaka_parts = path_pinaka.rsplit('/')
+        path_pinaka = url[23:][:-len(filename)]     # len('http://e-aitisi.sch.gr/') == 23
+        path_pinaka_parts = path_pinaka.rsplit('/') # <-- what for?
         #print('path_pinaka', path_pinaka)
 
+
+
         # create path if not exists
-        full_path = '/home/fkaralis/talaiporosanaplirotis/app/static/data/' + sxoliko_etos + path_pinaka
-        #print('full_path', full_path)
+        full_path = os.path.join(basedir, 'app', 'static', 'data', sxoliko_etos, path_pinaka)
+        #print(full_path, basedir, sxoliko_etos, path_pinaka)
         os.makedirs(full_path, exist_ok=True)
 
         full_filename = ('').join([full_path, filename])
