@@ -227,9 +227,9 @@ class Pinakas(Base):
     #klados = relationship("Klados", back_populates="pinakes")
 
     def __repr__(self):
-        return '\nΠίνακας id %r\nλεκτικό %r\nσχ.έτος %r\nκατηγορία %r\nειδικότητα %r\nημ/νια %r\npath %r\nurl %r' %\
+        return '\nΠίνακας id %r\nλεκτικό %r\nσχ.έτος %r\nκατηγορία %r\nκλάδος %r\nημ/νια %r\npath %r\nurl %r' %\
             (self.id, self.lektiko_pinaka, self.sxoliko_etos_id, self.kathgoria_id, \
-             self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
+             self.klados_id, self.hmeromhnia_id, self.path_pinaka, self.url_pinaka)
 
 
 
