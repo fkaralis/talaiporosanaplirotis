@@ -1,6 +1,7 @@
 from datetime import datetime
 from threading import Thread
 import gzip
+import os
 import shutil
 from pathlib import PurePosixPath
 from pathlib import Path
@@ -24,7 +25,7 @@ Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_
 from sqlalchemy import or_
 from sqlalchemy import and_
 
-
+basedir = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -123,7 +124,8 @@ def index():
         print('real eid', real_eidikothta_id, real_eidikothta_kodikos, real_eidikothta_lektiko)
 
 
-        pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+        try:
+            pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                           kathgoria_id=kathgoria_id,\
                                           hmeromhnia_id=hmeromhnia_id,\
                                           smeae_pinakas_id=smeae_pinakas_id,\
@@ -133,6 +135,8 @@ def index():
                                           athlima_id=athlima_id).\
                                           filter(Pinakas.klados_id.contains(klados_id)).\
                                           first()
+        except Exception as e:
+            print(e)
 
         filename = pinakas.lektiko_pinaka
         url_pinaka = pinakas.url_pinaka
@@ -140,6 +144,11 @@ def index():
 
         path_filename = url_for('static', filename=path_pinaka + filename)
         print('path_filename', path_filename)
+
+        # temp decompressed file
+        print(basedir)
+
+
 
         # build download filename
         if hmeromhnia_id != 1:
