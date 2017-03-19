@@ -1,5 +1,10 @@
 from datetime import datetime
 from threading import Thread
+import gzip
+import shutil
+from pathlib import PurePosixPath
+from pathlib import Path
+
 from flask import Flask
 from flask import current_app
 from flask import render_template
@@ -118,7 +123,7 @@ def index():
         print('real eid', real_eidikothta_id, real_eidikothta_kodikos, real_eidikothta_lektiko)
 
 
-        url_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+        pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
                                           kathgoria_id=kathgoria_id,\
                                           hmeromhnia_id=hmeromhnia_id,\
                                           smeae_pinakas_id=smeae_pinakas_id,\
@@ -127,20 +132,11 @@ def index():
                                           mousiko_organo_id=mousiko_organo_id,\
                                           athlima_id=athlima_id).\
                                           filter(Pinakas.klados_id.contains(klados_id)).\
-                                          first().url_pinaka
+                                          first()
 
-        path_pinaka = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                          kathgoria_id=kathgoria_id,\
-                                          hmeromhnia_id=hmeromhnia_id,\
-                                          smeae_pinakas_id=smeae_pinakas_id,\
-                                          smeae_kathgoria_id=smeae_kathgoria_id,\
-                                          perioxh_id=perioxh_id,\
-                                          mousiko_organo_id=mousiko_organo_id,\
-                                          athlima_id=athlima_id).\
-                                          filter(Pinakas.klados_id.contains(klados_id)).\
-                                          first().path_pinaka
-
-        filename = url_pinaka.split('/')[-1]
+        filename = pinakas.lektiko_pinaka
+        url_pinaka = pinakas.url_pinaka
+        path_pinaka = pinakas.path_pinaka
 
         path_filename = url_for('static', filename=path_pinaka + filename)
         print('path_filename', path_filename)
@@ -153,11 +149,9 @@ def index():
         print('download_filename', download_filename)
 
         # build download filename suffix
-        filename_parts = filename.split('.')
-        suffixes = ['html', 'gz', 'xls', 'xlsx']
-        for i in filename_parts:
-            if i in suffixes:
-                download_filename += '.' + i
+        suffixes = PurePosixPath(filename).suffixes
+        for suffix in suffixes:
+            download_filename += suffix
         print('suffixed download_filename', download_filename)
 
         session['sxoliko_etos_id']  = sxoliko_etos_id

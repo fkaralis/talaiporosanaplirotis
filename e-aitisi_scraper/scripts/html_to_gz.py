@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #### 17/3/2017
-### html to gz
-####
+### html, xls(x) to gz
+#### (not BAD files, some gz already there and small size anyawyay)
 
 import pandas as pd
 import re
@@ -20,6 +20,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 from sqlalchemy import and_
+from sqlalchemy import or_
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -43,16 +44,19 @@ session = DBSession()
 print(datapath)
 count = 0
 
-pinakes = session.query(Pinakas).filter(Pinakas.lektiko_pinaka.endswith('html')).all()
+
+pinakes = session.query(Pinakas).filter(or_(Pinakas.lektiko_pinaka.endswith('xls'),\
+                                            Pinakas.lektiko_pinaka.endswith('xlsx'))).all()
 for pinakas in pinakes:
     filename = pinakas.lektiko_pinaka
     path_pinaka = os.path.join(datapath, pinakas.path_pinaka)
     full_filename = path_pinaka + filename
     size = Path(full_filename).stat().st_size
+    klados_id = pinakas.klados_id
 
-    if pinakas.klados_id != '254':
+    if klados_id != '254':
         count += 1
-        print('\n---------------------', count, full_filename, pinakas.klados_id, size)
+        print(count, full_filename, pinakas.klados_id, size)
 
         try:
             with open(full_filename, 'rb') as f_in:
@@ -74,7 +78,18 @@ for pinakas in pinakes:
 
 
 
+
+
 '''
+    try:
+        pinakas.lektiko_pinaka = PurePosixPath(filename).name
+        session.commit()
+
+        count += 1
+        print(count, pinakas.lektiko_pinaka, klados_id)
+
+    except Exception as e:
+        print(e)
 
 
 
