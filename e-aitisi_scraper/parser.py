@@ -191,7 +191,7 @@ class Parser:
                 klados_id = session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id
         except Exception as e:
             logger.error(e)
-            klados_id = 254 # bad file
+            klados_id = '254' # bad file
         print('klados_id', klados_id)
 
 
