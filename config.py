@@ -20,6 +20,8 @@ class Config:
     TALAIPANAP_MAIL_SUBJECT_PREFIX  = '[TalaipAnap]'
     TALAIPANAP_MAIL_SENDER = 'TalaipAnap Admin <fivoskaralis@gmail.com>'
     TALAIPANAP_ADMIN = os.environ.get('TALAIPANAP_ADMIN')
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    DATA_PATH = BASE_DIR + '/app/static/'
 
     @staticmethod
     def init_app(app):

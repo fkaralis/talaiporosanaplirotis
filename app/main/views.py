@@ -15,6 +15,8 @@ from flask import url_for
 from flask import request
 from flask import flash
 from flask import jsonify
+from flask import send_from_directory
+from flask import after_this_request
 from ..email import send_email
 from . import main
 from .forms import MainForm
@@ -25,7 +27,9 @@ Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_
 from sqlalchemy import or_
 from sqlalchemy import and_
 
-basedir = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+base_dir = current_app.config['BASE_DIR']
+data_path = current_app.config['DATA_PATH']
+print(base_dir, data_path)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -146,7 +150,7 @@ def index():
         print('path_filename', path_filename)
 
         # temp decompressed file
-        print(basedir)
+        #print(basedir)
 
 
 
@@ -258,6 +262,24 @@ def result():
                            filename = session.get('filename'),
                            path_filename = session.get('path_filename'),
                            download_filename = session.get('download_filename'))
+
+
+
+@main.route('/download_remove')
+def download_remove():
+    #print(data_path + session.get('path_pinaka') + session.get('filename'))
+    print(data_path)
+
+    @after_this_request
+    def delete_file(response):
+        print('deleting file')
+        os.remove(data_path + 'test.txt')
+        return response
+
+    print('after delete_file')
+    return send_from_directory(data_path, 'test.txt')
+#return send_from_directory(data_path + session.get('path_pinaka'), session.get('filename'))
+#return ('', 204)
 
 
 @main.route('/_get_kathgories/')
