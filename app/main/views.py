@@ -30,7 +30,12 @@ from sqlalchemy import and_
 base_dir = current_app.config['BASE_DIR']
 data_path = current_app.config['DATA_PATH']
 temp_path = current_app.config['TEMP_PATH']
-print(base_dir, data_path, temp_path)
+
+#create temp_path directory if not exists
+temp_path = Path(temp_path)
+temp_path.mkdir(exist_ok=True, parents=True)
+# temp_path string
+temp_path = str(temp_path)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
