@@ -29,7 +29,8 @@ from sqlalchemy import and_
 
 base_dir = current_app.config['BASE_DIR']
 data_path = current_app.config['DATA_PATH']
-print(base_dir, data_path)
+temp_path = current_app.config['TEMP_PATH']
+print(base_dir, data_path, temp_path)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -154,17 +155,18 @@ def index():
 
 
 
-        # build download filename
+        # download filename: readable Greek name
         if hmeromhnia_id != 1:
             download_filename += ' ' + hmeromhnia_lektiko
         else:
             download_filename += ' ' + sxoliko_etos_lektiko
         print('download_filename', download_filename)
 
-        # build download filename suffix
+        # build download filename suffix -'.gz'
         suffixes = PurePosixPath(filename).suffixes
         for suffix in suffixes:
             download_filename += suffix
+        download_filename = download_filename[:-3]
         print('suffixed download_filename', download_filename)
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
@@ -267,19 +269,29 @@ def result():
 
 @main.route('/download_remove')
 def download_remove():
-    #print(data_path + session.get('path_pinaka') + session.get('filename'))
-    print(data_path)
+    # unzip file in temp folder
+    # download unzipped file
+    # remove from temp folder
+    filename = session.get('filename')
+    file_path = data_path + session.get('path_pinaka')
+    full_filename = file_path + filename
+
+    temp_filename = filename[:-3]
+    temp_file = os.path.join(temp_path, temp_filename)
+
+    with gzip.open(full_filename, 'rb') as infile:
+        with open(temp_file, 'wb') as outfile:
+            for line in infile:
+                outfile.write(line)
 
     @after_this_request
     def delete_file(response):
-        print('deleting file')
-        os.remove(data_path + 'test.txt')
+        os.remove(temp_file)
         return response
 
     print('after delete_file')
-    return send_from_directory(data_path, 'test.txt')
-#return send_from_directory(data_path + session.get('path_pinaka'), session.get('filename'))
-#return ('', 204)
+    return send_from_directory(temp_path, temp_filename)
+
 
 
 @main.route('/_get_kathgories/')

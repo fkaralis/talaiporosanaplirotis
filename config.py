@@ -22,6 +22,7 @@ class Config:
     TALAIPANAP_ADMIN = os.environ.get('TALAIPANAP_ADMIN')
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     DATA_PATH = BASE_DIR + '/app/static/'
+    TEMP_PATH = DATA_PATH + 'temp/'
 
     @staticmethod
     def init_app(app):
