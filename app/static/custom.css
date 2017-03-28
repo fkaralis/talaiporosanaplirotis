@@ -33,4 +33,18 @@
   color: white;
   background-color: #20b2aa;
 }
+
+table {
+    table-layout: fixed;
+    /* word-wrap: break-word; */
+}
+
 */
+.table-responsive {
+     overflow: scroll;
+     max-height: 450px;
+}
+
+div.dataTables_wrapper {
+    margin: 0 auto;
+}

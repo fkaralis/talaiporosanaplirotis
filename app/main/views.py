@@ -3,6 +3,8 @@ from threading import Thread
 import gzip
 import os
 import shutil
+import pandas as pd
+
 from pathlib import PurePosixPath
 from pathlib import Path
 
@@ -291,12 +293,59 @@ def download_remove():
 
     @after_this_request
     def delete_file(response):
-        os.remove(temp_file)
+        print('in delete file')
+        #os.remove(temp_file)
         return response
 
     print('after delete_file')
     return send_from_directory(temp_path, temp_filename)
 
+
+
+@main.route('/pinakas_display')
+def pinakas_display():
+    print('display!')
+    # unzip file in temp folder
+    # download unzipped file
+    # remove from temp folder
+    filename = session.get('filename')
+    file_path = data_path + session.get('path_pinaka')
+    full_filename = file_path + filename
+
+    temp_filename = filename[:-3]
+    temp_file = os.path.join(temp_path, temp_filename)
+
+    with gzip.open(full_filename, 'rb') as infile:
+        with open(temp_file, 'wb') as outfile:
+            for line in infile:
+                outfile.write(line)
+
+    #build pandas frame
+    if temp_file.endswith('html'):
+        df = pd.read_html(temp_file, header=0)[0]
+    elif 'xls' in temp_file:
+        print('in df xls')
+        df = pd.read_excel(temp_file)
+        #df.insert(0, 'Α/Α', range(1, len(df) + 1))
+
+    #fix row index
+    try:
+        df.set_index(['Α/Α'], inplace=True)
+    except Exception as e:
+        try:
+            df.set_index(['ΣΕΙΡΑ ΠΙΝΑΚΑ'], inplace=True)
+        except Exception as e:
+            print(e)
+            df.index += 1
+    df.index.name=None
+
+    @after_this_request
+    def delete_file(response):
+        print('in delete file')
+        #os.remove(temp_file)
+        return response
+
+    return render_template('display.html', pinakas=df.to_html())
 
 
 @main.route('/_get_kathgories/')
@@ -620,3 +669,4 @@ def contact():
 
 #
 # view functions end
+# empty response return ('', 204)
