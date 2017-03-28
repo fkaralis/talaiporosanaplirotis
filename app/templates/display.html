@@ -12,7 +12,7 @@
 <div class="container">
     <div class="page-header">
         <h2>Προβολή πίνακα</h2>
-        <a href="{{ url_for('main.download_remove') }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
+        <a href="{{ url_for('main.download_remove') }}" class="btn btn-success" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
     </div>
 
     <div id="display_table">
@@ -30,9 +30,7 @@
 $(document).ready(function() {
     $('#display_table').find('table').DataTable( {
         "scrollX": true,
-        fixedColumns: {
-            leftColumns: 1
-        },
+        fixedColumns: true,
         select: true
     } );
 } );
@@ -41,10 +39,6 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
-
-b-1.2.4/b-html5-1.2.4/b-print-1.2.4/fc-3.2.2/fh-3.1.2/r-2.1.1/se-1.2.0
-
-/v/dt/dt-1.10.13/b-1.2.4/b-html5-1.2.4/b-print-1.2.4/fc-3.2.2/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.0/
 
 
 

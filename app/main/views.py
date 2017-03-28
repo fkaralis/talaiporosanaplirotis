@@ -332,6 +332,7 @@ def pinakas_display():
     try:
         df.set_index(['Α/Α'], inplace=True)
     except Exception as e:
+        print(e)
         try:
             df.set_index(['ΣΕΙΡΑ ΠΙΝΑΚΑ'], inplace=True)
         except Exception as e:
@@ -345,7 +346,8 @@ def pinakas_display():
         #os.remove(temp_file)
         return response
 
-    return render_template('display.html', pinakas=df.to_html())
+    return render_template('display.html', pinakas=df.to_html(),
+                           download_filename = session.get('download_filename'))
 
 
 @main.route('/_get_kathgories/')
