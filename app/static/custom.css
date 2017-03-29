@@ -48,3 +48,38 @@ table {
 div.dataTables_wrapper {
     margin: 0 auto;
 }
+
+
+
+thead th {
+    font-size: 2vmin;
+}
+
+th {
+    text-align: center;
+    font-size: 0.75em;
+    padding: 0px 5px 0px 5px !important;
+}
+
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4),
+th:nth-child(5),
+th:nth-child(6){
+  font-size: 3vmin;
+}
+
+tr {
+    text-align: center;
+    padding: 0px 5px 0px 5px !important;
+
+}
+
+tbody tr:nth-child(odd) {
+    background: #eee;
+}
+
+
+tbody tr:hover { /* th:hover also if you wish */
+  background: pink;
+}

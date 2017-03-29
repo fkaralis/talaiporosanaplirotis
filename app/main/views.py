@@ -29,6 +29,8 @@ Smeae_kathgoria_greeklish, Perioxh_greeklish, Mousiko_organo_greeklish, Athlima_
 from sqlalchemy import or_
 from sqlalchemy import and_
 
+from .utils import unzip_rename
+
 base_dir = current_app.config['BASE_DIR']
 data_path = current_app.config['DATA_PATH']
 temp_path = current_app.config['TEMP_PATH']
@@ -276,56 +278,35 @@ def result():
 
 @main.route('/download_remove')
 def download_remove():
-    # unzip file in temp folder
-    # download unzipped file
-    # remove from temp folder
-    filename = session.get('filename')
-    file_path = data_path + session.get('path_pinaka')
-    full_filename = file_path + filename
-
-    temp_filename = filename[:-3]
-    temp_file = os.path.join(temp_path, temp_filename)
-
-    with gzip.open(full_filename, 'rb') as infile:
-        with open(temp_file, 'wb') as outfile:
-            for line in infile:
-                outfile.write(line)
+    temp_file_path = unzip_rename(session.get('filename'),
+                             session.get('path_pinaka'),
+                             data_path,
+                             temp_path)
 
     @after_this_request
     def delete_file(response):
         print('in delete file')
-        #os.remove(temp_file)
+        #os.remove(str(temp_file_path))
         return response
 
     print('after delete_file')
-    return send_from_directory(temp_path, temp_filename)
+    return send_from_directory(str(temp_file_path.parent), temp_file_path.name)
 
 
 
 @main.route('/pinakas_display')
 def pinakas_display():
-    print('display!')
-    # unzip file in temp folder
-    # download unzipped file
-    # remove from temp folder
-    filename = session.get('filename')
-    file_path = data_path + session.get('path_pinaka')
-    full_filename = file_path + filename
-
-    temp_filename = filename[:-3]
-    temp_file = os.path.join(temp_path, temp_filename)
-
-    with gzip.open(full_filename, 'rb') as infile:
-        with open(temp_file, 'wb') as outfile:
-            for line in infile:
-                outfile.write(line)
+    temp_file_path = unzip_rename(session.get('filename'),
+                             session.get('path_pinaka'),
+                             data_path,
+                             temp_path)
 
     #build pandas frame
-    if temp_file.endswith('html'):
-        df = pd.read_html(temp_file, header=0)[0]
-    elif 'xls' in temp_file:
+    if temp_file_path.name.endswith('html'):
+        df = pd.read_html(str(temp_file_path), header=0)[0]
+    elif 'xls' in temp_file_path.name:
         print('in df xls')
-        df = pd.read_excel(temp_file)
+        df = pd.read_excel(str(temp_file_path))
         #df.insert(0, 'Α/Α', range(1, len(df) + 1))
 
     #fix row index
@@ -334,16 +315,20 @@ def pinakas_display():
     except Exception as e:
         print(e)
         try:
-            df.set_index(['ΣΕΙΡΑ ΠΙΝΑΚΑ'], inplace=True)
+            df.set_index(['α/α'], inplace=True)
         except Exception as e:
             print(e)
-            df.index += 1
+            try:
+                df.set_index(['ΣΕΙΡΑ ΠΙΝΑΚΑ'], inplace=True)
+            except Exception as e:
+                print(e)
+                df.index += 1
     df.index.name=None
 
     @after_this_request
     def delete_file(response):
         print('in delete file')
-        #os.remove(temp_file)
+        #os.remove(str(temp_file_path))
         return response
 
     return render_template('display.html', pinakas=df.to_html(),
