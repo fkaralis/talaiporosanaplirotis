@@ -15,10 +15,20 @@
         <a href="{{ url_for('main.download_remove') }}" class="btn btn-success" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
     </div>
 
-    <div id="display_table">
-        {{ pinakas|safe }}
+    <div class="row">
+        <div class="col-md-6">
+            <p class="bg-info rounded-no-pad">Eπιλέξτε μια γραμμή για επισήμανση</p>
+        </div>
+        <div class="col-md-6">
+            <p class="bg-success rounded-no-pad">Βρείτε εγγραφές με την Αναζήτηση (Search)</p>
+        </div>
     </div>
 
+    <div class="row">
+        <div id="display_table">
+            {{ pinakas|safe }}
+        </div>
+    </div>
 </div>
 {% endblock %}
 

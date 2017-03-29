@@ -12,7 +12,7 @@
 }
 
 .navbar-inverse {
-  background-color: #6495ED;
+  background-color: #5F9EA0;
 }
 
 .navbar-inverse .container a {
@@ -25,7 +25,7 @@
 
 
 .navbar-inverse .container .navbar-toggle {
-  background-color: #6495ED;
+  background-color: #5F9EA0;
 }
 
 /*
@@ -57,29 +57,40 @@ thead th {
 
 th {
     text-align: center;
-    font-size: 0.75em;
     padding: 0px 5px 0px 5px !important;
-}
-
-th:nth-child(2),
-th:nth-child(3),
-th:nth-child(4),
-th:nth-child(5),
-th:nth-child(6){
-  font-size: 3vmin;
-}
-
-tr {
-    text-align: center;
-    padding: 0px 5px 0px 5px !important;
-
 }
 
 tbody tr:nth-child(odd) {
     background: #eee;
 }
 
+@media (max-width: 767px) {
+    th:nth-child(2),
+    th:nth-child(3),
+    th:nth-child(4),
+    th:nth-child(5),
+    th:nth-child(6){
+        font-size: 3vmin;
+    }
+}
+
+tr {
+    text-align: center;
+    padding: 0px 5px 0px 5px !important;
+}
 
 tbody tr:hover { /* th:hover also if you wish */
-  background: pink;
+    background: pink;
+}
+
+.rounded {
+    text-align: center;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.rounded-no-pad {
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
 }

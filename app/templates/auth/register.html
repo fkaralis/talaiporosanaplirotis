@@ -4,24 +4,40 @@
 {% block title %}Εγγραφή - TalaipAnap{% endblock %}
 
 {% block page_content %}
+<div class="visible-xs">
+    <p class="bg-info rounded">Για να λαμβάνετε (όταν το φτιάξω) πρώτοι τις προσλήψεις και τις
+        αναρτήσεις πινάκων στο e-mail σας</p>
+</div>
+
 <div class="page-header">
     <h2>Εγγραφή</h2>
 </div>
 
-<div class="row" align="center" style="font-size:20px">
-    <p>Για να λαμβάνετε (όταν το φτιάξω) πρώτοι τις προσλήψεις και τις
-    αναρτήσεις πινάκων στο e-mail σας</p><span class="hidden-sm hidden-xs"></span>
-</div>
-
-<div class="row" style="font-size:25px">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-3 hidden-xs">
+        <p></p>
+        <p class="bg-info rounded" style="font-size:15px">Για να λαμβάνετε (όταν το φτιάξω) πρώτοι τις προσλήψεις και τις
+        αναρτήσεις πινάκων στο e-mail σας</p>
+        <p></p>
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <p class="bg-warning rounded-no-pad" style="color:grey; font-size:12px; float: left"><i>(Δεν θα παρέχονται ενημερώσεις από τον αιρετό κ. Μπράτη)</i></p>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-5" style="font-size:25px">
         {{ wtf.quick_form(form) }}
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-2"></div>
 </div>
 
-<div class="row"  align="center" style="color:grey">
-    <p><span class="hidden-sm hidden-xs"><br></span><br><i>(Δεν θα παρέχονται ενημερώσεις από τον αιρετό κ. Μπράτη)</i></p>
+<div class="row visible-xs">
+    <div class="col-md-7"></div>
+    <div class="col-md-3" style="font-size:15px">
+        <p></p>
+        <p class="bg-warning rounded-no-pad" style="color:grey; font-size:12px"><i>(Δεν θα παρέχονται ενημερώσεις από τον αιρετό κ. Μπράτη)</i></p>
+    </div>
+    <div class="col-md-2"></div>
 </div>
 {% endblock %}

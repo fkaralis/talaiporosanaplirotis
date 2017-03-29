@@ -4,16 +4,29 @@
 {% block title %}Αρχική - TalaipAnap{% endblock %}
 
 {% block page_content %}
+<div class="visible-xs">
+    <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr</p>
+    <p class="bg-info rounded">Βρείτε εύκολα τους πίνακες κατάταξης του e-aitisi.sch.gr..</p>
+    <p class="bg-warning rounded">..και τις προσλήψεις απευθείας από το site του Υπουργείου (οσονούπω)</p>
+</div>
+
 <div class="page-header">
     <h2>Αναζήτηση πίνακα</h2>
 </div>
 
-<div class="row" style="font-size:25px">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-    {{ wtf.quick_form(form) }}
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-3 hidden-xs" style="font-size:15px" align="center">
+        <p></p>
+        <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr</p>
+        <p class="bg-info rounded">Βρείτε εύκολα τους πίνακες κατάταξης του e-aitisi.sch.gr..</p>
+        <p class="bg-warning rounded">..και τις προσλήψεις απευθείας από το site του Υπουργείου (οσονούπω)</p>
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-5" style="font-size:25px">
+        {{ wtf.quick_form(form) }}
+    </div>
+    <div class="col-md-2"></div>
 </div>
 {% endblock %}
 
