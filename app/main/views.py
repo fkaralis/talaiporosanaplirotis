@@ -293,7 +293,22 @@ def download_remove():
     return send_from_directory(str(temp_file_path.parent), temp_file_path.name)
 
 
+'''
+    #gz to csv
+    try:
+        with gzip.open(str(csv_gz_temp_file_path), 'rb') as infile:
+            with open(str(csv_temp_file_path), 'wb') as outfile:
+                for line in infile:
+                    outfile.write(line)
+    except Exception as e:
+        print(e)
 
+    #csv to df
+    df = pd.read_csv(str(csv_temp_file_path))
+
+    #df to html
+    df.to_html(str(csv_temp_file_path)[:-4] + '.html', index=False, na_rep='-')
+'''
 @main.route('/pinakas_display')
 def pinakas_display():
     temp_file_path = unzip_rename(session.get('filename'),
