@@ -289,7 +289,7 @@ def download_remove():
                       temp_path)
 
     xls_temp_file_path = Path(temp_path + '/' + path_pinaka + filename[:-6] + 'xls')
-    df.to_excel(str(xls_temp_file_path), index=False)
+    df.to_excel(str(xls_temp_file_path), index_label='Α/Α')
 
     @after_this_request
     def delete_file(response):
@@ -304,45 +304,17 @@ def download_remove():
     return send_from_directory(str(xls_temp_file_path.parent), xls_temp_file_path.name)
 
 
-'''
-    #gz to csv
-    try:
-        with gzip.open(str(csv_gz_temp_file_path), 'rb') as infile:
-            with open(str(csv_temp_file_path), 'wb') as outfile:
-                for line in infile:
-                    outfile.write(line)
-    except Exception as e:
-        print(e)
-
-    #csv to df
-    df = pd.read_csv(str(csv_temp_file_path))
-
-    #df to html
-    df.to_html(str(csv_temp_file_path)[:-4] + '.html', index=False, na_rep='-')
-'''
-
 @main.route('/pinakas_display')
 def pinakas_display():
-    temp_file_path = unzip_rename(session.get('filename'),
-                             session.get('path_pinaka'),
-                             data_path,
-                             temp_path)
+    filename = session.get('filename')
+    path_pinaka = session.get('path_pinaka')
 
-    #build pandas frame
-    if temp_file_path.name.endswith('html'):
-        df = pd.read_html(str(temp_file_path), header=0)[0]
-    elif 'xls' in temp_file_path.name:
-        print('in df xls')
-        df = pd.read_excel(str(temp_file_path))
-        #df.insert(0, 'Α/Α', range(1, len(df) + 1))
+    df = unzip_to_df(filename,
+                      path_pinaka,
+                      data_path,
+                      temp_path)
 
-    @after_this_request
-    def delete_file(response):
-        print('in delete file')
-        #os.remove(str(temp_file_path))
-        return response
-
-    return render_template('display.html', pinakas=df.to_html(),
+    return render_template('display.html', pinakas=df.to_html(na_rep='-'),
                            download_filename = session.get('download_filename'))
 
 
