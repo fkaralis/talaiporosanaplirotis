@@ -3,10 +3,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 import locale
 # linux locale
-#loc = locale.getdefaultlocale()
-#locale.setlocale(locale.LC_ALL, loc)
+loc = locale.getdefaultlocale()
+locale.setlocale(locale.LC_ALL, loc)
 # win locale
-locale.setlocale(locale.LC_ALL, 'ell')
+#locale.setlocale(locale.LC_ALL, 'ell')
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or '#@SCJ239asbAS<KCsdfhg7757'
