@@ -159,24 +159,16 @@ def index():
         path_filename = url_for('static', filename=path_pinaka + filename)
         print('path_filename', path_filename)
 
-        # temp decompressed file
-        #print(basedir)
-
-
-
         # download filename: readable Greek name
         if hmeromhnia_id != 1:
             download_filename += ' ' + hmeromhnia_lektiko
         else:
             download_filename += ' ' + sxoliko_etos_lektiko
-        print('download_filename', download_filename)
 
-        # build download filename suffix -'.gz'
-        suffixes = PurePosixPath(filename).suffixes
-        for suffix in suffixes:
-            download_filename += suffix
-        download_filename = download_filename[:-6] + 'xls'
-        print('suffixed download_filename', download_filename)
+        # download filename suffix
+        download_filename += '.xls'
+
+        print('download_filename', download_filename)
 
         session['sxoliko_etos_id']  = sxoliko_etos_id
         session['sxoliko_etos_lektiko']  = sxoliko_etos_lektiko
