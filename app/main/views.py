@@ -363,7 +363,7 @@ def _update_fields():
 
     sxoliko_etos_id = request.args.get('sxoliko_etos')
     kathgoria_id = request.args.get('kathgoria')
-    klados_id = request.args.get('klados')
+    klados_id = str(request.args.get('klados'))
     smeae_pinakas_id = request.args.get('smeae_pinakas')
     smeae_kathgoria_id = request.args.get('smeae_kathgoria')
     perioxh_id = request.args.get('perioxh')
@@ -375,7 +375,6 @@ def _update_fields():
     filters = {}
     filters['sxoliko_etos_id'] = sxoliko_etos_id
     filters['kathgoria_id'] = kathgoria_id
-    filters['klados_id'] = str(klados_id)
 
     choices_fields = []
 
@@ -390,7 +389,7 @@ def _update_fields():
           '\nhmeromhnia_id', hmeromhnia_id,\
           '\nfield', field)
 
-    #check smeae_pinakes
+    #check fields
     if smeae_pinakas_id is not None:
         filters['smeae_pinakas_id'] = smeae_pinakas_id
 
@@ -407,20 +406,26 @@ def _update_fields():
         filters['athlima_id'] = athlima_id
 
     if hmeromhnia_id is not None:
-        print('in update fileds hmnies')
+        print('in update fields hmnies')
         hmeromhnies = []
 
         # build filters query
         q = Pinakas.query
+        if len(klados_id) > 1:
+            q = q.filter(getattr(Pinakas, 'klados_id').like('%{0}%'.format(klados_id)))
+        else:
+            filters['klados_id'] = klados_id
         for attr, value in filters.items():
             print(attr, value)
-            q = q.filter(getattr(Pinakas, attr).like("%%%s%%" % value))
-            print(q)
+            q = q.filter(getattr(Pinakas, attr) == value)
+        print(q)
         pinakes = q.all()
         for pinakas in pinakes:
             if pinakas.hmeromhnia_id not in hmeromhnies:
                 hmeromhnies.append(pinakas.hmeromhnia_id)
         choices_fields.append(('hmeromhnies', hmeromhnies))
+
+        print(choices_fields)
 
     print('filters', filters)
     print('choices_fields', choices_fields)
@@ -435,7 +440,7 @@ def _update_fields():
 def _get_fields():
     sxoliko_etos_id = request.args.get('sxoliko_etos')
     kathgoria_id = request.args.get('kathgoria')
-    klados_id = request.args.get('klados')
+    klados_id = str(request.args.get('klados'))
 
     smeae_pinakes = []
     smeae_kathgories = []
@@ -446,11 +451,16 @@ def _get_fields():
 
     choices_fields = []
 
+    q = Pinakas.query
+    if len(klados_id) > 1:
+        q = q.filter(getattr(Pinakas, 'klados_id').like('%{0}%'.format(klados_id)))
+    else:
+        q = q.filter(getattr(Pinakas, 'klados_id') == klados_id)
+    q = q.filter(getattr(Pinakas, 'sxoliko_etos_id') == sxoliko_etos_id)
+    q = q.filter(getattr(Pinakas, 'kathgoria_id') == kathgoria_id)
+
     #check smeae pinakas
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                           Pinakas.smeae_pinakas_id != 0)).all()
+    pinakes = q.filter(getattr(Pinakas, 'smeae_pinakas_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.smeae_pinakas_id not in smeae_pinakes:
@@ -459,10 +469,7 @@ def _get_fields():
 
 
     #check smeae kathgoria
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                      Pinakas.smeae_kathgoria_id != 0)).all()
+    pinakes = q.filter(getattr(Pinakas, 'smeae_kathgoria_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.smeae_kathgoria_id not in smeae_kathgories:
@@ -471,10 +478,7 @@ def _get_fields():
 
 
     #check perioxh
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                      Pinakas.perioxh_id != 0)).all()
+    pinakes = q.filter(getattr(Pinakas, 'perioxh_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.perioxh_id not in perioxes:
@@ -483,10 +487,7 @@ def _get_fields():
 
 
     #check mousiko_organo
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                      Pinakas.mousiko_organo_id != 0)).all()
+    pinakes = q.filter(getattr(Pinakas, 'mousiko_organo_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.mousiko_organo_id not in mousika_organa:
@@ -495,10 +496,7 @@ def _get_fields():
 
 
     #check athlima
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                      Pinakas.athlima_id != 0)).all()
+    pinakes = q.filter(getattr(Pinakas, 'athlima_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.athlima_id not in athlimata:
@@ -507,10 +505,7 @@ def _get_fields():
 
 
     #check hmeromhnia
-    pinakes = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                               kathgoria_id=kathgoria_id).\
-                                               filter(and_(Pinakas.klados_id.contains(klados_id),\
-                                                      Pinakas.hmeromhnia_id != 1)).all()
+    pinakes = q.filter(getattr(Pinakas, 'hmeromhnia_id') != 1).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
             if pinakas.hmeromhnia_id not in hmeromhnies:

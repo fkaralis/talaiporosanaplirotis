@@ -271,9 +271,9 @@ $(function() {
         };
 
 
-        for (key in send) {
+        //for (key in send) {
             //alert('sending ' + key + ' ' + send[key]);
-        };
+        //};
 
         $.getJSON("{{ url_for('main._update_fields') }}", send, function(data) {
             //alert('updated fields');

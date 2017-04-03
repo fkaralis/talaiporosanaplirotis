@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#### 30/3/2017
-### html, xls(x) to csv to gz
+#### 3/4/2017
+### fix not bad htmls
+# solution: beautifulsoup4 needed upgrade
 
 import pandas as pd
 import re
