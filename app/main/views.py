@@ -30,6 +30,7 @@ from sqlalchemy import or_
 from sqlalchemy import and_
 
 from .utils import unzip_to_df
+from .utils import match_klados
 
 base_dir = current_app.config['BASE_DIR']
 data_path = current_app.config['DATA_PATH']
@@ -435,7 +436,6 @@ def _update_fields():
 
 
 
-
 @main.route('/_get_fields/')
 def _get_fields():
     sxoliko_etos_id = request.args.get('sxoliko_etos')
@@ -459,11 +459,13 @@ def _get_fields():
     q = q.filter(getattr(Pinakas, 'sxoliko_etos_id') == sxoliko_etos_id)
     q = q.filter(getattr(Pinakas, 'kathgoria_id') == kathgoria_id)
 
+	
+
     #check smeae pinakas
     pinakes = q.filter(getattr(Pinakas, 'smeae_pinakas_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.smeae_pinakas_id not in smeae_pinakes:
+            if match_klados('sm-pin', klados_id, pinakas.klados_id) and (pinakas.smeae_pinakas_id not in smeae_pinakes):
                 smeae_pinakes.append(pinakas.smeae_pinakas_id)
         choices_fields.append(('smeae_pinakes', smeae_pinakes))
 
@@ -472,7 +474,7 @@ def _get_fields():
     pinakes = q.filter(getattr(Pinakas, 'smeae_kathgoria_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.smeae_kathgoria_id not in smeae_kathgories:
+            if match_klados('sm-kat', klados_id, pinakas.klados_id) and (pinakas.smeae_kathgoria_id not in smeae_kathgories):
                 smeae_kathgories.append(pinakas.smeae_kathgoria_id)
         choices_fields.append(('smeae_kathgories', smeae_kathgories))
 
@@ -481,7 +483,7 @@ def _get_fields():
     pinakes = q.filter(getattr(Pinakas, 'perioxh_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.perioxh_id not in perioxes:
+            if match_klados('per', klados_id, pinakas.klados_id) and (pinakas.perioxh_id not in perioxes):
                 perioxes.append(pinakas.perioxh_id)
         choices_fields.append(('perioxes', perioxes))
 
@@ -490,7 +492,7 @@ def _get_fields():
     pinakes = q.filter(getattr(Pinakas, 'mousiko_organo_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.mousiko_organo_id not in mousika_organa:
+            if match_klados('m-or', klados_id, pinakas.klados_id) and (pinakas.mousiko_organo_id not in mousika_organa):
                 mousika_organa.append(pinakas.mousiko_organo_id)
         choices_fields.append(('mousika_organa', mousika_organa))
 
@@ -499,7 +501,7 @@ def _get_fields():
     pinakes = q.filter(getattr(Pinakas, 'athlima_id') != 0).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.athlima_id not in athlimata:
+            if match_klados('ath', klados_id, pinakas.klados_id) and (pinakas.athlima_id not in athlimata):
                 athlimata.append(pinakas.athlima_id)
         choices_fields.append(('athlimata', athlimata))
 
@@ -508,13 +510,12 @@ def _get_fields():
     pinakes = q.filter(getattr(Pinakas, 'hmeromhnia_id') != 1).all()
     if len(pinakes) > 0:
         for pinakas in pinakes:
-            if pinakas.hmeromhnia_id not in hmeromhnies:
+            if match_klados('hmnia', klados_id, pinakas.klados_id) and (pinakas.hmeromhnia_id not in hmeromhnies):
                 hmeromhnies.append(pinakas.hmeromhnia_id)
         choices_fields.append(('hmeromhnies', hmeromhnies))
 
 
     return jsonify(choices_fields)
-
 
 @main.route('/_get_smeae_pinakes/')
 def _get_smeae_pinakes():

@@ -49,7 +49,7 @@ kladoi = []
 
 sxoliko_etos_id = 4
 kathgoria_id = 11
-klados_id = '148'
+klados_id = '18'
 #mousiko_organo_id = 11
 #smeae_pinakas_id = 2
 #smeae_kathgoria_id = 1
@@ -59,6 +59,32 @@ filters['kathgoria_id'] = kathgoria_id
 #filters['mousiko_organo_id'] = mousiko_organo_id
 #filters['smeae_pinakas_id'] = smeae_pinakas_id
 #filters['smeae_kathgoria_id'] = smeae_kathgoria_id
+
+count=0
+pinakes_kladoi_id = []
+pinakes = Pinakas.query.filter(getattr(Pinakas, 'klados_id').like('%{}%'.format(klados_id)))
+
+for pinakas in pinakes:
+	id = pinakas.id
+	pinakas_klados_id = pinakas.klados_id	
+	#if pinakas_klados_id not in pinakes_kladoi_id:
+	#pinakes_kladoi_id.append(pinakas_klados_id)
+	if re.match('^' + klados_id +'$', pinakas_klados_id) or re.match('^' + klados_id + '\s(.)*$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '\s(.)*$', pinakas_klados_id) :
+		count+=1
+		print(count, id, pinakas_klados_id)
+
+print(type(pinakes))
+
+pinakes = pinakes.filter(Pinakas.sxoliko_etos_id==1).all()
+for pinakas in pinakes:
+	print(pinakas.id, pinakas.klados_id)
+
+'''
+'^' + klados_id +'$'
+'^' + klados_id + '\s(.)*$'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+'^(.)*\s' + klados_id + '$'
+'^(.)*\s' + klados_id + '\s(.)*$'
+
 
 q = Pinakas.query
 if len(klados_id) > 1:
@@ -78,7 +104,7 @@ choices_fields.append(('hmeromhnies', hmeromhnies))
 print(choices_fields)
 
 
-
+'''
 
 
 '''
