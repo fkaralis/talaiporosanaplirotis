@@ -3,10 +3,20 @@
 # module: app/main/utils.py
 from flask import after_this_request
 
+import re
 import os
 import gzip
 from pathlib import Path
 import pandas as pd
+
+
+def match_klados(field, klados_id, pinakas_klados_id):
+	print('in match klados', field, klados_id)
+	if re.match('^' + klados_id +'$', pinakas_klados_id) or re.match('^' + klados_id + '\s(.)*$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '\s(.)*$', pinakas_klados_id):
+		return True
+	else:
+		return False
+
 
 def unzip_to_df(filename, path_pinaka, data_path, temp_path):
     # unzip file in temp folder
