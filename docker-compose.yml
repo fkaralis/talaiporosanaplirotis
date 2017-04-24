@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  website:
+    build: .
+    command: >
+      gunicorn -b 0.0.0.0:80
+        --access-logfile -
+        --reload
+        "app:create_app('default')"
+    environment:
+      PYTHONUNBUFFERED: 'true'
+    volumes:
+      - '.:/talaiporosanaplirotis'
+    ports:
+      - '80:80'

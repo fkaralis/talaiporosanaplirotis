@@ -27,3 +27,4 @@ Werkzeug==0.12
 WTForms==2.1
 beautifulsoup4==4.5.3
 xlwt==1.2.0
+gunicorn==19.4.5

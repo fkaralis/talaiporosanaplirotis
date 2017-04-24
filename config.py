@@ -3,8 +3,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 import locale
 # linux locale
-loc = locale.getdefaultlocale()
-locale.setlocale(locale.LC_ALL, loc)
+#loc = locale.getdefaultlocale()
+locale.setlocale(locale.LC_ALL, 'el_GR.UTF-8')
 # win locale
 #locale.setlocale(locale.LC_ALL, 'ell')
 
