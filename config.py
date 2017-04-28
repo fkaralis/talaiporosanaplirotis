@@ -23,6 +23,8 @@ class Config:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     DATA_PATH = BASE_DIR + '/app/static/'
     TEMP_PATH = DATA_PATH + 'temp/'
+    RECAPTCHA_PUBLIC_KEY = '6Lc6NR8UAAAAAFOD_4O1DpMFxyACP-uMgfdDFC9s'
+    RECAPTCHA_PRIVATE_KEY = '6Lc6NR8UAAAAAPrv0terDJfQp3Q-VNgEKOxeMVOa'
 
     @staticmethod
     def init_app(app):
