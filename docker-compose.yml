@@ -8,8 +8,8 @@ services:
         --access-logfile -
         --reload
         "app:create_app('default')"
-    environment:
-      PYTHONUNBUFFERED: 'true'
+    env_file:
+      - '.env'
     volumes:
       - '.:/talaiporosanaplirotis'
     ports:

@@ -6,11 +6,13 @@ from . import mail
 
 
 def send_async_email(app, msg):
+    print('-------------SENDING ASYNC_EMAIL')
     with app.app_context():
         mail.send(msg)
 
 def send_email(to, subject, template, **kwargs):
     app = current_app._get_current_object()
+    print('-------------SENDING EMAIL', app.config['MAIL_USERNAME'])
     msg = Message(app.config['TALAIPANAP_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
                   sender=app.config['TALAIPANAP_MAIL_SENDER'], recipients=[to])
     msg.body = render_template(template + '.txt', **kwargs)

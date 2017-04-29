@@ -10,6 +10,10 @@ locale.setlocale(locale.LC_ALL, 'el_GR.UTF-8')
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or '#@SCJ239asbAS<KCsdfhg7757'
+    WTF_CSRF_SECRET_KEY = '@&^Nwxhuiscojmwo8e7ynweucmisjOY*ASCHNaosic098'
+    WTF_CSRF_TIME_LIMIT = None
+    WTF_CSRF_ENABLED = False
+
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     MAIL_SERVER = 'smtp.googlemail.com'
