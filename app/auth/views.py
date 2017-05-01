@@ -25,6 +25,6 @@ def register():
         send_email(user.email, 'Καλωσόρισες στο TalaiporosAnaplirotis', 'auth/email/welcome', user=user)
         flash('Επιτυχής εγγραφή, εστάλη e-mail')
         db.session.commit()
-        print('---------------------------', session['csrf_token'])
+#        print('---------------------------', session['csrf_token'])
 
     return render_template('auth/register.html', form=form)

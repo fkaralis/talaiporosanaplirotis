@@ -7,7 +7,7 @@ services:
       gunicorn -b 0.0.0.0:80
         --access-logfile -
         --reload
-        "app:create_app('default')"
+        "app:create_app('testing')"
     env_file:
       - '.env'
     volumes:
