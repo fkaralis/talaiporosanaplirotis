@@ -9,6 +9,11 @@
 
 
 {% block page_content %}
+<div id="overlay" align="center">
+     <img src="{{ url_for('static', filename = 'ajax-loader.gif') }}" alt="Loading" />
+     Παρακαλώ περιμένετε, ο πίνακας φορτώνει...
+</div>
+
 <div class="container">
     <div class="page-header">
         <h2>Προβολή πίνακα</h2>
@@ -30,6 +35,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -45,7 +51,11 @@ $(document).ready(function() {
     } );
 } );
 
-
+$(window).load(function(){
+   // PAGE IS FULLY LOADED
+   // FADE OUT YOUR OVERLAYING DIV
+   $('#overlay').fadeOut();
+});
 </script>
 {% endblock %}
 
