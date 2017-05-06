@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_migrate import MigrateCommand
 
 #app = create_app(os.getenv('TALAIPANAP_CONFIG') or 'default')
-app = create_app(os.getenv('TALAIPANAP_CONFIG') or 'testing')
+app = create_app(os.getenv('TALAIPANAP_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
