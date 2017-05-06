@@ -10,11 +10,11 @@
 
 {% block page_content %}
 <div id="overlay" align="center">
-     <img src="{{ url_for('static', filename = 'ajax-loader.gif') }}" alt="Loading" />
+     <img src="{{ url_for('static', filename = 'ajax-loader.gif') }}" alt="Loading" /><br>
      Παρακαλώ περιμένετε, ο πίνακας φορτώνει...
 </div>
 
-<div class="container">
+<div id="main" class="container">
     <div class="page-header">
         <h2>Προβολή πίνακα</h2>
         <a href="{{ url_for('main.download_remove') }}" class="btn btn-success" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a>
@@ -43,18 +43,20 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
 
 <script charset="utf-8" type="text/javascript">
-$(document).ready(function() {
+
+$(window).load(function(){
+    // page fully loaded
+
+    // fade out overlay div
+    $('#overlay').fadeOut();
+    // show main div
+    $('#main').show();
+    //show table
     $('#display_table').find('table').DataTable( {
         "scrollX": true,
         fixedColumns: true,
         select: true
     } );
-} );
-
-$(window).load(function(){
-   // PAGE IS FULLY LOADED
-   // FADE OUT YOUR OVERLAYING DIV
-   $('#overlay').fadeOut();
 });
 </script>
 {% endblock %}

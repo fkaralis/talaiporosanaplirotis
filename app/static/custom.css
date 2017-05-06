@@ -94,3 +94,7 @@ tbody tr:hover { /* th:hover also if you wish */
     border-radius: 5px;
     padding: 5px;
 }
+
+div#main {
+    display: none;
+}
