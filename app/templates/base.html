@@ -5,7 +5,7 @@
 {% block head %}
 {{ super() }}
 <meta name="description" content="Talaiporosanaplirotis.gr (με σήμα τη βαλίτσα). Αναζήτηση και ανεύρεση των πινάκων κατάταξης και των προσλήψεων των αναπληρωτών εκπαιδευτικών της δημόσιας εκπαίδευσης.">
-<meta name="keywords" content="ταλαίπωρος,αναπληρωτής,αναπληρωτές,πίνακες,αναζήτηση,πρόσληψη,προσλήψεις,εκπαίδευση,πρωτοβάθμια,δευτεροβάθμια">
+<meta name="keywords" content="ταλαίπωρος,αναπληρωτής,αναπληρωτές,πίνακες,αναζήτηση,πρόσληψη,προσλήψεις,εκπαίδευση,πρωτοβάθμια,δευτεροβάθμια,talaiporos,anaplirotis,pinakas,pinakes,anapliroton">
 <meta name="author" content="Talaiporos Admin">
 
 <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.png') }}"
@@ -19,26 +19,46 @@
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle"
-            data-toggle="collapse" data-target=".navbar-collapse">
-                <span class ="sr-only">Toggle navigation</span>
-                <span class ="icon-bar"></span>
-                <span class ="icon-bar"></span>
-                <span class ="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">TalaiporosAnaplirotis</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Αναζήτηση πίνακα</a></li>
-                <li><a href="{{ url_for('auth.register') }}">Εγγραφή</a></li>
-                <li><a href="{{ url_for('main.contact') }}">Επικοινωνία</a></li>
-            </ul>
+        <div class="row">
+            <div class="navbar-header">
+                <span class="hidden-xs"><img src="{{ url_for('static', filename = 'favicon.png') }}" alt="talaiporh_valitsa" height="40px" width="50px"/></span>
+                <a class="navbar-brand" href="/"><b>TalaiporosAnaplirotis</b></a>
+                <button type="button" class="navbar-toggle"
+                data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class ="sr-only">Toggle navigation</span>
+                    <span class ="icon-bar"></span>
+                    <span class ="icon-bar"></span>
+                    <span class ="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Αναζήτηση πίνακα</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Εγγραφή</a></li>
+                    <li><a href="{{ url_for('main.contact') }}">Επικοινωνία</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+            <div class="col-xs-1">
+                <div class="base_img">
+
+                </div>
+            </div>
+
+            <div class="col-xs-11">
+
+                    <div class="col-sm-3 col-xs-8">
+
+                    </div>
+
+
+
+                </div>
+            </div>
 
 {% block content %}
     <div class="container">

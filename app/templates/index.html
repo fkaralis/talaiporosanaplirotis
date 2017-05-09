@@ -5,29 +5,33 @@
 
 {% block page_content %}
 
-<div class="visible-sm visible-xs">
-    <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr<br>(με σήμα τη βαλίτσα)</p>
-    <p class="bg-info rounded">Βρείτε εύκολα τους πίνακες κατάταξης αναπληρωτών του e-aitisi.sch.gr</p>
+<!-- xs size-->
+<div class="visible-xs">
+    <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr</p>
+    <a href="#anazhthsh" style="text-decoration: none; color: black;">
+        <p class="bg-info rounded">Βρείτε εύκολα τους πίνακες αναπληρωτών του e-aitisi.sch.gr</p>
+    </a>
     <p class="bg-warning rounded">..και τις προσλήψεις αναπληρωτών απευθείας από το site του Υπουργείου (οσονούπω)</p>
 </div>
 
-<div class="page-header">
+<div class="page-header" id="anazhthsh">
     <h2>Αναζήτηση πίνακα</h2>
 </div>
 
+<!-- lg md sizes-->
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-4 hidden-xs hidden-sm" style="font-size:15px" align="center">
+    <div class="col-md-1 col-sm-0"></div>
+    <div class="col-md-4 col-sm-5 hidden-xs" style="font-size:15px" align="center">
         <p></p>
-        <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr<br>(με σήμα τη βαλίτσα)</p>
+        <p class="bg-success rounded">Καλωσήρθατε στο talaiporosanaplirotis.gr<br></p>
         <p class="bg-info rounded">Βρείτε εύκολα τους πίνακες κατάταξης αναπληρωτών του e-aitisi.sch.gr</p>
         <p class="bg-warning rounded">..και τις προσλήψεις αναπληρωτών απευθείας από το site του Υπουργείου (οσονούπω)</p>
     </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-5" style="font-size:25px">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-5" style="font-size:25px">
         {{ wtf.quick_form(form) }}
     </div>
-    <div class="col-md-1"></div>
+    <div class="col-sm-1"></div>
 </div>
 {% endblock %}
 
