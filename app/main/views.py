@@ -140,16 +140,22 @@ def index():
 
 
         try:
-            pinakas = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
-                                          kathgoria_id=kathgoria_id,\
-                                          hmeromhnia_id=hmeromhnia_id,\
-                                          smeae_pinakas_id=smeae_pinakas_id,\
-                                          smeae_kathgoria_id=smeae_kathgoria_id,\
-                                          perioxh_id=perioxh_id,\
-                                          mousiko_organo_id=mousiko_organo_id,\
-                                          athlima_id=athlima_id).\
-                                          filter(Pinakas.klados_id.contains(klados_id)).\
-                                          first()
+            q = Pinakas.query.filter_by(sxoliko_etos_id=sxoliko_etos_id,\
+                                  kathgoria_id=kathgoria_id,\
+                                  hmeromhnia_id=hmeromhnia_id,\
+                                  smeae_pinakas_id=smeae_pinakas_id,\
+                                  smeae_kathgoria_id=smeae_kathgoria_id,\
+                                  perioxh_id=perioxh_id,\
+                                  mousiko_organo_id=mousiko_organo_id,\
+                                  athlima_id=athlima_id)
+
+            if len(klados_id) > 1:
+                q = q.filter(getattr(Pinakas, 'klados_id').like('%{0}%'.format(klados_id)))
+            else:
+                q = q.filter(getattr(Pinakas, 'klados_id') == klados_id)
+
+            pinakas = q.first()
+
         except Exception as e:
             print(e)
 
@@ -459,7 +465,6 @@ def _get_fields():
     q = q.filter(getattr(Pinakas, 'sxoliko_etos_id') == sxoliko_etos_id)
     q = q.filter(getattr(Pinakas, 'kathgoria_id') == kathgoria_id)
 
-	
 
     #check smeae pinakas
     pinakes = q.filter(getattr(Pinakas, 'smeae_pinakas_id') != 0).all()
