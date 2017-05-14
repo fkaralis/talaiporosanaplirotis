@@ -53,7 +53,10 @@ def unzip_to_df(filename, path_pinaka, data_path, temp_path):
                 print(e)
                 df.index += 1
     df.index.name=None
-    df = df.drop(['Unnamed: 0'], axis=1)
+    try:
+        df = df.drop(['Unnamed: 0'], axis=1)
+    except Exception:
+        pass
 
     @after_this_request
     def delete_file(response):
