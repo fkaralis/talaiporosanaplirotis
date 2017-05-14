@@ -29,7 +29,7 @@ class Kathgoria(db.Model):
 
     def __repr__(self):
         return '\nΚατηγορία id %r\nλεκτικό %r' %\
-            (self.kathgoria_id, self.lektiko_kathgorias)
+            (self.id, self.lektiko_kathgorias)
 
 
 
@@ -42,7 +42,7 @@ class Real_eidikothta(db.Model):
 
     def __repr__(self):
         return '\nΠραγματική ειδικότητα\nid %r\nκωδικός %r\nλεκτικό %r' %\
-            (self.real_eidikothta_id, self.kodikos_real_eidikothtas, self.lektiko_real_eidikothtas)
+            (self.id, self.kodikos_real_eidikothtas, self.lektiko_real_eidikothtas)
 
 
 
@@ -59,7 +59,7 @@ class Klados(db.Model):
 
     def __repr__(self):
         return '\nΚλάδος id %r\nκωδικός %r\nλεκτικό %r\nreal %r' %\
-            (self.klados_id, self.kodikos_kladoy, self.lektiko_kladoy, self.real_eidikothta_id)
+            (self.id, self.kodikos_kladoy, self.lektiko_kladoy, self.real_eidikothta_id)
 
 
 
@@ -74,7 +74,7 @@ class Sxoliko_etos(db.Model):
 
     def __repr__(self):
         return '\nΣχολικό έτος\nid %r\nλεκτικό %r' %\
-            (self.sxoliko_etos_id, self.lektiko_sxolikoy_etoys)
+            (self.id, self.lektiko_sxolikoy_etoys)
 
 
 
@@ -90,7 +90,7 @@ class Hmeromhnia(db.Model):
 
     def __repr__(self):
         return '\nΗμερομηνία id %r\nλεκτικό %r\nπρ. ημ/νία %r' %\
-            (self.hmeromhnia_id, self.lektiko_hmeromhnias, self.real_hmeromhnia)
+            (self.id, self.lektiko_hmeromhnias, self.real_hmeromhnia)
 
 
 
