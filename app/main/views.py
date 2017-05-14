@@ -147,17 +147,22 @@ def index():
                                   smeae_kathgoria_id=smeae_kathgoria_id,\
                                   perioxh_id=perioxh_id,\
                                   mousiko_organo_id=mousiko_organo_id,\
-                                  athlima_id=athlima_id)
+                                  athlima_id=athlima_id).\
+                                    filter(Pinakas.klados_id.contains(klados_id))
 
-            if len(klados_id) > 1:
-                q = q.filter(getattr(Pinakas, 'klados_id').like('%{0}%'.format(klados_id)))
-            else:
-                q = q.filter(getattr(Pinakas, 'klados_id') == klados_id)
-
-            pinakas = q.first()
+            pinakes = q.all()
 
         except Exception as e:
             print(e)
+
+        pinakas = Pinakas
+        for p in pinakes:
+            pinakas_id = p.id
+            pinakas_klados_id = p.klados_id
+            # print(pinakas_id, pinakas_klados_id)
+            if match_klados('form', klados_id, pinakas_klados_id):
+                pinakas = Pinakas.query.filter_by(id=pinakas_id).first()
+                # print(pinakas_id, pinakas_klados_id)
 
         filename = pinakas.lektiko_pinaka
         url_pinaka = pinakas.url_pinaka
