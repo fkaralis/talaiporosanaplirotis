@@ -310,35 +310,51 @@ $(function() {
 
     // event listeners to dropdown changes
     dropdown.sxoliko_etos.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateKathgories();
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.kathgoria.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateKladoi();
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.klados.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateFields();
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_pinakas.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateRestFields('smeae_pinakas');
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_kathgoria.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateRestFields('smeae_kathgoria');
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.perioxh.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateRestFields('perioxh');
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.mousiko_organo.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateRestFields('mousiko_organo');
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.athlima.on('change', function() {
+        $('#submit').prop( "disabled", true );
         updateRestFields('athlima');
+        $('#submit').prop( "disabled", false );
     });
 
     dropdown.hmeromhnia.on('change', function() {
