@@ -36,7 +36,7 @@ athlimata = Athlima.query.all()
 for sxoliko_etos in sxolika_eth:
     choice = (sxoliko_etos.id, sxoliko_etos.lektiko_sxolikoy_etoys)
     choices_sxolika_eth.append(choice)
-choices_sxolika_eth = sorted(choices_sxolika_eth)[:5] # up to 2012-13
+choices_sxolika_eth = sorted(choices_sxolika_eth)
 choices_sxolika_eth.insert(0, (0, '--Επιλογή σχ. έτους--'))
 
 for kathgoria in kathgories:
