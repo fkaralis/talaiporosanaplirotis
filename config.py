@@ -22,7 +22,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     TALAIPANAP_MAIL_SUBJECT_PREFIX  = '[TalaipAnap]'
-    TALAIPANAP_MAIL_SENDER = 'TalaipAnap Admin <fivoskaralis@gmail.com>'
+    TALAIPANAP_MAIL_SENDER = 'Talaiporos Admin <talaiporosanaplirotis@gmail.com>'
     TALAIPANAP_ADMIN = os.environ.get('TALAIPANAP_ADMIN')
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     DATA_PATH = BASE_DIR + '/app/static/'
