@@ -12,8 +12,12 @@ import json
 import logging
 import logging.config
 
+# talaiporosanaplirotis path
+basedir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+print(basedir)
+
 # read settings
-with open("settings.json", "r", encoding="utf-8") as fd:
+with open(basedir + '/e-aitisi_scraper/settings.json', 'r', encoding='utf-8') as fd:
     settings = json.load(fd)
 
 # Setup logging. you need to do this before importing the main module
@@ -22,8 +26,6 @@ logger = logging.getLogger("crawler")
 
 from parser import Parser
 
-# talaiporosanaplirotis path
-basedir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 def main(year):
 
@@ -40,7 +42,7 @@ def main(year):
 
     # parse initial url
     url = 'http://e-aitisi.sch.gr'
-    if year != '2016':
+    if year != '2017':
         url += suffix
     parser.parse_url(url, suffix)
 
@@ -50,8 +52,8 @@ def main(year):
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) != 2 or not (int(sys.argv[1]) >= 2003 and int(sys.argv[1]) <= 2016):
-            print("Usage: 'python crawler.py YYYY' where YYYY is an integer representing a year from 2003 to 2016 (e.g. \'2014\').")
+        if len(sys.argv) != 2 or not (int(sys.argv[1]) >= 2003 and int(sys.argv[1]) <= 2017):
+            print("Usage: 'python crawler.py YYYY' where YYYY is an integer representing a year from 2003 to 2017 (e.g. \'2014\').")
             sys.exit(1)
         year = sys.argv[1]
         main(year)

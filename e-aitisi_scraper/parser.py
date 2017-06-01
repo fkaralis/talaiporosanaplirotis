@@ -41,7 +41,7 @@ class Parser:
     def __init__(self, year, url='http://e-aitisi.sch.gr'):
         self.year = year
         self.suffix = '/index%s.html' % year
-        if year != '2016':
+        if year != '2017':
             url += self.suffix
         self.url = url
         self.links = {}
