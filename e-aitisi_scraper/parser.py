@@ -178,20 +178,30 @@ class Parser:
         )
         print('new_hmeromhnia', new_hmeromhnia)
 
+
+        # Kathgoria
         lektiko_kathgorias = self.find_kathgoria(path_pinaka.split('/')[1])
         kathgoria_id = session.query(Kathgoria).filter_by(lektiko_kathgorias=lektiko_kathgorias).first().id
+        # case meionotika_thrakhs_mhdenikhs_proyphresias
+        if kathgoria_id == 9 and 'PE73_B' in filename:
+            kathgoria_id = 24
         print('kathgoria_id', kathgoria_id)
 
 
         #Klados
+        # re.match('^' + klados_id +'$', pinakas_klados_id) or re.match('^' + klados_id + '\s(.)*$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '$', pinakas_klados_id) or re.match('^(.)*\s' + klados_id + '\s(.)*$', pinakas_klados_id):
+        klados_id = ''
         try:
             df = pd.read_excel(full_filename, header=0)
             for row in df.iterrows():
                 kodikos_kladoy = row[1]['ΚΛΑΔΟΣ']
-                klados_id = session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id
+                if klados_id == '' or re.match('^' + kodikos_kladoy +'$', klados_id) or re.match('^' + kodikos_kladoy + '\s(.)*$', klados_id) or re.match('^(.)*\s' + kodikos_kladoy + '$', klados_id) or re.match('^(.)*\s' + kodikos_kladoy + '\s(.)*$', klados_id):
+                    print('found new kodikos_kladoy', kodikos_kladoy)
+                    klados_id += str(session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id) + ' '
         except Exception as e:
             logger.error(e)
             klados_id = '254' # bad file
+        klados_id = klados_id.strip()
         print('klados_id', klados_id)
 
 
@@ -276,7 +286,7 @@ class Parser:
             sxoliko_etos_id=sxoliko_etos_id,
             kathgoria_id=kathgoria_id,
             hmeromhnia_id=new_hmeromhnia.id,
-            path_pinaka=full_path,
+            path_pinaka='data/' + sxoliko_etos + path_pinaka,
             url_pinaka=url,
             klados_id=klados_id,
             smeae_pinakas_id=smeae_pinakas_id,
