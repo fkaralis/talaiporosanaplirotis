@@ -17,6 +17,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 
+from pathlib import PurePosixPath
+from pathlib import Path
+
+import gzip
+import shutil
+
 from db import Base, get_one_or_create
 from db import Athlima, Athlima_greeklish, Hmeromhnia, Kathgoria,\
 Klados, Mousiko_organo, Mousiko_organo_greeklish, Perioxh, Perioxh_greeklish,\
@@ -180,11 +186,7 @@ class Parser:
 
 
         # Kathgoria
-        lektiko_kathgorias = self.find_kathgoria(path_pinaka.split('/')[1])
-        kathgoria_id = session.query(Kathgoria).filter_by(lektiko_kathgorias=lektiko_kathgorias).first().id
-        # case meionotika_thrakhs_mhdenikhs_proyphresias
-        if kathgoria_id == 9 and 'PE73_B' in filename:
-            kathgoria_id = 24
+        kathgoria_id = self.find_kathgoria(path_pinaka.split('/')[1], filename)
         print('kathgoria_id', kathgoria_id)
 
 
@@ -278,6 +280,12 @@ class Parser:
                      full_path, url, klados_id, smeae_pinakas_id, smeae_kathgoria_id,\
                      perioxh_id, mousiko_organo_id, athlima_id)
 
+        # excel to csv.gz (and delete xcel)
+        filename = self.xcel_to_csv_gz(full_path, filename)
+
+        # final path for pinakas
+        path_pinaka = 'data/' + sxoliko_etos + path_pinaka
+
         # Create pinakas
         get_one_or_create(
             session,
@@ -286,7 +294,7 @@ class Parser:
             sxoliko_etos_id=sxoliko_etos_id,
             kathgoria_id=kathgoria_id,
             hmeromhnia_id=new_hmeromhnia.id,
-            path_pinaka='data/' + sxoliko_etos + path_pinaka,
+            path_pinaka=path_pinaka,
             url_pinaka=url,
             klados_id=klados_id,
             smeae_pinakas_id=smeae_pinakas_id,
@@ -300,86 +308,136 @@ class Parser:
 
 
 
+    def xcel_to_csv_gz(self, full_path, filename):
+        try:
+            full_path = Path(full_path)
+            full_path_filename = full_path.joinpath(filename)
 
-    def find_kathgoria(self, kathgoria):
+            csv_filename = full_path_filename.stem + '.csv'
+            csv_gz_filename = full_path_filename.stem + '.csv.gz'
+
+            csv_full_path = full_path.joinpath(csv_filename)
+            csv_gz_full_path = full_path.joinpath(csv_gz_filename)
+
+            # xcel to df
+            df = pd.read_excel(str(full_path_filename))
+
+            #fix index
+            try:
+                df.set_index(['Α/Α'], inplace=True)
+            except Exception as e:
+                try:
+                    df.set_index(['α/α'], inplace=True)
+                except Exception as e:
+                    try:
+                        df.set_index(['ΣΕΙΡΑ ΠΙΝΑΚΑ'], inplace=True)
+                    except Exception as e:
+                        df.index += 1
+            df.index.name=None
+
+            # df to csv
+            df.to_csv(str(csv_full_path), encoding='utf-8')
+
+            # csv to csv.gz
+            with open(str(csv_full_path), 'rb') as f_in:
+                with gzip.open(str(csv_gz_full_path), 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+
+            # delete csv and xcel files
+            os.remove(str(csv_full_path))
+            os.remove(str(full_path_filename))
+        except Exception as e:
+            print(e)
+
+        return csv_gz_filename
+
+
+
+
+    def find_kathgoria(self, kathgoria, filename):
+        kathgoria_id = 0
 
         # pinakes diorismwn
         if kathgoria.startswith('eniaios_diorismwn') or kathgoria.startswith('eniaioidior_13'):
-            kathgoria = 'eniaios_diorismwn'
+            kathgoria_id = 13
         elif kathgoria.startswith('triantamino'):
-            kathgoria = 'triantamino'
+            kathgoria_id = 15
         elif kathgoria.startswith('eikositetramino'):
-            kathgoria = 'eikositetramino'
+            kathgoria_id = 16
 
         # diorismoi eidikh kathgoria
         elif kathgoria.startswith('specialcat'):
-            kathgoria = 'diorismwn_eidikh_kathgoria'
+            kathgoria_id = 14
 
         # eniaioi a/b-thmias
         elif kathgoria.startswith('eniaiosp'):
             if kathgoria.startswith('eniaiosp_zero'):
-                kathgoria = 'eniaios_protovathmias_mhdenikhs_proyphresias'
-            else: kathgoria = 'eniaios_protovathmias'
+                kathgoria_id = 4
+            else:
+                kathgoria_id = 3
         elif kathgoria.startswith('eniaiosd'):
             if kathgoria.startswith('eniaiosd_zero'):
-                kathgoria = 'eniaios_defterovathmias_mhdenikhs_proyphresias'
+                kathgoria_id = 6
             else:
-                kathgoria = 'eniaios_defterovathmias'
+                kathgoria_id = 5
 
         # oloimera-oromisthioi
         elif kathgoria.startswith('oloimera'):
-            kathgoria = 'oromisthioi_oloimera'
+            kathgoria_id = 20
         elif (kathgoria == 'eniaios_oromis8iwn_05_zero'):
-            kathgoria = 'oromisthioi_defterovathmias_mhdenikhs_proyphresias'
+            kathgoria_id = 23
         elif kathgoria.startswith('eniaios_oromis8iwn') or kathgoria.startswith('oromisthioi'):
-            kathgoria = 'oromisthioi_defterovathmias'
+            kathgoria_id = 12
 
         # mousika
         elif kathgoria.startswith('mousika'):
             if kathgoria.startswith('mousika_orom'):
-                kathgoria = 'mousika_sxoleia_oromisthioi'
+                kathgoria_id = 8
             else:
-                kathgoria = 'mousika_sxoleia'
+                kathgoria_id = 7
 
         # smea
         elif 'smea' in kathgoria:
             if kathgoria.startswith('eniaios_smea_oloim'):
-                kathgoria = 'smea_oloimera'
+                kathgoria_id = 19
             elif kathgoria.startswith('eniaios_smea_anap'):
-                kathgoria = 'smea_anaplirotes'
+                kathgoria_id = 11
             else:
-                kathgoria = 'smea_oromisthioi'
+                kathgoria_id = 18
 
         # politeknoi 2009
         elif kathgoria == 'politeknoi2009':
-            kathgoria == 'politeknoi2009'
+            kathgoria_id == 22
 
         # tad/ead
         elif kathgoria.startswith('tad'):
             if kathgoria.startswith('tadmon'):
-                kathgoria = 'tad_ead_monimoi'
+                kathgoria_id = 25
             if kathgoria.startswith('tadanap'):
-                kathgoria = 'tad_ead_anaplirotes'
+                kathgoria_id = 21
             else:
-                kathgoria = 'tad_ead_oromisthioi'
+                kathgoria_id = 17
 
         # diagrafentes logw mh analhpshs yphresias
         elif kathgoria.startswith('diagrafentes'):
-            kathgoria = 'diagrafentes_logw_mh_analhpshs_yphresias'
+            kathgoria_id = 2
 
         # diagrafentes logw apolyshs
         elif kathgoria.startswith('kataggelia'):
-            kathgoria = 'diagrafentes_logw_apolyshs'
+            kathgoria_id = 1
 
         # meinotika thrakhs
         elif kathgoria.startswith('pe73'):
-            kathgoria = 'meionotika_thrakhs'
+            if 'PE73_B' in filename:    # case meionotika_thrakhs_mhdenikhs_proyphresias
+                kathgoria_id = 24
+            else:
+                kathgoria_id = 9
 
         # meinotika thrakhs
         elif kathgoria.startswith('avlonas'):
-            kathgoria = '2o_gymnasio_avlwna'
+            kathgoria_id = 10
 
-        return kathgoria
+        return kathgoria_id
 
 
     def table_exists(self, filename, url, sxoliko_etos):
