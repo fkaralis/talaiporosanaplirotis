@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#### 25/5/2017
-### html, xls(x) to csv to gz
+#### 6/6/2017
+### new smeae_kladoi (.EAE)
 
 import pandas as pd
 import re
@@ -30,8 +30,6 @@ Klados, Mousiko_organo, Mousiko_organo_greeklish, Perioxh, Perioxh_greeklish,\
 Pinakas, Real_eidikothta, Smeae_kathgoria, Smeae_kathgoria_greeklish,\
 Smeae_pinakas, Sxoliko_etos
 
-app = create_app(os.getenv('TALAIPANAP_CONFIG') or 'default')
-
 # talaiporosanaplirotis path
 basedir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 data_path = os.path.join(basedir, 'app', 'static')
@@ -41,6 +39,35 @@ print(data_path)
 engine = create_engine('sqlite:///' + os.path.join(basedir, 'e-aitisi_scraper', 'talaiporosanaplirotis.sqlite'))
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+kladoi = session.query(Klados).filter(Klados.lektiko_kladoy.endswith('ΕΑΕ')).all()
+count = 0
+for klados in kladoi:
+    klados_id = klados.id
+    if klados_id > 204 and klados_id < 270:
+        kodikos = klados.kodikos_kladoy
+        lektiko = klados.lektiko_kladoy
+        if 'ΝΗΠΙΑΓΩΓΟΙ' not in lektiko and 'ΔΑΣΚΑΛΟΙ' not in lektiko:
+            count += 1
+            eidikothta_id = klados.real_eidikothta_id
+            print(count, klados_id, kodikos, lektiko, eidikothta_id)
+
+
+            new_klados = Klados(kodikos_kladoy = kodikos[:-2] + 'ΕΑΕ',
+                                    lektiko_kladoy = lektiko,
+                                    real_eidikothta_id = eidikothta_id)
+
+            try:
+                session.add(new_klados)
+                session.commit()
+                print('NEW KLADOS', new_klados, '\n--------------------------------\n')
+            except Exception as e:
+                print(e)
+
+
+
+
+'''
 
 # get pinakes
 #sxoliko_etos_id = int(sys.argv[1])
@@ -134,80 +161,4 @@ print('bad read', bad_read)
 print('other failed', bad_count)
 
 
-'''
-
-            pinakas.lektiko_pinaka = full_filename + '.gz'
-            os.remove(full_filename)
-            session.commit()
-
-
-    try:
-        pinakas.lektiko_pinaka = PurePosixPath(filename).name
-        session.commit()
-
-        count += 1
-        print(count, pinakas.lektiko_pinaka, klados_id)
-
-    except Exception as e:
-        print(e)
-
-
-
-       try:
-            df = pd.read_html(full_filename, header=0)
-
-        except Exception as e:
-            print('No file', e, full_filename, pinakas.klados_id, size)
-
-
-
-        for row in df.iterrows():
-            if row[1]:
-                print('row 1', full_filename, pinakas.klados_id, size)
-            else:
-                print('NO row 1', full_filename, pinakas.klados_id, size)
-
-
-
-    #print(filename)
-    filename_stem = PurePosixPath(filename).stem
-    try:
-        similar = session.query(Pinakas).filter(Pinakas.lektiko_pinaka.startswith(filename_stem),\
-                                                Pinakas.lektiko_pinaka.endswith('gz'),\
-                                                Pinakas.kathgoria_id==pinakas.kathgoria_id,\
-                                                Pinakas.sxoliko_etos_id==pinakas.sxoliko_etos_id,\
-                                                Pinakas.hmeromhnia_id==pinakas.hmeromhnia_id,\
-                                                Pinakas.smeae_pinakas_id==pinakas.smeae_pinakas_id,\
-                                                Pinakas.smeae_kathgoria_id==pinakas.smeae_kathgoria_id,\
-                                                ).first()
-        count += 1
-        print(count, pinakas.lektiko_pinaka, pinakas.path_pinaka, similar.lektiko_pinaka, similar.path_pinaka, '\n-----\n')
-    except Exception:
-        continue
-
-
-
-#print(pinakeslist, len(pinakeslist))
-
-#print(list(set(htmlfiles) - set(pinakeslist)))
-
-htmlfiles = [os.path.join(root, name)
-             for root, dirs, files in os.walk(datapath)
-             for name in files
-             if name.startswith("PLIROFORIKH_D-E.html")]
-
-print(htmlfiles, len(htmlfiles))
-
-for root, dirs, files in os.walk(datapath):
-   for name in files:
-       if name.endswith((".html", ".htm")):
-           count += 1
-           print(count, name)
-
-
-
-if 'home' in path_pinaka:
-    pinakas.path_pinaka = path_pinaka[48:]
-
-session.commit()
 '''
