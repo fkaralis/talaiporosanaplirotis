@@ -30,7 +30,7 @@ from .utils import get_one_or_create
 from .models import Athlima, Athlima_greeklish, Hmeromhnia, Kathgoria,\
 Klados, Mousiko_organo, Mousiko_organo_greeklish, Perioxh, Perioxh_greeklish,\
 Pinakas, Real_eidikothta, Smeae_kathgoria, Smeae_kathgoria_greeklish,\
-Smeae_pinakas, Sxoliko_etos
+Smeae_pinakas, Sxoliko_etos, User
 
 __all__ = [
     "metadata",
