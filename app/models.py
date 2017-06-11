@@ -226,10 +226,13 @@ class Pinakas(db.Model):
     mousiko_organo_id = Column(Integer, ForeignKey('mousiko_organo.id'))
     athlima_id = Column(Integer, ForeignKey('athlima.id'))
 
+    size = Column("size", Integer, nullable=False, default=0)
+
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
     kathgoria = relationship("Kathgoria", back_populates="pinakes")
     #hmeromhnia = relationship("Hmeromhnia", back_populates="pinakes")
     #klados = relationship("Klados", back_populates="pinakes")
+
 
     def __repr__(self):
         return '\nΠίνακας id %r\nλεκτικό %r\nσχ.έτος %r\nκατηγορία %r\nκλάδος %r\nημ/νια %r\npath %r\nurl %r' %\

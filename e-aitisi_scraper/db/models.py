@@ -12,6 +12,16 @@ from sqlalchemy.orm import relationship
 from . import Base
 
 
+class User(db.Model):
+    __tablename__ = 'user'
+    id = Column("id", Integer, primary_key=True, nullable=False)
+    email = Column("email", String, unique=True, nullable=False)
+    onoma = Column("onoma", String, nullable=False)
+
+    def __repr__(self):
+        return '<User id %r email %r onoma %r>' % (self.id, self.email, self.onoma)
+
+
 class Kathgoria(Base):
     __tablename__ = "kathgoria"
 
@@ -220,6 +230,8 @@ class Pinakas(Base):
     perioxh_id = Column(Integer, ForeignKey('perioxh.id'))
     mousiko_organo_id = Column(Integer, ForeignKey('mousiko_organo.id'))
     athlima_id = Column(Integer, ForeignKey('athlima.id'))
+
+    size = Column("size", Integer, nullable=False, default=0)
 
     sxoliko_etos = relationship("Sxoliko_etos", back_populates="pinakes")
     kathgoria = relationship("Kathgoria", back_populates="pinakes")

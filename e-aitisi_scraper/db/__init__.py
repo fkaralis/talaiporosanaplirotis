@@ -51,4 +51,5 @@ __all__ = [
     "Smeae_kathgoria_greeklish",
     "Smeae_pinakas",
     "Sxoliko_etos",
+    "User",
 ]

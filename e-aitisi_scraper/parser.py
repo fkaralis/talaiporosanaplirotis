@@ -286,6 +286,14 @@ class Parser:
         # final path for pinakas
         path_pinaka = 'data/' + sxoliko_etos + path_pinaka
 
+        # size pinaka
+        full_path = Path(full_path)
+        full_path_filename = full_path.joinpath(filename)
+        if klados_id == '254':
+            size = 0
+        else:
+            size = full_path_filename.stat().st_size
+
         # Create pinakas
         get_one_or_create(
             session,
@@ -302,6 +310,7 @@ class Parser:
             perioxh_id=perioxh_id,
             mousiko_organo_id=mousiko_organo_id,
             athlima_id=athlima_id,
+            size=size,
         )
 
         session.commit()
