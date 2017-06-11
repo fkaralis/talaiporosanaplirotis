@@ -167,6 +167,7 @@ def index():
         filename = pinakas.lektiko_pinaka
         url_pinaka = pinakas.url_pinaka
         path_pinaka = pinakas.path_pinaka
+        size_pinaka = pinakas.size
 
         path_filename = url_for('static', filename=path_pinaka + filename)
         print('path_filename', path_filename)
@@ -223,6 +224,8 @@ def index():
         session['path_filename'] = path_filename
         session['download_filename'] = download_filename
 
+        session['size_pinaka'] = size_pinaka
+
         if current_app.config['TALAIPANAP_ADMIN']:
             send_email(current_app.config['TALAIPANAP_ADMIN'], ' New submit', 'mail/new_submit',\
                        sxoliko_etos_id=str(sxoliko_etos_id), sxoliko_etos_lektiko=sxoliko_etos_lektiko,\
@@ -239,7 +242,8 @@ def index():
                        path_pinaka=path_pinaka,\
                        filename=filename,\
                        path_filename=path_filename,\
-                       download_filename=download_filename)
+                       download_filename=download_filename,\
+                       size_pinaka=size_pinaka)
 
         return redirect(url_for('main.result'))
 
@@ -276,7 +280,8 @@ def result():
                            path_pinaka = session.get('path_pinaka'),
                            filename = session.get('filename'),
                            path_filename = session.get('path_filename'),
-                           download_filename = session.get('download_filename'))
+                           download_filename = session.get('download_filename'),
+                           size_pinaka = session.get('size_pinaka'))
 
 
 
@@ -319,7 +324,8 @@ def pinakas_display():
                       temp_path)
 
     return render_template('display.html', pinakas=df.to_html(na_rep='-'),
-                           download_filename = session.get('download_filename'))
+                           download_filename = session.get('download_filename'),
+                           size_pinaka = session.get('size_pinaka'))
 
 
 @main.route('/_get_kathgories/')
