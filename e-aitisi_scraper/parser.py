@@ -196,13 +196,24 @@ class Parser:
         try:
             df = pd.read_excel(full_filename, header=0)
             for row in df.iterrows():
-                kodikos_kladoy = row[1]['ΚΛΑΔΟΣ']
-                if klados_id == '' or re.match('^' + kodikos_kladoy +'$', klados_id) or re.match('^' + kodikos_kladoy + '\s(.)*$', klados_id) or re.match('^(.)*\s' + kodikos_kladoy + '$', klados_id) or re.match('^(.)*\s' + kodikos_kladoy + '\s(.)*$', klados_id):
-                    print('found new kodikos_kladoy', kodikos_kladoy)
-                    klados_id += str(session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id) + ' '
+                try:
+                    kodikos_kladoy = row[1]['ΚΛΑΔΟΣ']
+                except Exception as e:
+                    logger.error(e)
+                    klados_id = '254' # bad file
+
+                try:
+                    temp_klados_id = str(session.query(Klados).filter_by(kodikos_kladoy=kodikos_kladoy).first().id)
+                except Exception as e:
+                    logger.error(e)
+                    print('new klados?', kodikos_kladoy)
+
+                if not (re.match('^' + temp_klados_id +'$', klados_id) or re.match('^' + temp_klados_id + '\s(.)*$', klados_id) or re.match('^(.)*\s' + temp_klados_id + '$', klados_id) or re.match('^(.)*\s' + temp_klados_id + '\s(.)*$', klados_id)):
+                    print('NEW kodikos_kladoy', temp_klados_id)
+                    klados_id += ' ' + temp_klados_id
         except Exception as e:
             logger.error(e)
-            klados_id = '254' # bad file
+
         klados_id = klados_id.strip()
         print('klados_id', klados_id)
 
