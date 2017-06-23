@@ -212,6 +212,7 @@ class Parser:
                     print('NEW kodikos_kladoy', temp_klados_id)
                     klados_id += ' ' + temp_klados_id
         except Exception as e:
+            klados_id = '254' # bad file
             logger.error(e)
 
         klados_id = klados_id.strip()
@@ -367,7 +368,7 @@ class Parser:
             os.remove(str(csv_full_path))
             os.remove(str(full_path_filename))
         except Exception as e:
-            print(e)
+            print('xcel_to_csv', e)
 
         return csv_gz_filename
 
@@ -467,12 +468,13 @@ class Parser:
         path_pinaka_parts = path_pinaka.rsplit('/') # <-- what for?
         #print('path_pinaka', path_pinaka)
 
-
-
         # create path if not exists
         full_path = os.path.join(basedir, 'app', 'static', 'data', sxoliko_etos, path_pinaka)
         #print(full_path, basedir, sxoliko_etos, path_pinaka)
         os.makedirs(full_path, exist_ok=True)
+
+        filename = Path(filename)
+        filename = filename.stem + '.csv.gz'
 
         full_filename = ('').join([full_path, filename])
         #print('full_filename', full_filename, os.path.isfile(full_filename))
