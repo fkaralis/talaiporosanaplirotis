@@ -12,7 +12,7 @@ from sqlalchemy.orm import relationship
 from . import Base
 
 
-class User(db.Model):
+class User(Base):
     __tablename__ = 'user'
     id = Column("id", Integer, primary_key=True, nullable=False)
     email = Column("email", String, unique=True, nullable=False)
