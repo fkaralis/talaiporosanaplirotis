@@ -54,7 +54,16 @@
 
     {% block page_content %}{% endblock %}
 </div>
+    {% block footer %}
+        <footer class="footer">
+            <div class="container">
+                <span class="text-muted" >Ταλαίπωρος 2017</span>
+            </div>
+        </footer>
+    {% endblock %}
 {% endblock %}
+
+
 
 {% block scripts %}
 {{ super() }}
