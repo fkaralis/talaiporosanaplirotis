@@ -323,9 +323,20 @@ def pinakas_display():
                       data_path,
                       temp_path)
 
-    return render_template('display.html', pinakas=df.to_html(na_rep='-'),
+    # return render_template('display.html', pinakas=df.to_html(na_rep='-'),
+    #                        download_filename = session.get('download_filename'),
+    #                        size_pinaka = session.get('size_pinaka'))
+
+    # return render_template('display.html', pinakas=df.to_html(na_rep='-'), 
+    #                        pinakas_json=df.to_json(force_ascii=False, orient='values'),
+    #                        download_filename = session.get('download_filename'),
+    #                        size_pinaka = session.get('size_pinaka'))
+
+    return render_template('display.html', pinakas=url_for('static', filename="data.json"),
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
+
+
 
 
 @main.route('/_get_kathgories/')
