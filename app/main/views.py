@@ -324,35 +324,14 @@ def pinakas_display():
                       data_path,
                       temp_path)
 
-    columns = list(df);
+    columns = list(df); #get pinakas table headers
+    pinakas_json_values = df.to_json(force_ascii=False, orient='values') #get table values
 
-
-
-    pinakas_json_split = df.to_json(force_ascii=False, orient='split')
-    pinakas_json_records = df.to_json(force_ascii=False, orient='records')
-    pinakas_json_index = df.to_json(force_ascii=False, orient='index')
-    pinakas_json_columns = df.to_json(force_ascii=False, orient='columns')
-    pinakas_json_values = df.to_json(force_ascii=False, orient='values')
-
-    with open('app/static/pinakas_data.txt', 'w') as f:
+    with open('app/static/pinakas_data.txt', 'w') as f: #write values to txt file
         f.write(pinakas_json_values)
-
-    # return render_template('display.html', pinakas=df.to_html(na_rep='-'),
-    #                        download_filename = session.get('download_filename'),
-    #                        size_pinaka = session.get('size_pinaka'))
-
-    # return render_template('display.html', pinakas=df.to_html(na_rep='-'), 
-    #                        pinakas_json=df.to_json(force_ascii=False, orient='values'),
-    #                        download_filename = session.get('download_filename'),
-    #                        size_pinaka = session.get('size_pinaka'))
 
     return render_template('display.html', pinakas=url_for('static', filename="data.json"),
                            pinakas_data=url_for('static', filename="pinakas_data.txt"),
-                           pinakas_json_split=pinakas_json_split,
-                           pinakas_json_records=pinakas_json_records,
-                           pinakas_json_index=pinakas_json_index,
-                           pinakas_json_columns=pinakas_json_columns,
-                           pinakas_json_values=pinakas_json_values,
                            columns=columns, 
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
