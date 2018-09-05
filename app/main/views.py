@@ -4,6 +4,7 @@ import gzip
 import os
 import shutil
 import pandas as pd
+import json
 
 from pathlib import PurePosixPath
 from pathlib import Path
@@ -323,6 +324,19 @@ def pinakas_display():
                       data_path,
                       temp_path)
 
+    columns = list(df);
+
+
+
+    pinakas_json_split = df.to_json(force_ascii=False, orient='split')
+    pinakas_json_records = df.to_json(force_ascii=False, orient='records')
+    pinakas_json_index = df.to_json(force_ascii=False, orient='index')
+    pinakas_json_columns = df.to_json(force_ascii=False, orient='columns')
+    pinakas_json_values = df.to_json(force_ascii=False, orient='values')
+
+    with open('app/static/pinakas_data.txt', 'w') as f:
+        f.write(pinakas_json_values)
+
     # return render_template('display.html', pinakas=df.to_html(na_rep='-'),
     #                        download_filename = session.get('download_filename'),
     #                        size_pinaka = session.get('size_pinaka'))
@@ -333,10 +347,15 @@ def pinakas_display():
     #                        size_pinaka = session.get('size_pinaka'))
 
     return render_template('display.html', pinakas=url_for('static', filename="data.json"),
+                           pinakas_data=url_for('static', filename="pinakas_data.txt"),
+                           pinakas_json_split=pinakas_json_split,
+                           pinakas_json_records=pinakas_json_records,
+                           pinakas_json_index=pinakas_json_index,
+                           pinakas_json_columns=pinakas_json_columns,
+                           pinakas_json_values=pinakas_json_values,
+                           columns=columns, 
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
-
-
 
 
 @main.route('/_get_kathgories/')

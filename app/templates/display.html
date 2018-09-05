@@ -53,25 +53,20 @@ start();
     </div>
 
     <div class="row">
-        <div >
-<!--             {{ url_for('static', filename = 'data.json')}}
+        <div id="display_table">
+<!-- 
+            <p>columns: {{ columns }}</p>
+            <p> {{ pinakas_json_values}}</p> -->
 
-
-           {{ pinakas_json }}
-
-           {{ pinakas|safe }} -->
-<table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-    </table>
+            <table class="cell-border" >
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+            </table>
 
         </div>
     </div>
@@ -105,14 +100,26 @@ start();
 
 <script type="text/javascript">
 
-    $('#example').DataTable( {
-        ajax: "{{ pinakas }}",
+    $('#display_table').find('table').DataTable( {
+        ajax: {
+            "url": "{{ pinakas_data }}", 
+            "dataSrc": ""
+        },
         scrollX: true,
         fixedColumns: true,
         select: true,
-        paging: true,
         deferRender: true
     } );
+
+
+    // $('#display_table').find('table').DataTable( {
+    //     ajax: "/some_jsonify_view",
+    //     scrollX: true,
+    //     fixedColumns: true,
+    //     select: true,
+    //     deferRender: true
+    // } );
+
 end();
 </script>
 
