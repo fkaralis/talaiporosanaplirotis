@@ -6,6 +6,8 @@
 {{ super() }}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/fc-3.2.2/fh-3.1.2/r-2.1.1/sc-1.4.2/se-1.2.0/datatables.min.css"/>
 
+<!-- Time count alert (also end(); at end of file)
+
 <script charset="utf-8" type="text/javascript">
 
 var startTime, endTime;
@@ -26,7 +28,7 @@ function end() {
 }
 start();
 
-</script>
+</script> -->
 
 {% endblock %}
 
@@ -68,8 +70,6 @@ start();
         </div>
     </div>
 
-
-
     <div class="row hidden-xs">
         <div class="col-sm-6" align = "right">
             <p><a href="{{ url_for('main.download_remove') }}" class="btn btn-success btn-lg" id="pinakas_save" download="{{ download_filename }}">Αποθήκευση</a></p>
@@ -97,10 +97,11 @@ start();
 
 <script type="text/javascript">
 
+    // 
     $('#display_table').find('table').DataTable( {
         ajax: {
-            "url": "{{ pinakas_data }}", 
-            "dataSrc": ""
+            url: "{{ txt_filename }}", 
+            dataSrc: ""
         },
         scrollX: true,
         fixedColumns: true,
@@ -108,8 +109,8 @@ start();
         deferRender: true
     } );
 
-
-end();
+// end for time alert
+// end();
 </script>
 
 <!-- <script charset="utf-8" type="text/javascript">

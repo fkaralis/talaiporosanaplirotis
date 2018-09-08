@@ -5,6 +5,11 @@ import os
 import shutil
 import pandas as pd
 import json
+import random
+import time
+import atexit
+import apscheduler
+import glob
 
 from pathlib import PurePosixPath
 from pathlib import Path
@@ -32,6 +37,8 @@ from sqlalchemy import and_
 
 from .utils import unzip_to_df
 from .utils import match_klados
+
+from apscheduler.schedulers.background import BackgroundScheduler
 
 base_dir = current_app.config['BASE_DIR']
 data_path = current_app.config['DATA_PATH']
@@ -324,15 +331,21 @@ def pinakas_display():
                       data_path,
                       temp_path)
 
-    columns = list(df); #get pinakas table headers
+    df.reset_index(inplace=True)
+
+    columns = df.columns #get pinakas table headers
+    columns = columns.str.replace('index','')
     pinakas_json_values = df.to_json(force_ascii=False, orient='values') #get table values
 
-    with open('app/static/pinakas_data.txt', 'w') as f: #write values to txt file
+    txt_filename = str(random.randint(1, 1000000000)) + '.txt'
+
+    with open('app/static/' + txt_filename, 'w') as f: #write values to txt file
         f.write(pinakas_json_values)
 
-    return render_template('display.html', pinakas=url_for('static', filename="data.json"),
-                           pinakas_data=url_for('static', filename="pinakas_data.txt"),
-                           columns=columns, 
+
+
+    return render_template('display.html', columns=columns, 
+                           txt_filename=url_for('static', filename=txt_filename),
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
 
@@ -650,6 +663,38 @@ def _get_hmeromhnies():
 def contact():
     return render_template('contact.html')
 
+#
+#
+#
+#scheduled piankas txt files delete
+@main.route('/scheduled_print')
+def scheduled_delete():
+  count = 0
+  # os.chdir("/home/fkaralis/talaiporosanaplirotis/app/static/")
+  # for file in glob.glob("*.txt"):
+  for file in os.listdir("app/static"):
+    if file.endswith(".txt"):
+      try:
+          os.remove("app/static/" + file)
+          count+=1
+          print(str(count) + " " + file)
+      except Exception as e:
+          print(e)
+  print(time.strftime("%A, %d. %B %Y %I:%M:%S %p") + " " + str(count) + " files")
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=scheduled_delete, trigger="interval", seconds=120)
+scheduler.start()
+
+# Shut down the scheduler 
+# scheduler.shutdown()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
+# end scheduled piankas txt files delete
+
+#
 #
 # view functions end
 # empty response return ('', 204)
