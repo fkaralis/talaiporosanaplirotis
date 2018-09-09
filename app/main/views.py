@@ -680,7 +680,7 @@ def scheduled_delete():
   print(time.strftime("%A, %d. %B %Y %I:%M:%S %p") + " " + str(count) + " files")
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=scheduled_delete, trigger="interval", seconds=120)
+scheduler.add_job(func=scheduled_delete, trigger="interval", minutes=10)
 scheduler.start()
 
 # Shut down the scheduler 
