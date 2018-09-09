@@ -103,4 +103,5 @@ favico*
 minedu_scraper/downloads/
 notes.txt
 data.*
-pinakas_data*
+pinakas_data
+*[0-9].txt
