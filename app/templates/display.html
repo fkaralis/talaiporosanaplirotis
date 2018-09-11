@@ -69,15 +69,7 @@ start();
                         {% endfor %}
                     </tr>
                 </thead>
-                <tbody>
-                    {% for row in rows %}
-                        <tr>
-                            {% for attr in row %}
-                                <td>{{ attr }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
+
             </table>
 
         </div>
@@ -109,12 +101,30 @@ start();
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
 
 <script type="text/javascript">
-    $('#display_table').find('table').DataTable( {
-        scrollX: true,
-        fixedColumns: true,
-        select: true,
-        deferRender: true
-    } );
+    var test_table = $('#display_table').find('table').DataTable({deferRender: true});
+
+    function loadTable() {
+        $.get('pinakas_display', function(response, status){
+            var data = response[{{ rows|safe }}];
+            test_table.clear();
+
+            // no dict , list!
+
+            Object.keys(data).forEach(function(key) {
+                // fill row
+                row = []
+
+                // append to table
+                test_table.row.add(row);
+            });
+
+            // Update table -- make rows visible.
+            test_table.draw();
+        });
+    }
+    loadTable();
+
+
 
 // end for time alert
 // end();

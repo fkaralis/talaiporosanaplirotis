@@ -336,10 +336,12 @@ def pinakas_display():
     columns = df.columns.str.replace('index','')
     pinakas_json_values = json.loads(df.to_json(force_ascii=False, orient='values')) #get table values
     
-    # print(pinakas_json_values)
-    # for k in pinakas_json_values:
-    #   for v in k:
-    #     print(v)
+
+    # Remove None from rows (JavaScript problem in template)
+    for k in pinakas_json_values:
+      k[:] = ['' if x==None else x for x in k]
+
+    print(pinakas_json_values)  
 
 
     return render_template('display.html', columns=columns, rows=pinakas_json_values,
