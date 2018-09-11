@@ -65,10 +65,19 @@ start();
                 <thead>
                     <tr>
                         {% for column in columns %}
-                        <th>{{ column }}</th>
+                            <th>{{ column }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
+                <tbody>
+                    {% for row in rows %}
+                        <tr>
+                            {% for attr in row %}
+                                <td>{{ attr }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
 
         </div>
@@ -100,13 +109,7 @@ start();
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
 
 <script type="text/javascript">
-
-    // 
     $('#display_table').find('table').DataTable( {
-        ajax: {
-            url: "{{ txt_filename }}", 
-            dataSrc: ""
-        },
         scrollX: true,
         fixedColumns: true,
         select: true,

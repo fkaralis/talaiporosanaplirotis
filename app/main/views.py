@@ -334,17 +334,37 @@ def pinakas_display():
 
     # get table headres and rows
     columns = df.columns.str.replace('index','')
-    pinakas_json_values = df.to_json(force_ascii=False, orient='values') #get table values
+    pinakas_json_values = json.loads(df.to_json(force_ascii=False, orient='values')) #get table values
+    
+    # print(pinakas_json_values)
+    # for k in pinakas_json_values:
+    #   for v in k:
+    #     print(v)
 
-    # create random name temp pinakas txt file
-    txt_filename = str(random.randint(1, 1000000000)) + '.txt'
-    with open('app/static/' + txt_filename, 'w') as f: #write values to txt file
-        f.write(pinakas_json_values)
 
-    return render_template('display.html', columns=columns, 
-                           txt_filename=url_for('static', filename=txt_filename),
+    return render_template('display.html', columns=columns, rows=pinakas_json_values,
+                           txt_filename=json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False),
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
+
+@main.route('/pinakas_display_json')
+def pinakas_display_json():
+    print("in pinakas_display_json")
+
+    filename = session.get('filename')
+    path_pinaka = session.get('path_pinaka')
+
+    df = unzip_to_df(filename,
+                      path_pinaka,
+                      data_path,
+                      temp_path)
+    df.reset_index(inplace=True)
+
+    print(json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False))
+
+    return json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False)
+
+
 
 
 @main.route('/_get_kathgories/')
