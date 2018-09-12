@@ -655,35 +655,42 @@ def contact():
     return render_template('contact.html')
 
 #
-#
-#
-#scheduled piankas txt files delete
-@main.route('/scheduled_print')
-def scheduled_delete():
-  count = 0
-  # os.chdir("/home/fkaralis/talaiporosanaplirotis/app/static/")
-  # for file in glob.glob("*.txt"):
-  for file in os.listdir("app/static"):
-    if file.endswith(".txt"):
-      try:
-          os.remove("app/static/" + file)
-          count+=1
-          print(str(count) + " " + file)
-      except Exception as e:
-          print(e)
-  print(time.strftime("%A, %d. %B %Y %I:%M:%S %p") + " " + str(count) + " files")
+# # For Ajax url_to_file table display
+# # Scheduler to remove txt files
+# # Obsolete since solution without ajax, file
+# #
+# #
+# @main.route('/scheduled_print')
+# def scheduled_delete():
+#   count = 0
+#   # os.chdir("/home/fkaralis/talaiporosanaplirotis/app/static/")
+#   # for file in glob.glob("*.txt"):
+#   for file in os.listdir("app/static"):
+#     if file.endswith(".txt"):
+#       try:
+#           os.remove("app/static/" + file)
+#           count+=1
+#           print(str(count) + " " + file)
+#       except Exception as e:
+#           print(e)
+#   print(time.strftime("%A, %d. %B %Y %I:%M:%S %p") + " " + str(count) + " files")
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=scheduled_delete, trigger="interval", minutes=10)
-scheduler.start()
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(func=scheduled_delete, trigger="interval", minutes=10)
+# scheduler.start()
 
-# Shut down the scheduler 
-# scheduler.shutdown()
+# # Shut down the scheduler 
+# # scheduler.shutdown()
 
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown())
+# # Shut down the scheduler when exiting the app
+# atexit.register(lambda: scheduler.shutdown())
 
-# end scheduled piankas txt files delete
+# # end scheduled piankas txt files delete
+
+
+
+
+
 
 #
 #
