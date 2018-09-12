@@ -101,57 +101,38 @@ start();
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/fc-3.2.5/fh-3.1.4/r-2.2.2/sc-1.5.0/sl-1.2.6/datatables.min.js"></script>
 
 <script type="text/javascript">
-    var test_table = $('#display_table').find('table').DataTable({deferRender: true});
+    // set table as DataTable
+    var display_table = $('#display_table').find('table').DataTable({
+        scrollX: true,
+        fixedColumns: true,
+        select: true,
+        deferRender: true
+    });
 
     function loadTable() {
         $.get('pinakas_display', function(response, status){
-            var data = response[{{ rows|safe }}];
-            test_table.clear();
-
-            // no dict , list!
+            var data = {{ rows|safe }};
+            display_table.clear();
 
             Object.keys(data).forEach(function(key) {
                 // fill row
-                row = []
+                row = data[key]
 
                 // append to table
-                test_table.row.add(row);
+                display_table.row.add(row);
             });
 
             // Update table -- make rows visible.
-            test_table.draw();
+            display_table.draw();
         });
     }
+
+    //execute function
     loadTable();
-
-
 
 // end for time alert
 // end();
 </script>
-
-<!-- <script charset="utf-8" type="text/javascript">
-$(window).load(function(){
-    // page fully loaded
-
-    // // fade out overlay div
-    // $('#overlay').fadeOut();
-    
-    // // show main div
-    $('#main').show();
-    // show table
-
-    // $('#display_table').find('table').DataTable( {
-    //     scrollX: true,
-    //     fixedColumns: true,
-    //     select: true,
-    //     deferRender: true
-    // } );
-
-    
-
-});
-</script> -->
 {% endblock %}
 
 

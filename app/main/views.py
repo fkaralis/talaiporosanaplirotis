@@ -332,41 +332,13 @@ def pinakas_display():
                       temp_path)
     df.reset_index(inplace=True)
 
-    # get table headres and rows
+    # get table headers and rows
     columns = df.columns.str.replace('index','')
-    pinakas_json_values = json.loads(df.to_json(force_ascii=False, orient='values')) #get table values
-    
+    rows = df.to_json(force_ascii=False, orient='values').replace('None', '') 
 
-    # Remove None from rows (JavaScript problem in template)
-    for k in pinakas_json_values:
-      k[:] = ['' if x==None else x for x in k]
-
-    print(pinakas_json_values)  
-
-
-    return render_template('display.html', columns=columns, rows=pinakas_json_values,
-                           txt_filename=json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False),
+    return render_template('display.html', columns=columns, rows=rows,
                            download_filename = session.get('download_filename'),
                            size_pinaka = session.get('size_pinaka'))
-
-@main.route('/pinakas_display_json')
-def pinakas_display_json():
-    print("in pinakas_display_json")
-
-    filename = session.get('filename')
-    path_pinaka = session.get('path_pinaka')
-
-    df = unzip_to_df(filename,
-                      path_pinaka,
-                      data_path,
-                      temp_path)
-    df.reset_index(inplace=True)
-
-    print(json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False))
-
-    return json.dumps(json.loads(df.to_json(orient='index')), indent=2, ensure_ascii = False)
-
-
 
 
 @main.route('/_get_kathgories/')
