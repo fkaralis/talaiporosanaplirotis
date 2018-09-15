@@ -44,6 +44,8 @@
 <script charset="utf-8" type="text/javascript">
 
 $(function() {
+    
+
 
     // jQuery selection for the select fields
     var dropdown = {
@@ -57,6 +59,9 @@ $(function() {
         athlima: $('#select_athlima'),
         hmeromhnia: $('#select_hmeromhnia'),
     };
+
+    $('#submit').prop( "disabled", true );
+
 
     // call to update on load
     updateKathgories();
@@ -73,8 +78,9 @@ $(function() {
         var send =  {
             sxoliko_etos: dropdown.sxoliko_etos.val()
         };
+        $('#submit').prop( "disabled", true );
 
-        //alert(send.sxoliko_etos);
+        // alert("in updateKathgories" + send.sxoliko_etos);
 
         dropdown.kathgoria.empty();
         dropdown.klados.empty();
@@ -96,7 +102,9 @@ $(function() {
                 );
             });
             dropdown.kathgoria.removeAttr('disabled');
+            submit.attr('disabled', 'disabled');
         });
+
     }
 
     // function to call XHR and update kladoi dropdown
@@ -106,7 +114,7 @@ $(function() {
             kathgoria: dropdown.kathgoria.val()
         };
 
-        //alert(send.sxoliko_etos + "\n" + send.kathgoria);
+        // alert("in updateKladoi" + send.sxoliko_etos + "\n" + send.kathgoria);
 
 
         hideDisableSetDefault('kathgoria select');
@@ -137,9 +145,11 @@ $(function() {
             klados: dropdown.klados.val()
         };
 
-        //alert(send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
+        // alert("in updateFields" + send.sxoliko_etos + "\n" + send.kathgoria + "\n" + send.klados);
 
         hideDisableSetDefault('klados select');
+        // $('#submit').prop( "disabled", true );
+
 
         $.getJSON("{{ url_for('main._get_fields') }}", send, function(data) {
             //alert(data)
@@ -228,6 +238,7 @@ $(function() {
                     });
                 };
                 if (item[0] == 'hmeromhnies') {
+                    // $('#submit').prop( "disabled", true );
                     $('label[for="select_hmeromhnia"]').show();
                     dropdown.hmeromhnia.disabled = false;
                     dropdown.hmeromhnia.show();
@@ -242,14 +253,21 @@ $(function() {
                             );
                         });
                     });
-                    //alert('hmnia after hmnies update' + dropdown.hmeromhnia.val());
+                    // $('#submit').prop( "disabled", false );
+
+                    // alert('hmnia after hmnies update' + dropdown.hmeromhnia.val());
                 };
+                // $('#submit').prop( "disabled", false );
             });
+            // $('#submit').prop( "disabled", false );
         });
+        // $('#submit').prop( "disabled", false );
+
     }
 
 
     function updateRestFields() {
+        // $('#submit').prop( "disabled", true );
         var send = {
             sxoliko_etos: dropdown.sxoliko_etos.val(),
             kathgoria: dropdown.kathgoria.val(),
@@ -304,11 +322,11 @@ $(function() {
                         });
                     });
                 };
+                $('#submit').prop( "disabled", false );
 
             });
         });
-
-
+        // $('#submit').prop( "disabled", false );
     }
 
 
@@ -316,52 +334,59 @@ $(function() {
     dropdown.sxoliko_etos.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateKathgories();
-        $('#submit').prop( "disabled", false );
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.kathgoria.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateKladoi();
-        $('#submit').prop( "disabled", false );
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.klados.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateFields();
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_pinakas.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('smeae_pinakas');
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_kathgoria.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('smeae_kathgoria');
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.perioxh.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('perioxh');
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.mousiko_organo.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('mousiko_organo');
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.athlima.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('athlima');
-        $('#submit').prop( "disabled", false );
+        delayButtonEnable();
+        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.hmeromhnia.on('change', function() {
+        delayButtonEnable();
         //alert('selected hmnia ' + dropdown.hmeromhnia.val());
     });
 
@@ -463,8 +488,14 @@ $(function() {
         dropdown.athlima.disabled = true;
         $('#select_athlima').val([0]);
 
-        //alert('hmnia after ' + infunc + ' ' + dropdown.hmeromhnia.val());
+        // alert('hmnia after ' + infunc + ' ' + dropdown.hmeromhnia.val());
     }
+
+    function delayButtonEnable() {
+        setTimeout(function() {
+            $('#submit').prop( "disabled", false );
+        }, 750);
+    } 
 
 });
 
