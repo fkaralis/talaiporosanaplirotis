@@ -41,7 +41,7 @@
 
 {% block scripts %}
 {{ super() }}
-<script charset="utf-8" type="text/javascript">
+<script>
 
 $(function() {
     
@@ -475,7 +475,7 @@ $(function() {
     }
 
     function delayButtonEnable() {
-        console.log("in delayButtonEnable");
+        // console.log("in delayButtonEnable");
         setTimeout(function() {
             $('#submit').prop( "disabled", false );
         }, 1000);
