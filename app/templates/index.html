@@ -102,7 +102,7 @@ $(function() {
                 );
             });
             dropdown.kathgoria.removeAttr('disabled');
-            submit.attr('disabled', 'disabled');
+            // submit.attr('disabled', 'disabled');
         });
 
     }
@@ -253,15 +253,12 @@ $(function() {
                             );
                         });
                     });
-                    // $('#submit').prop( "disabled", false );
 
                     // alert('hmnia after hmnies update' + dropdown.hmeromhnia.val());
                 };
-                // $('#submit').prop( "disabled", false );
             });
-            // $('#submit').prop( "disabled", false );
         });
-        // $('#submit').prop( "disabled", false );
+
         if(callback) callback();
     }
 
@@ -326,7 +323,7 @@ $(function() {
 
             });
         });
-        // $('#submit').prop( "disabled", false );        
+
         if(callback) callback();
     }
 
@@ -335,60 +332,45 @@ $(function() {
     dropdown.sxoliko_etos.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateKathgories();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.kathgoria.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateKladoi();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.klados.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateFields(delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_pinakas.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('smeae_pinakas', delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.smeae_kathgoria.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('smeae_kathgoria', delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.perioxh.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('perioxh', delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.mousiko_organo.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('mousiko_organo', delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.athlima.on('change', function() {
         $('#submit').prop( "disabled", true );
         updateRestFields('athlima', delayButtonEnable());
-        // delayButtonEnable();
-        // $('#submit').prop( "disabled", false );
     });
 
     dropdown.hmeromhnia.on('change', function() {
         delayButtonEnable();
-        //alert('selected hmnia ' + dropdown.hmeromhnia.val());
     });
 
     $('#submit').click(function() {
