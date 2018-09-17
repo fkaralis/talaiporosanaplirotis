@@ -138,7 +138,7 @@ $(function() {
     }
 
 
-    function updateFields() {
+    function updateFields(callback) {
         var send =  {
             sxoliko_etos: dropdown.sxoliko_etos.val(),
             kathgoria: dropdown.kathgoria.val(),
@@ -262,7 +262,7 @@ $(function() {
             // $('#submit').prop( "disabled", false );
         });
         // $('#submit').prop( "disabled", false );
-
+        callback();
     }
 
 
@@ -345,8 +345,8 @@ $(function() {
 
     dropdown.klados.on('change', function() {
         $('#submit').prop( "disabled", true );
-        updateFields();
-        delayButtonEnable();
+        updateFields(delayButtonEnable());
+        // delayButtonEnable();
         // $('#submit').prop( "disabled", false );
     });
 
@@ -494,7 +494,7 @@ $(function() {
     function delayButtonEnable() {
         setTimeout(function() {
             $('#submit').prop( "disabled", false );
-        }, 750);
+        }, 1000);
     } 
 
 });
